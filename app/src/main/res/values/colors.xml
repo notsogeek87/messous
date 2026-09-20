@@ -1,0 +1,6 @@
+<resources>
+    <!-- Fallback palette used only on API < 31 devices without dynamic color.
+         Material3 dynamic color (Android 12+) overrides this at runtime. -->
+    <color name="seed_primary">#2E7D5B</color>
+    <color name="splash_background">#FFFFFF</color>
+</resources>

@@ -1,0 +1,69 @@
+package com.budgetflow.app.di
+
+import android.content.Context
+import com.budgetflow.app.data.backup.BackupRepositoryImpl
+import com.budgetflow.app.data.local.BudgetFlowDatabase
+import com.budgetflow.app.data.prefs.UserPreferences
+import com.budgetflow.app.data.repository.AccountRepositoryImpl
+import com.budgetflow.app.data.repository.CategoryRepositoryImpl
+import com.budgetflow.app.data.repository.IncomeRepositoryImpl
+import com.budgetflow.app.data.repository.RecurringExpenseRepositoryImpl
+import com.budgetflow.app.data.repository.SavingsGoalRepositoryImpl
+import com.budgetflow.app.data.repository.TransactionRepositoryImpl
+import com.budgetflow.app.data.repository.VariableBudgetRepositoryImpl
+import com.budgetflow.app.domain.repository.AccountRepository
+import com.budgetflow.app.domain.repository.BackupRepository
+import com.budgetflow.app.domain.repository.CategoryRepository
+import com.budgetflow.app.domain.repository.IncomeRepository
+import com.budgetflow.app.domain.repository.RecurringExpenseRepository
+import com.budgetflow.app.domain.repository.SavingsGoalRepository
+import com.budgetflow.app.domain.repository.TransactionRepository
+import com.budgetflow.app.domain.repository.VariableBudgetRepository
+import com.budgetflow.app.domain.usecase.GetCalendarOccurrencesUseCase
+import com.budgetflow.app.domain.usecase.GetDashboardForMonthUseCase
+import com.budgetflow.app.domain.usecase.GetMonthlyForecastsUseCase
+
+/**
+ * Hand-rolled dependency container. BudgetFlow deliberately avoids an
+ * annotation-processing DI framework: the dependency graph is small and
+ * static, so a plain lazily-initialized singleton object is easier to read,
+ * easier to test against, and keeps the build simpler.
+ */
+object ServiceLocator {
+    private lateinit var appContext: Context
+
+    fun init(context: Context) {
+        appContext = context.applicationContext
+    }
+
+    val database: BudgetFlowDatabase by lazy { BudgetFlowDatabase.getInstance(appContext) }
+    val preferences: UserPreferences by lazy { UserPreferences(appContext) }
+
+    val accountRepository: AccountRepository by lazy {
+        AccountRepositoryImpl(database.accountDao(), database.transactionDao())
+    }
+    val categoryRepository: CategoryRepository by lazy { CategoryRepositoryImpl(database.categoryDao()) }
+    val incomeRepository: IncomeRepository by lazy { IncomeRepositoryImpl(database.incomeDao()) }
+    val recurringExpenseRepository: RecurringExpenseRepository by lazy {
+        RecurringExpenseRepositoryImpl(database.recurringExpenseDao())
+    }
+    val variableBudgetRepository: VariableBudgetRepository by lazy {
+        VariableBudgetRepositoryImpl(database.variableBudgetDao(), database.transactionDao())
+    }
+    val transactionRepository: TransactionRepository by lazy { TransactionRepositoryImpl(database.transactionDao()) }
+    val savingsGoalRepository: SavingsGoalRepository by lazy { SavingsGoalRepositoryImpl(database.savingsGoalDao()) }
+    val backupRepository: BackupRepository by lazy { BackupRepositoryImpl(database) }
+
+    val dashboardUseCase: GetDashboardForMonthUseCase by lazy {
+        GetDashboardForMonthUseCase(
+            incomeRepository, recurringExpenseRepository, variableBudgetRepository,
+            savingsGoalRepository, accountRepository, transactionRepository
+        )
+    }
+    val calendarUseCase: GetCalendarOccurrencesUseCase by lazy {
+        GetCalendarOccurrencesUseCase(incomeRepository, recurringExpenseRepository)
+    }
+    val forecastUseCase: GetMonthlyForecastsUseCase by lazy {
+        GetMonthlyForecastsUseCase(incomeRepository, recurringExpenseRepository, variableBudgetRepository, savingsGoalRepository)
+    }
+}
