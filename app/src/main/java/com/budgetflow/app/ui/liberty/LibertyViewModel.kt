@@ -64,12 +64,13 @@ class LibertyViewModel(
     ) { (plan, occurrences), (transactions, categories, accounts) ->
         val summary = BudgetEngine.summarizeMonth(plan)
         val upcoming = occurrences.filter { it.date.isAfter(today) }
-        val freedomPerDay = summary.freedomPerDay
-        // "Grosse dépense" = the single largest expense landing within the next 5 days,
-        // as long as it would meaningfully dent a day's worth of free money.
+        // "Grosse dépense" = the single largest expense landing within the next 5 days, as long
+        // as it would meaningfully dent a day's worth of budget - measured against the same
+        // plan-based daily figure the home screen now leads with, not the balance-based one.
+        val dailyBudget = summary.dailyRecommendedBudget
         val notable = upcoming
             .filter { it.direction == FlowDirection.EXPENSE && !it.date.isAfter(today.plusDays(5)) }
-            .filter { freedomPerDay == null || it.amount > freedomPerDay * 2 }
+            .filter { it.amount > dailyBudget * 2 }
             .maxByOrNull { it.amount }
 
         val transactionItems = transactions

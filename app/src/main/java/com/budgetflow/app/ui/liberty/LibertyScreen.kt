@@ -63,6 +63,7 @@ import com.budgetflow.app.ui.components.color
 import com.budgetflow.app.ui.components.formatMoney
 import com.budgetflow.app.ui.components.frequencyLabel
 import com.budgetflow.app.ui.transactions.TransactionListItem
+import com.budgetflow.engine.BudgetEngine
 import com.budgetflow.engine.model.CalendarOccurrence
 import com.budgetflow.engine.model.FlowDirection
 import com.budgetflow.engine.model.FreedomState
@@ -266,23 +267,29 @@ private fun LibertyContent(
 }
 
 /**
- * The headline block: one figure ([MonthSummary.freeMoney], the real-balance one - falling back
- * to the plan-based [MonthSummary.remainingToSpend] only when there is no account to read a real
- * figure from, and *only then* left uncolored) with its per-day reading directly under it, both
- * rounded to the euro for a one-glance read. Never two different "per day" figures on this screen
- * (spec §3 P1/P2): the color and every number here come from the same base quantity.
+ * The headline block: one figure - [MonthSummary.remainingToSpend], the *plan*-based one (revenus
+ * moins charges fixes, enveloppes et épargne, pour tout le mois) - with its per-day reading
+ * directly under it, both rounded to the euro for a one-glance read. This is the number a budget
+ * a user fills in without necessarily keeping a bank balance in sync (no starting balance, no
+ * logged transactions) can actually rely on; [MonthSummary.freeMoney] - the real-balance figure -
+ * shows underneath as a secondary line when an account exists, never silently swapped in as the
+ * headline (spec §3 P1/P2, revisited after real usage: a freshly-migrated "Perso" profile with a
+ * genuine, filled-in recurring income showed "0 €, Confort" because its account had no starting
+ * balance and no logged transactions - correct by the balance-based formula, but exactly the
+ * "interchangeable" trap the engine's own doc comment warns against). The color always comes from
+ * the same quantity as the number it colors: [planState], derived from [MonthSummary.remainingToSpend]
+ * itself, never borrowed from the balance-based [MonthSummary.freedomState].
  */
 @Composable
 private fun LibertyHero(summary: MonthSummary, onOpenAccounts: () -> Unit) {
     val freeMoney = summary.freeMoney
-    val freedomState = summary.freedomState
-    val heroAmount = freeMoney ?: summary.remainingToSpend
-    val heroColor = if (freeMoney != null) freedomState.color() else MaterialTheme.colorScheme.onSurface
-    val perDayAmount = summary.freedomPerDay ?: summary.dailyRecommendedBudget
+    val planState = remember(summary.remainingToSpend, summary.safetyThreshold) {
+        BudgetEngine.freedomStateFor(summary.remainingToSpend, summary.safetyThreshold)
+    }
     var detailsExpanded by remember { mutableStateOf(false) }
 
     Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
-        FreedomStateBadge(freedomState)
+        FreedomStateBadge(planState)
         Text(
             text = stringResource(R.string.liberty_remaining_to_spend_label),
             style = MaterialTheme.typography.titleMedium,
@@ -290,19 +297,30 @@ private fun LibertyHero(summary: MonthSummary, onOpenAccounts: () -> Unit) {
             modifier = Modifier.padding(top = 12.dp)
         )
         AnimatedMoneyText(
-            amount = heroAmount,
+            amount = summary.remainingToSpend,
             roundToEuro = true,
             style = MaterialTheme.typography.displayMedium.copy(fontWeight = FontWeight.Bold),
-            color = heroColor
+            color = planState.color()
         )
         Text(
-            text = stringResource(R.string.liberty_hero_subtitle, formatMoney(perDayAmount, roundToEuro = true), summary.remainingDaysInMonth),
+            text = stringResource(
+                R.string.liberty_hero_subtitle,
+                formatMoney(summary.dailyRecommendedBudget, roundToEuro = true),
+                summary.remainingDaysInMonth
+            ),
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.padding(top = 4.dp)
         )
 
-        if (freeMoney == null) {
+        if (freeMoney != null) {
+            Text(
+                text = stringResource(R.string.liberty_free_money_caption, formatMoney(freeMoney)),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(top = 4.dp)
+            )
+        } else {
             TextButton(onClick = onOpenAccounts, modifier = Modifier.padding(top = 4.dp)) {
                 Text(stringResource(R.string.liberty_add_account_cta))
             }
@@ -421,16 +439,19 @@ private fun UpcomingRow(occurrence: CalendarOccurrence) {
 @Composable
 private fun libertyMessage(state: LibertyUiState, summary: MonthSummary): String {
     val notable = state.notableUpcomingExpense
-    val freedomPerDay = summary.freedomPerDay
+    // Judged against the same plan-based figure as the hero now shows (see [LibertyHero]) -
+    // never a balance-based verdict under a plan-based headline.
+    val planState = BudgetEngine.freedomStateFor(summary.remainingToSpend, summary.safetyThreshold)
+    val dailyBudget = summary.dailyRecommendedBudget
     return when {
         notable != null -> {
             val weekday = notable.date.dayOfWeek.getDisplayName(TextStyle.FULL, Locale.FRENCH)
             stringResource(R.string.liberty_message_big_expense, weekday)
         }
-        summary.freedomState == FreedomState.ALERT -> stringResource(R.string.liberty_message_alert)
-        summary.freedomState == FreedomState.CAUTION -> stringResource(R.string.liberty_message_caution)
-        freedomPerDay != null && summary.safetyThreshold > 0 && freedomPerDay > summary.safetyThreshold / 10.0 ->
+        planState == FreedomState.ALERT -> stringResource(R.string.liberty_message_alert)
+        planState == FreedomState.CAUTION -> stringResource(R.string.liberty_message_caution)
+        summary.safetyThreshold > 0 && dailyBudget > summary.safetyThreshold / 10.0 ->
             stringResource(R.string.liberty_message_comfortable)
-        else -> stringResource(R.string.liberty_message_normal, formatMoney(freedomPerDay ?: summary.dailyRecommendedBudget))
+        else -> stringResource(R.string.liberty_message_normal, formatMoney(dailyBudget))
     }
 }

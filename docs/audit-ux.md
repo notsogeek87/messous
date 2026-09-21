@@ -514,6 +514,17 @@ rare, pour une quinzaine de lignes de Compose.
 > a choisi l'option « mono-devise assumée » plutôt que le formatage par compte. Compilation non
 > vérifiée dans cet environnement (SDK Android et dépôt Maven Google inaccessibles) : revue humaine
 > et build avant merge recommandés.
+>
+> **Révision du 21/09 (retour d'usage réel) :** le chiffre héros de l'accueil est repassé au
+> **plan** (`remainingToSpend`) comme base principale, pas à l'argent libre (`freeMoney`). Sur un
+> profil « Perso » fraîchement migré avec un revenu récurrent réel mais un compte sans solde de
+> départ ni transaction enregistrée, le choix « argent libre en priorité » de l'item 1 affichait
+> « 0 €, Confort » alors que le budget planifié (revenus − charges fixes) était correctement
+> rempli — exactement le piège « ces deux chiffres ne sont jamais interchangeables » que l'audit
+> décrit en §3. L'argent libre reste affiché en ligne secondaire sous le chiffre principal quand un
+> compte existe. La couleur suit désormais `planState` (calculé sur `remainingToSpend`), jamais
+> `freedomState` (calculé sur `freeMoney`) : le principe P2 — couleur et chiffre doivent toujours
+> venir de la même grandeur — reste respecté, seule la grandeur choisie comme référence a changé.
 
 **Lot 1 — Confiance et fondamentaux** (correctifs courts, gros gain)
 1. Aligner le chiffre héros et sa couleur sur une seule base de calcul (P2).

@@ -27,6 +27,7 @@
     <string name="liberty_add_account_cta">Ajouter un compte</string>
     <string name="liberty_hero_subtitle">Soit %1$s / jour, encore %2$d j. ce mois-ci</string>
     <string name="liberty_details_toggle">D\'où vient ce chiffre ?</string>
+    <string name="liberty_free_money_caption">Argent libre (solde réel) : %1$s</string>
     <string name="liberty_free_money_row_label">Argent libre</string>
     <string name="liberty_simulate_cta">Et si je dépensais quelque chose ?</string>
     <string name="liberty_add_transaction_cta">Ajouter</string>
