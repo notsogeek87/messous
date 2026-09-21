@@ -2,6 +2,7 @@ package com.budgetflow.app.ui.transactions
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.budgetflow.app.data.services.ServiceCategoryMatcher
 import com.budgetflow.app.domain.model.Account
 import com.budgetflow.app.domain.model.Category
 import com.budgetflow.app.domain.model.Transaction
@@ -10,6 +11,10 @@ import com.budgetflow.app.domain.repository.AccountRepository
 import com.budgetflow.app.domain.repository.CategoryRepository
 import com.budgetflow.app.domain.repository.TransactionRepository
 import com.budgetflow.app.ui.components.toAmountOrNull
+import com.budgetflow.engine.recognition.RecognizableService
+import com.budgetflow.engine.recognition.ServiceKind
+import com.budgetflow.engine.recognition.ServiceMatch
+import com.budgetflow.engine.recognition.TransactionRecognitionEngine
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -28,14 +33,20 @@ data class TransactionFormState(
     val accountId: Long? = null,
     val categories: List<Category> = emptyList(),
     val accounts: List<Account> = emptyList(),
-    val isSaved: Boolean = false
+    val isSaved: Boolean = false,
+    /** Live suggestions for [description] (spec section 3) - never forced, just offered while typing. */
+    val suggestions: List<ServiceMatch> = emptyList(),
+    /** Set only right after the user taps a suggestion; cleared as soon as they edit the description again. */
+    val recognizedService: RecognizableService? = null
 )
 
 class AddEditTransactionViewModel(
     transactionId: Long?,
     private val transactionRepository: TransactionRepository,
     private val categoryRepository: CategoryRepository,
-    private val accountRepository: AccountRepository
+    private val accountRepository: AccountRepository,
+    private val serviceCatalog: List<RecognizableService>,
+    private val serviceCategoryMatcher: ServiceCategoryMatcher
 ) : ViewModel() {
 
     private val existingCreatedAt: MutableStateFlow<Long?> = MutableStateFlow(null)
@@ -79,8 +90,38 @@ class AddEditTransactionViewModel(
     fun updateType(value: TransactionType) = _uiState.update { it.copy(type = value) }
     fun updateCategory(id: Long) = _uiState.update { it.copy(categoryId = id) }
     fun updateDate(date: LocalDate) = _uiState.update { it.copy(date = date) }
-    fun updateDescription(value: String) = _uiState.update { it.copy(description = value) }
     fun updateAccount(id: Long) = _uiState.update { it.copy(accountId = id) }
+
+    fun updateDescription(value: String) {
+        val extraction = TransactionRecognitionEngine.extractAmount(value)
+        val searchText = extraction?.remainingText ?: value
+        // Not filtered by the current type toggle: a matching suggestion corrects it on selection instead.
+        val matches = TransactionRecognitionEngine.suggest(searchText, serviceCatalog)
+        _uiState.update { state ->
+            state.copy(
+                description = value,
+                amount = if (extraction != null && state.amount.isBlank()) extraction.amount.toString() else state.amount,
+                suggestions = matches,
+                recognizedService = null
+            )
+        }
+    }
+
+    /** Applies a tapped suggestion (spec section 9): the user stays free to edit every field afterwards. */
+    fun selectSuggestion(service: RecognizableService) {
+        viewModelScope.launch {
+            val category = serviceCategoryMatcher.categoryFor(service, _uiState.value.categories)
+            _uiState.update { state ->
+                state.copy(
+                    description = service.name,
+                    categoryId = category?.id ?: state.categoryId,
+                    type = if (service.kind == ServiceKind.INCOME) TransactionType.INCOME else TransactionType.EXPENSE,
+                    suggestions = emptyList(),
+                    recognizedService = service
+                )
+            }
+        }
+    }
 
     fun save() {
         val state = _uiState.value

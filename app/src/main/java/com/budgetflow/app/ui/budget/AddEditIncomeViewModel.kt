@@ -6,6 +6,10 @@ import com.budgetflow.app.domain.model.Income
 import com.budgetflow.app.domain.repository.IncomeRepository
 import com.budgetflow.app.ui.components.toAmountOrNull
 import com.budgetflow.engine.model.Frequency
+import com.budgetflow.engine.recognition.RecognizableService
+import com.budgetflow.engine.recognition.ServiceKind
+import com.budgetflow.engine.recognition.ServiceMatch
+import com.budgetflow.engine.recognition.TransactionRecognitionEngine
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -24,12 +28,17 @@ data class IncomeFormState(
     val dayOfWeek: DayOfWeek = DayOfWeek.MONDAY,
     val monthOfYear: Int = 1,
     val isActive: Boolean = true,
-    val isSaved: Boolean = false
+    val isSaved: Boolean = false,
+    /** Live suggestions for [label] (spec section 3/13) - never forced, just offered while typing. */
+    val suggestions: List<ServiceMatch> = emptyList(),
+    /** Set only right after the user taps a suggestion; cleared as soon as they edit the name again. */
+    val recognizedService: RecognizableService? = null
 )
 
 class AddEditIncomeViewModel(
     incomeId: Long?,
-    private val incomeRepository: IncomeRepository
+    private val incomeRepository: IncomeRepository,
+    private val serviceCatalog: List<RecognizableService>
 ) : ViewModel() {
 
     private var existingAccountId: Long? = null
@@ -61,7 +70,32 @@ class AddEditIncomeViewModel(
         }
     }
 
-    fun updateLabel(value: String) = _uiState.update { it.copy(label = value) }
+    fun updateLabel(value: String) {
+        val extraction = TransactionRecognitionEngine.extractAmount(value)
+        val searchText = extraction?.remainingText ?: value
+        val matches = TransactionRecognitionEngine.suggest(searchText, serviceCatalog, ServiceKind.INCOME)
+        _uiState.update { state ->
+            state.copy(
+                label = value,
+                amount = if (extraction != null && state.amount.isBlank()) extraction.amount.toString() else state.amount,
+                suggestions = matches,
+                recognizedService = null
+            )
+        }
+    }
+
+    /** Applies a tapped suggestion (spec section 9/13): the user stays free to edit every field afterwards. */
+    fun selectSuggestion(service: RecognizableService) {
+        _uiState.update { state ->
+            state.copy(
+                label = service.name,
+                frequency = service.defaultFrequency ?: state.frequency,
+                suggestions = emptyList(),
+                recognizedService = service
+            )
+        }
+    }
+
     fun updateAmount(value: String) = _uiState.update { it.copy(amount = value) }
     fun updateFrequency(value: Frequency) = _uiState.update { it.copy(frequency = value) }
     fun updateDayOfMonth(value: Int) = _uiState.update { it.copy(dayOfMonth = value) }

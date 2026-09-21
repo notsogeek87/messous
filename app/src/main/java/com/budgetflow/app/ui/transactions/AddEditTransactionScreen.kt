@@ -41,6 +41,8 @@ import com.budgetflow.app.domain.model.TransactionType
 import com.budgetflow.app.ui.components.AccountDropdown
 import com.budgetflow.app.ui.components.AmountField
 import com.budgetflow.app.ui.components.CategoryDropdown
+import com.budgetflow.app.ui.components.ServiceLogo
+import com.budgetflow.app.ui.components.ServiceSuggestionsPanel
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneOffset
@@ -53,7 +55,14 @@ private val dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
 fun AddEditTransactionScreen(transactionId: Long?, onDone: () -> Unit) {
     val viewModel: AddEditTransactionViewModel = viewModel(
         factory = simpleViewModelFactory {
-            AddEditTransactionViewModel(transactionId, ServiceLocator.transactionRepository, ServiceLocator.categoryRepository, ServiceLocator.accountRepository)
+            AddEditTransactionViewModel(
+                transactionId,
+                ServiceLocator.transactionRepository,
+                ServiceLocator.categoryRepository,
+                ServiceLocator.accountRepository,
+                ServiceLocator.serviceCatalog,
+                ServiceLocator.serviceCategoryMatcher
+            )
         }
     )
     val state by viewModel.uiState.collectAsState()
@@ -117,12 +126,19 @@ fun AddEditTransactionScreen(transactionId: Long?, onDone: () -> Unit) {
                 Text("${stringResource(R.string.transaction_date)}: ${state.date.format(dateFormatter)}")
             }
 
-            OutlinedTextField(
-                value = state.description,
-                onValueChange = viewModel::updateDescription,
-                label = { Text(stringResource(R.string.transaction_description)) },
-                modifier = Modifier.fillMaxWidth()
-            )
+            val recognizedService = state.recognizedService
+            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                OutlinedTextField(
+                    value = state.description,
+                    onValueChange = viewModel::updateDescription,
+                    label = { Text(stringResource(R.string.transaction_description)) },
+                    leadingIcon = if (recognizedService != null) {
+                        { ServiceLogo(service = recognizedService, size = 28.dp) }
+                    } else null,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                ServiceSuggestionsPanel(matches = state.suggestions, onSelect = viewModel::selectSuggestion)
+            }
 
             Button(onClick = viewModel::save, modifier = Modifier.fillMaxWidth()) {
                 Text(stringResource(R.string.transaction_save))

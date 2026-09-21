@@ -35,6 +35,8 @@ import com.budgetflow.app.di.simpleViewModelFactory
 import com.budgetflow.app.ui.components.AmountField
 import com.budgetflow.app.ui.components.FrequencySelector
 import com.budgetflow.app.ui.components.ScheduleDetailsFields
+import com.budgetflow.app.ui.components.ServiceLogo
+import com.budgetflow.app.ui.components.ServiceSuggestionsPanel
 import com.budgetflow.app.ui.components.dailyEquivalent
 import com.budgetflow.app.ui.components.formatMoney
 import com.budgetflow.app.ui.components.monthlyEquivalent
@@ -51,7 +53,9 @@ import com.budgetflow.engine.model.Frequency
 @Composable
 fun AddEditIncomeScreen(incomeId: Long?, onDone: () -> Unit) {
     val viewModel: AddEditIncomeViewModel = viewModel(
-        factory = simpleViewModelFactory { AddEditIncomeViewModel(incomeId, ServiceLocator.incomeRepository) }
+        factory = simpleViewModelFactory {
+            AddEditIncomeViewModel(incomeId, ServiceLocator.incomeRepository, ServiceLocator.serviceCatalog)
+        }
     )
     val state by viewModel.uiState.collectAsState()
 
@@ -79,13 +83,20 @@ fun AddEditIncomeScreen(incomeId: Long?, onDone: () -> Unit) {
                 modifier = Modifier.fillMaxWidth()
             )
 
-            OutlinedTextField(
-                value = state.label,
-                onValueChange = viewModel::updateLabel,
-                label = { Text(stringResource(R.string.budget_label_name)) },
-                placeholder = { Text(stringResource(R.string.budget_income_label_hint)) },
-                modifier = Modifier.fillMaxWidth()
-            )
+            val recognizedService = state.recognizedService
+            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                OutlinedTextField(
+                    value = state.label,
+                    onValueChange = viewModel::updateLabel,
+                    label = { Text(stringResource(R.string.budget_label_name)) },
+                    placeholder = { Text(stringResource(R.string.budget_income_label_hint)) },
+                    leadingIcon = if (recognizedService != null) {
+                        { ServiceLogo(service = recognizedService, size = 28.dp) }
+                    } else null,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                ServiceSuggestionsPanel(matches = state.suggestions, onSelect = viewModel::selectSuggestion)
+            }
 
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 Text(stringResource(R.string.budget_frequency_section), style = MaterialTheme.typography.titleSmall)

@@ -78,6 +78,14 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+
+    sourceSets {
+        // Lets local unit tests load assets/services.json as a plain classpath resource
+        // (Robolectric-free), so the service catalog is validated on every `test` run.
+        getByName("test") {
+            resources.srcDirs("src/main/assets")
+        }
+    }
 }
 
 ksp {

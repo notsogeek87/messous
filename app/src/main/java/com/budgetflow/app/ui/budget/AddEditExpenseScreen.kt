@@ -36,6 +36,8 @@ import com.budgetflow.app.ui.components.AmountField
 import com.budgetflow.app.ui.components.CategoryDropdown
 import com.budgetflow.app.ui.components.FrequencySelector
 import com.budgetflow.app.ui.components.ScheduleDetailsFields
+import com.budgetflow.app.ui.components.ServiceLogo
+import com.budgetflow.app.ui.components.ServiceSuggestionsPanel
 import com.budgetflow.app.ui.components.dailyEquivalent
 import com.budgetflow.app.ui.components.formatMoney
 import com.budgetflow.app.ui.components.monthlyEquivalent
@@ -49,7 +51,13 @@ import com.budgetflow.engine.model.Frequency
 fun AddEditExpenseScreen(expenseId: Long?, onDone: () -> Unit) {
     val viewModel: AddEditExpenseViewModel = viewModel(
         factory = simpleViewModelFactory {
-            AddEditExpenseViewModel(expenseId, ServiceLocator.recurringExpenseRepository, ServiceLocator.categoryRepository)
+            AddEditExpenseViewModel(
+                expenseId,
+                ServiceLocator.recurringExpenseRepository,
+                ServiceLocator.categoryRepository,
+                ServiceLocator.serviceCatalog,
+                ServiceLocator.serviceCategoryMatcher
+            )
         }
     )
     val state by viewModel.uiState.collectAsState()
@@ -78,13 +86,20 @@ fun AddEditExpenseScreen(expenseId: Long?, onDone: () -> Unit) {
                 modifier = Modifier.fillMaxWidth()
             )
 
-            OutlinedTextField(
-                value = state.label,
-                onValueChange = viewModel::updateLabel,
-                label = { Text(stringResource(R.string.budget_label_name)) },
-                placeholder = { Text(stringResource(R.string.budget_expense_label_hint)) },
-                modifier = Modifier.fillMaxWidth()
-            )
+            val recognizedService = state.recognizedService
+            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                OutlinedTextField(
+                    value = state.label,
+                    onValueChange = viewModel::updateLabel,
+                    label = { Text(stringResource(R.string.budget_label_name)) },
+                    placeholder = { Text(stringResource(R.string.budget_expense_label_hint)) },
+                    leadingIcon = if (recognizedService != null) {
+                        { ServiceLogo(service = recognizedService, size = 28.dp) }
+                    } else null,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                ServiceSuggestionsPanel(matches = state.suggestions, onSelect = viewModel::selectSuggestion)
+            }
 
             CategoryDropdown(
                 categories = state.categories,

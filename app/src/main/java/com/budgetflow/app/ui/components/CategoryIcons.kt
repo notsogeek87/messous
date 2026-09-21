@@ -2,23 +2,33 @@ package com.budgetflow.app.ui.components
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBalance
+import androidx.compose.material.icons.filled.Apps
+import androidx.compose.material.icons.filled.Article
 import androidx.compose.material.icons.filled.Bolt
 import androidx.compose.material.icons.filled.Celebration
 import androidx.compose.material.icons.filled.ChildCare
+import androidx.compose.material.icons.filled.Cloud
 import androidx.compose.material.icons.filled.DirectionsCar
 import androidx.compose.material.icons.filled.DirectionsRun
 import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.FitnessCenter
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.LocalGasStation
+import androidx.compose.material.icons.filled.MusicNote
 import androidx.compose.material.icons.filled.Movie
 import androidx.compose.material.icons.filled.Receipt
 import androidx.compose.material.icons.filled.Restaurant
 import androidx.compose.material.icons.filled.Savings
 import androidx.compose.material.icons.filled.School
+import androidx.compose.material.icons.filled.Shield
 import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material.icons.filled.SmartToy
+import androidx.compose.material.icons.filled.Smartphone
 import androidx.compose.material.icons.filled.SportsEsports
 import androidx.compose.material.icons.filled.Train
 import androidx.compose.material.icons.filled.TrendingUp
+import androidx.compose.material.icons.filled.WaterDrop
+import androidx.compose.material.icons.filled.Wifi
 import androidx.compose.material.icons.outlined.Category
 import androidx.compose.ui.graphics.vector.ImageVector
 
@@ -41,7 +51,19 @@ object CategoryIcons {
         "activity" to Icons.Filled.DirectionsCar,
         "savings" to Icons.Filled.Savings,
         "trending_up" to Icons.Filled.TrendingUp,
-        "bank" to Icons.Filled.AccountBalance
+        "bank" to Icons.Filled.AccountBalance,
+        // Added for the service recognition catalog (spec section 8, fallback level 2: category icon).
+        "music" to Icons.Filled.MusicNote,
+        "ai" to Icons.Filled.SmartToy,
+        "cloud" to Icons.Filled.Cloud,
+        "software" to Icons.Filled.Apps,
+        "phone" to Icons.Filled.Smartphone,
+        "wifi" to Icons.Filled.Wifi,
+        "water" to Icons.Filled.WaterDrop,
+        "shield" to Icons.Filled.Shield,
+        "car" to Icons.Filled.DirectionsCar,
+        "fitness" to Icons.Filled.FitnessCenter,
+        "newspaper" to Icons.Filled.Article
     )
 
     val availableKeys: List<String> = map.keys.toList()

@@ -11,6 +11,8 @@ import com.budgetflow.app.data.repository.RecurringExpenseRepositoryImpl
 import com.budgetflow.app.data.repository.SavingsGoalRepositoryImpl
 import com.budgetflow.app.data.repository.TransactionRepositoryImpl
 import com.budgetflow.app.data.repository.VariableBudgetRepositoryImpl
+import com.budgetflow.app.data.services.ServiceCategoryMatcher
+import com.budgetflow.app.data.services.loadServiceCatalogFromAssets
 import com.budgetflow.app.domain.repository.AccountRepository
 import com.budgetflow.app.domain.repository.BackupRepository
 import com.budgetflow.app.domain.repository.CategoryRepository
@@ -55,6 +57,10 @@ object ServiceLocator {
     val transactionRepository: TransactionRepository by lazy { TransactionRepositoryImpl(database.transactionDao()) }
     val savingsGoalRepository: SavingsGoalRepository by lazy { SavingsGoalRepositoryImpl(database.savingsGoalDao()) }
     val backupRepository: BackupRepository by lazy { BackupRepositoryImpl(database) }
+
+    /** The local, offline service catalog (Netflix, Spotify, EDF, ...) bundled in assets/services.json. */
+    val serviceCatalog by lazy { loadServiceCatalogFromAssets(appContext) }
+    val serviceCategoryMatcher: ServiceCategoryMatcher by lazy { ServiceCategoryMatcher(categoryRepository) }
 
     val dashboardUseCase: GetDashboardForMonthUseCase by lazy {
         GetDashboardForMonthUseCase(

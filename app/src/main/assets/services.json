@@ -1,0 +1,3510 @@
+{
+  "services": [
+    {
+      "id": "netflix",
+      "name": "Netflix",
+      "aliases": [
+        "nflx",
+        "netflix.com"
+      ],
+      "category": "Streaming",
+      "subCategory": "Vidéo",
+      "type": "expense",
+      "icon": "netflix",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "disney",
+      "name": "Disney+",
+      "aliases": [
+        "disney",
+        "disney plus"
+      ],
+      "category": "Streaming",
+      "subCategory": "Vidéo",
+      "type": "expense",
+      "icon": "disneyplus",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "amazon_prime_video",
+      "name": "Amazon Prime Video",
+      "aliases": [
+        "prime video",
+        "primevideo"
+      ],
+      "category": "Streaming",
+      "subCategory": "Vidéo",
+      "type": "expense",
+      "icon": "primevideo",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "max",
+      "name": "Max",
+      "aliases": [
+        "hbo max",
+        "hbomax"
+      ],
+      "category": "Streaming",
+      "subCategory": "Vidéo",
+      "type": "expense",
+      "icon": "hbomax",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "paramount",
+      "name": "Paramount+",
+      "aliases": [
+        "paramount plus"
+      ],
+      "category": "Streaming",
+      "subCategory": "Vidéo",
+      "type": "expense",
+      "icon": "paramountplus",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "apple_tv",
+      "name": "Apple TV+",
+      "aliases": [
+        "apple tv",
+        "appletv"
+      ],
+      "category": "Streaming",
+      "subCategory": "Vidéo",
+      "type": "expense",
+      "icon": "appletvplus",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "canal",
+      "name": "Canal+",
+      "aliases": [
+        "canal plus",
+        "canalplus"
+      ],
+      "category": "Streaming",
+      "subCategory": "Vidéo",
+      "type": "expense",
+      "icon": "canalplus",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "ocs",
+      "name": "OCS",
+      "aliases": [
+        "orange cinema series"
+      ],
+      "category": "Streaming",
+      "subCategory": "Vidéo",
+      "type": "expense",
+      "icon": "ocs",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "molotov",
+      "name": "Molotov",
+      "aliases": [],
+      "category": "Streaming",
+      "subCategory": "Vidéo",
+      "type": "expense",
+      "icon": "molotov",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "mycanal",
+      "name": "myCANAL",
+      "aliases": [
+        "mycanal",
+        "my canal"
+      ],
+      "category": "Streaming",
+      "subCategory": "Vidéo",
+      "type": "expense",
+      "icon": "mycanal",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "france_tv",
+      "name": "France.tv",
+      "aliases": [
+        "francetv",
+        "france tv"
+      ],
+      "category": "Streaming",
+      "subCategory": "Vidéo",
+      "type": "expense",
+      "icon": "francetv",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "m6",
+      "name": "M6+",
+      "aliases": [
+        "m6 plus",
+        "m6plus"
+      ],
+      "category": "Streaming",
+      "subCategory": "Vidéo",
+      "type": "expense",
+      "icon": "m6plus",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "tf1",
+      "name": "TF1+",
+      "aliases": [
+        "tf1 plus",
+        "tf1plus"
+      ],
+      "category": "Streaming",
+      "subCategory": "Vidéo",
+      "type": "expense",
+      "icon": "tf1plus",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "crunchyroll",
+      "name": "Crunchyroll",
+      "aliases": [],
+      "category": "Streaming",
+      "subCategory": "Animation",
+      "type": "expense",
+      "icon": "crunchyroll",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "youtube_premium",
+      "name": "YouTube Premium",
+      "aliases": [
+        "yt premium"
+      ],
+      "category": "Streaming",
+      "subCategory": "Vidéo",
+      "type": "expense",
+      "icon": "youtubepremium",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "dazn",
+      "name": "DAZN",
+      "aliases": [],
+      "category": "Streaming",
+      "subCategory": "Sport",
+      "type": "expense",
+      "icon": "dazn",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "bein_sports",
+      "name": "beIN SPORTS",
+      "aliases": [
+        "bein sports",
+        "beinsports"
+      ],
+      "category": "Streaming",
+      "subCategory": "Sport",
+      "type": "expense",
+      "icon": "beinsports",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "eurosport",
+      "name": "Eurosport",
+      "aliases": [],
+      "category": "Streaming",
+      "subCategory": "Sport",
+      "type": "expense",
+      "icon": "eurosport",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "rmc_sport",
+      "name": "RMC Sport",
+      "aliases": [
+        "rmcsport"
+      ],
+      "category": "Streaming",
+      "subCategory": "Sport",
+      "type": "expense",
+      "icon": "rmcsport",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "ligue_1",
+      "name": "Ligue 1+",
+      "aliases": [
+        "ligue 1 plus",
+        "ligue1"
+      ],
+      "category": "Streaming",
+      "subCategory": "Sport",
+      "type": "expense",
+      "icon": "ligue1plus",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "spotify",
+      "name": "Spotify",
+      "aliases": [
+        "spotify premium"
+      ],
+      "category": "Musique",
+      "subCategory": "Audio",
+      "type": "expense",
+      "icon": "spotify",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "deezer",
+      "name": "Deezer",
+      "aliases": [],
+      "category": "Musique",
+      "subCategory": "Audio",
+      "type": "expense",
+      "icon": "deezer",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "apple_music",
+      "name": "Apple Music",
+      "aliases": [],
+      "category": "Musique",
+      "subCategory": "Audio",
+      "type": "expense",
+      "icon": "applemusic",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "youtube_music",
+      "name": "YouTube Music",
+      "aliases": [
+        "yt music"
+      ],
+      "category": "Musique",
+      "subCategory": "Audio",
+      "type": "expense",
+      "icon": "youtubemusic",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "amazon_music",
+      "name": "Amazon Music",
+      "aliases": [],
+      "category": "Musique",
+      "subCategory": "Audio",
+      "type": "expense",
+      "icon": "amazonmusic",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "tidal",
+      "name": "Tidal",
+      "aliases": [],
+      "category": "Musique",
+      "subCategory": "Audio",
+      "type": "expense",
+      "icon": "tidal",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "qobuz",
+      "name": "Qobuz",
+      "aliases": [],
+      "category": "Musique",
+      "subCategory": "Audio",
+      "type": "expense",
+      "icon": "qobuz",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "soundcloud",
+      "name": "SoundCloud",
+      "aliases": [],
+      "category": "Musique",
+      "subCategory": "Audio",
+      "type": "expense",
+      "icon": "soundcloud",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "audible",
+      "name": "Audible",
+      "aliases": [
+        "amazon audible"
+      ],
+      "category": "Musique",
+      "subCategory": "Livre audio",
+      "type": "expense",
+      "icon": "audible",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "kobo_plus",
+      "name": "Kobo Plus",
+      "aliases": [
+        "koboplus"
+      ],
+      "category": "Musique",
+      "subCategory": "Livre audio",
+      "type": "expense",
+      "icon": "kobo",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "storytel",
+      "name": "Storytel",
+      "aliases": [],
+      "category": "Musique",
+      "subCategory": "Livre audio",
+      "type": "expense",
+      "icon": "storytel",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "calm",
+      "name": "Calm",
+      "aliases": [],
+      "category": "Musique",
+      "subCategory": "Bien-être",
+      "type": "expense",
+      "icon": "calm",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "headspace",
+      "name": "Headspace",
+      "aliases": [],
+      "category": "Musique",
+      "subCategory": "Bien-être",
+      "type": "expense",
+      "icon": "headspace",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "chatgpt",
+      "name": "ChatGPT",
+      "aliases": [
+        "chat gpt",
+        "openai"
+      ],
+      "category": "IA",
+      "subCategory": "Assistant",
+      "type": "expense",
+      "icon": "chatgpt",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "claude",
+      "name": "Claude",
+      "aliases": [
+        "anthropic"
+      ],
+      "category": "IA",
+      "subCategory": "Assistant",
+      "type": "expense",
+      "icon": "claude",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "gemini",
+      "name": "Gemini",
+      "aliases": [
+        "google gemini",
+        "bard"
+      ],
+      "category": "IA",
+      "subCategory": "Assistant",
+      "type": "expense",
+      "icon": "gemini",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "perplexity",
+      "name": "Perplexity",
+      "aliases": [
+        "perplexity ai"
+      ],
+      "category": "IA",
+      "subCategory": "Recherche",
+      "type": "expense",
+      "icon": "perplexity",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "microsoft_copilot",
+      "name": "Microsoft Copilot",
+      "aliases": [
+        "copilot",
+        "ms copilot"
+      ],
+      "category": "IA",
+      "subCategory": "Assistant",
+      "type": "expense",
+      "icon": "copilot",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "grok",
+      "name": "Grok",
+      "aliases": [
+        "grok ai",
+        "xai"
+      ],
+      "category": "IA",
+      "subCategory": "Assistant",
+      "type": "expense",
+      "icon": "grok",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "midjourney",
+      "name": "Midjourney",
+      "aliases": [],
+      "category": "IA",
+      "subCategory": "Image",
+      "type": "expense",
+      "icon": "midjourney",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "runway",
+      "name": "Runway",
+      "aliases": [
+        "runwayml"
+      ],
+      "category": "IA",
+      "subCategory": "Vidéo",
+      "type": "expense",
+      "icon": "runway",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "elevenlabs",
+      "name": "ElevenLabs",
+      "aliases": [
+        "eleven labs"
+      ],
+      "category": "IA",
+      "subCategory": "Audio",
+      "type": "expense",
+      "icon": "elevenlabs",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "canva",
+      "name": "Canva",
+      "aliases": [],
+      "category": "IA",
+      "subCategory": "Design",
+      "type": "expense",
+      "icon": "canva",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "mistral",
+      "name": "Mistral",
+      "aliases": [
+        "mistral ai",
+        "le chat"
+      ],
+      "category": "IA",
+      "subCategory": "Assistant",
+      "type": "expense",
+      "icon": "mistral",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "google_one",
+      "name": "Google One",
+      "aliases": [
+        "googleone",
+        "google drive"
+      ],
+      "category": "Cloud",
+      "subCategory": "Stockage",
+      "type": "expense",
+      "icon": "googleone",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "icloud",
+      "name": "iCloud+",
+      "aliases": [
+        "icloud",
+        "icloud plus"
+      ],
+      "category": "Cloud",
+      "subCategory": "Stockage",
+      "type": "expense",
+      "icon": "icloud",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "onedrive",
+      "name": "OneDrive",
+      "aliases": [],
+      "category": "Cloud",
+      "subCategory": "Stockage",
+      "type": "expense",
+      "icon": "onedrive",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "dropbox",
+      "name": "Dropbox",
+      "aliases": [],
+      "category": "Cloud",
+      "subCategory": "Stockage",
+      "type": "expense",
+      "icon": "dropbox",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "pcloud",
+      "name": "pCloud",
+      "aliases": [],
+      "category": "Cloud",
+      "subCategory": "Stockage",
+      "type": "expense",
+      "icon": "pcloud",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "proton_drive",
+      "name": "Proton Drive",
+      "aliases": [
+        "protondrive"
+      ],
+      "category": "Cloud",
+      "subCategory": "Stockage",
+      "type": "expense",
+      "icon": "protondrive",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "kdrive",
+      "name": "kDrive",
+      "aliases": [
+        "infomaniak kdrive"
+      ],
+      "category": "Cloud",
+      "subCategory": "Stockage",
+      "type": "expense",
+      "icon": "kdrive",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "nordlocker",
+      "name": "NordLocker",
+      "aliases": [],
+      "category": "Cloud",
+      "subCategory": "Stockage",
+      "type": "expense",
+      "icon": "nordlocker",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "mega",
+      "name": "MEGA",
+      "aliases": [],
+      "category": "Cloud",
+      "subCategory": "Stockage",
+      "type": "expense",
+      "icon": "mega",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "box",
+      "name": "Box",
+      "aliases": [],
+      "category": "Cloud",
+      "subCategory": "Stockage",
+      "type": "expense",
+      "icon": "box",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "sync_com",
+      "name": "Sync.com",
+      "aliases": [
+        "synccom",
+        "sync com"
+      ],
+      "category": "Cloud",
+      "subCategory": "Stockage",
+      "type": "expense",
+      "icon": "synccom",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "tresorit",
+      "name": "Tresorit",
+      "aliases": [],
+      "category": "Cloud",
+      "subCategory": "Stockage",
+      "type": "expense",
+      "icon": "tresorit",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "microsoft_365",
+      "name": "Microsoft 365",
+      "aliases": [
+        "office 365",
+        "ms office"
+      ],
+      "category": "Logiciels",
+      "subCategory": "Bureautique",
+      "type": "expense",
+      "icon": "microsoft365",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "adobe_creative_cloud",
+      "name": "Adobe Creative Cloud",
+      "aliases": [
+        "adobe cc",
+        "adobecc"
+      ],
+      "category": "Logiciels",
+      "subCategory": "Créatif",
+      "type": "expense",
+      "icon": "adobecc",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "adobe_acrobat",
+      "name": "Adobe Acrobat",
+      "aliases": [],
+      "category": "Logiciels",
+      "subCategory": "Bureautique",
+      "type": "expense",
+      "icon": "adobeacrobat",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "canva_pro",
+      "name": "Canva Pro",
+      "aliases": [
+        "canvapro"
+      ],
+      "category": "Logiciels",
+      "subCategory": "Design",
+      "type": "expense",
+      "icon": "canva",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "figma",
+      "name": "Figma",
+      "aliases": [],
+      "category": "Logiciels",
+      "subCategory": "Design",
+      "type": "expense",
+      "icon": "figma",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "notion",
+      "name": "Notion",
+      "aliases": [],
+      "category": "Logiciels",
+      "subCategory": "Productivité",
+      "type": "expense",
+      "icon": "notion",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "evernote",
+      "name": "Evernote",
+      "aliases": [],
+      "category": "Logiciels",
+      "subCategory": "Productivité",
+      "type": "expense",
+      "icon": "evernote",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "todoist",
+      "name": "Todoist",
+      "aliases": [],
+      "category": "Logiciels",
+      "subCategory": "Productivité",
+      "type": "expense",
+      "icon": "todoist",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "1password",
+      "name": "1Password",
+      "aliases": [],
+      "category": "Logiciels",
+      "subCategory": "Sécurité",
+      "type": "expense",
+      "icon": "1password",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "bitwarden",
+      "name": "Bitwarden",
+      "aliases": [],
+      "category": "Logiciels",
+      "subCategory": "Sécurité",
+      "type": "expense",
+      "icon": "bitwarden",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "dashlane",
+      "name": "Dashlane",
+      "aliases": [],
+      "category": "Logiciels",
+      "subCategory": "Sécurité",
+      "type": "expense",
+      "icon": "dashlane",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "nordvpn",
+      "name": "NordVPN",
+      "aliases": [],
+      "category": "Logiciels",
+      "subCategory": "VPN",
+      "type": "expense",
+      "icon": "nordvpn",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "proton_vpn",
+      "name": "Proton VPN",
+      "aliases": [
+        "protonvpn"
+      ],
+      "category": "Logiciels",
+      "subCategory": "VPN",
+      "type": "expense",
+      "icon": "protonvpn",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "expressvpn",
+      "name": "ExpressVPN",
+      "aliases": [],
+      "category": "Logiciels",
+      "subCategory": "VPN",
+      "type": "expense",
+      "icon": "expressvpn",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "surfshark",
+      "name": "Surfshark",
+      "aliases": [],
+      "category": "Logiciels",
+      "subCategory": "VPN",
+      "type": "expense",
+      "icon": "surfshark",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "mullvad",
+      "name": "Mullvad",
+      "aliases": [],
+      "category": "Logiciels",
+      "subCategory": "VPN",
+      "type": "expense",
+      "icon": "mullvad",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "grammarly",
+      "name": "Grammarly",
+      "aliases": [],
+      "category": "Logiciels",
+      "subCategory": "Écriture",
+      "type": "expense",
+      "icon": "grammarly",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "github_copilot",
+      "name": "GitHub Copilot",
+      "aliases": [
+        "githubcopilot"
+      ],
+      "category": "Logiciels",
+      "subCategory": "Développement",
+      "type": "expense",
+      "icon": "githubcopilot",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "jetbrains",
+      "name": "JetBrains",
+      "aliases": [
+        "jetbrains all products"
+      ],
+      "category": "Logiciels",
+      "subCategory": "Développement",
+      "type": "expense",
+      "icon": "jetbrains",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "autodesk",
+      "name": "Autodesk",
+      "aliases": [],
+      "category": "Logiciels",
+      "subCategory": "Créatif",
+      "type": "expense",
+      "icon": "autodesk",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "freepik",
+      "name": "Freepik",
+      "aliases": [],
+      "category": "Logiciels",
+      "subCategory": "Design",
+      "type": "expense",
+      "icon": "freepik",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "xbox_game_pass",
+      "name": "Xbox Game Pass",
+      "aliases": [
+        "gamepass"
+      ],
+      "category": "Jeux",
+      "subCategory": "Abonnement jeux",
+      "type": "expense",
+      "icon": "xboxgamepass",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "playstation_plus",
+      "name": "PlayStation Plus",
+      "aliases": [
+        "ps plus",
+        "psplus"
+      ],
+      "category": "Jeux",
+      "subCategory": "Abonnement jeux",
+      "type": "expense",
+      "icon": "psplus",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "nintendo_switch_online",
+      "name": "Nintendo Switch Online",
+      "aliases": [
+        "switch online"
+      ],
+      "category": "Jeux",
+      "subCategory": "Abonnement jeux",
+      "type": "expense",
+      "icon": "nintendoswitchonline",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "ea_play",
+      "name": "EA Play",
+      "aliases": [],
+      "category": "Jeux",
+      "subCategory": "Abonnement jeux",
+      "type": "expense",
+      "icon": "eaplay",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "ubisoft",
+      "name": "Ubisoft+",
+      "aliases": [
+        "ubisoft plus",
+        "ubisoftplus"
+      ],
+      "category": "Jeux",
+      "subCategory": "Abonnement jeux",
+      "type": "expense",
+      "icon": "ubisoftplus",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "geforce_now",
+      "name": "GeForce NOW",
+      "aliases": [
+        "geforcenow"
+      ],
+      "category": "Jeux",
+      "subCategory": "Cloud gaming",
+      "type": "expense",
+      "icon": "geforcenow",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "shadow",
+      "name": "Shadow",
+      "aliases": [],
+      "category": "Jeux",
+      "subCategory": "Cloud gaming",
+      "type": "expense",
+      "icon": "shadow",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "apple_arcade",
+      "name": "Apple Arcade",
+      "aliases": [],
+      "category": "Jeux",
+      "subCategory": "Abonnement jeux",
+      "type": "expense",
+      "icon": "applearcade",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "google_play_pass",
+      "name": "Google Play Pass",
+      "aliases": [
+        "play pass"
+      ],
+      "category": "Jeux",
+      "subCategory": "Abonnement jeux",
+      "type": "expense",
+      "icon": "googleplaypass",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "amazon_luna",
+      "name": "Amazon Luna",
+      "aliases": [],
+      "category": "Jeux",
+      "subCategory": "Cloud gaming",
+      "type": "expense",
+      "icon": "amazonluna",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "roblox_premium",
+      "name": "Roblox Premium",
+      "aliases": [
+        "roblox"
+      ],
+      "category": "Jeux",
+      "subCategory": "Jeu en ligne",
+      "type": "expense",
+      "icon": "roblox",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "world_of_warcraft",
+      "name": "World of Warcraft",
+      "aliases": [
+        "wow"
+      ],
+      "category": "Jeux",
+      "subCategory": "Jeu en ligne",
+      "type": "expense",
+      "icon": "wow",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "final_fantasy_xiv",
+      "name": "Final Fantasy XIV",
+      "aliases": [
+        "ffxiv"
+      ],
+      "category": "Jeux",
+      "subCategory": "Jeu en ligne",
+      "type": "expense",
+      "icon": "ffxiv",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "eso",
+      "name": "ESO",
+      "aliases": [
+        "elder scrolls online"
+      ],
+      "category": "Jeux",
+      "subCategory": "Jeu en ligne",
+      "type": "expense",
+      "icon": "eso",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "minecraft_realms",
+      "name": "Minecraft Realms",
+      "aliases": [
+        "minecraft"
+      ],
+      "category": "Jeux",
+      "subCategory": "Jeu en ligne",
+      "type": "expense",
+      "icon": "minecraft",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "orange",
+      "name": "Orange",
+      "aliases": [
+        "orange france"
+      ],
+      "category": "Télécom",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "orange",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "sosh",
+      "name": "Sosh",
+      "aliases": [],
+      "category": "Télécom",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "sosh",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "sfr",
+      "name": "SFR",
+      "aliases": [],
+      "category": "Télécom",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "sfr",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "red_by_sfr",
+      "name": "RED by SFR",
+      "aliases": [
+        "red sfr",
+        "red by sfr"
+      ],
+      "category": "Télécom",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "sfr",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "bouygues_telecom",
+      "name": "Bouygues Telecom",
+      "aliases": [
+        "bouygues"
+      ],
+      "category": "Télécom",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "bouygues",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "b_you",
+      "name": "B&You",
+      "aliases": [
+        "b and you",
+        "byou"
+      ],
+      "category": "Télécom",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "bouygues",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "free_mobile",
+      "name": "Free Mobile",
+      "aliases": [
+        "free",
+        "forfait free"
+      ],
+      "category": "Télécom",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "free",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "lebara",
+      "name": "Lebara",
+      "aliases": [],
+      "category": "Télécom",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "lebara",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "lycamobile",
+      "name": "Lycamobile",
+      "aliases": [],
+      "category": "Télécom",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "lycamobile",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "prixtel",
+      "name": "Prixtel",
+      "aliases": [],
+      "category": "Télécom",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "prixtel",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "nrj_mobile",
+      "name": "NRJ Mobile",
+      "aliases": [
+        "nrjmobile"
+      ],
+      "category": "Télécom",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "nrjmobile",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "auchan_telecom",
+      "name": "Auchan Telecom",
+      "aliases": [],
+      "category": "Télécom",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "auchantelecom",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "cdiscount_mobile",
+      "name": "Cdiscount Mobile",
+      "aliases": [],
+      "category": "Télécom",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "cdiscountmobile",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "la_poste_mobile",
+      "name": "La Poste Mobile",
+      "aliases": [
+        "lapostemobile"
+      ],
+      "category": "Télécom",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "lapostemobile",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "youprice",
+      "name": "YouPrice",
+      "aliases": [],
+      "category": "Télécom",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "youprice",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "syma_mobile",
+      "name": "Syma Mobile",
+      "aliases": [
+        "symamobile"
+      ],
+      "category": "Télécom",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "symamobile",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "coriolis",
+      "name": "Coriolis",
+      "aliases": [
+        "coriolis telecom"
+      ],
+      "category": "Télécom",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "coriolis",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "orange_livebox",
+      "name": "Orange Livebox",
+      "aliases": [
+        "livebox"
+      ],
+      "category": "Internet",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "orange",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "sfr_box",
+      "name": "SFR Box",
+      "aliases": [],
+      "category": "Internet",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "sfr",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "bouygues_bbox",
+      "name": "Bouygues Bbox",
+      "aliases": [
+        "bbox"
+      ],
+      "category": "Internet",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "bouygues",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "freebox",
+      "name": "Freebox",
+      "aliases": [],
+      "category": "Internet",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "free",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "red_box",
+      "name": "RED Box",
+      "aliases": [
+        "redbox"
+      ],
+      "category": "Internet",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "sfr",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "sosh_box",
+      "name": "Sosh Box",
+      "aliases": [
+        "soshbox"
+      ],
+      "category": "Internet",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "sosh",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "nordnet",
+      "name": "Nordnet",
+      "aliases": [],
+      "category": "Internet",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "nordnet",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "starlink",
+      "name": "Starlink",
+      "aliases": [],
+      "category": "Internet",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "starlink",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "edf",
+      "name": "EDF",
+      "aliases": [
+        "edf particulier"
+      ],
+      "category": "Énergie",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "edf",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "engie",
+      "name": "Engie",
+      "aliases": [],
+      "category": "Énergie",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "engie",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "totalenergies",
+      "name": "TotalEnergies",
+      "aliases": [
+        "total energies",
+        "total direct energie"
+      ],
+      "category": "Énergie",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "totalenergies",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "eni",
+      "name": "Eni",
+      "aliases": [],
+      "category": "Énergie",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "eni",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "octopus_energy",
+      "name": "Octopus Energy",
+      "aliases": [
+        "octopusenergy"
+      ],
+      "category": "Énergie",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "octopusenergy",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "mint_energie",
+      "name": "Mint Énergie",
+      "aliases": [
+        "mint energie"
+      ],
+      "category": "Énergie",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "mintenergie",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "enercoop",
+      "name": "Enercoop",
+      "aliases": [],
+      "category": "Énergie",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "enercoop",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "ilek",
+      "name": "ilek",
+      "aliases": [],
+      "category": "Énergie",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "ilek",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "vattenfall",
+      "name": "Vattenfall",
+      "aliases": [],
+      "category": "Énergie",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "vattenfall",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "happ_e",
+      "name": "happ-e",
+      "aliases": [
+        "happe",
+        "happ e"
+      ],
+      "category": "Énergie",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "happe",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "ohm_energie",
+      "name": "OHM Énergie",
+      "aliases": [
+        "ohm energie"
+      ],
+      "category": "Énergie",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "ohmenergie",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "alpiq",
+      "name": "Alpiq",
+      "aliases": [],
+      "category": "Énergie",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "alpiq",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "primeo",
+      "name": "Primeo",
+      "aliases": [
+        "primeo energie"
+      ],
+      "category": "Énergie",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "primeo",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "alterna",
+      "name": "Alterna",
+      "aliases": [],
+      "category": "Énergie",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "alterna",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "ekwateur",
+      "name": "ekWateur",
+      "aliases": [
+        "ekwateur"
+      ],
+      "category": "Énergie",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "ekwateur",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "veolia",
+      "name": "Veolia",
+      "aliases": [],
+      "category": "Eau",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "veolia",
+      "defaultFrequency": null,
+      "country": "FR"
+    },
+    {
+      "id": "suez",
+      "name": "Suez",
+      "aliases": [],
+      "category": "Eau",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "suez",
+      "defaultFrequency": null,
+      "country": "FR"
+    },
+    {
+      "id": "saur",
+      "name": "SAUR",
+      "aliases": [],
+      "category": "Eau",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "saur",
+      "defaultFrequency": null,
+      "country": "FR"
+    },
+    {
+      "id": "eau_de_paris",
+      "name": "Eau de Paris",
+      "aliases": [
+        "eaudeparis"
+      ],
+      "category": "Eau",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "eaudeparis",
+      "defaultFrequency": null,
+      "country": "FR"
+    },
+    {
+      "id": "axa",
+      "name": "AXA",
+      "aliases": [],
+      "category": "Assurances",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "axa",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "allianz",
+      "name": "Allianz",
+      "aliases": [],
+      "category": "Assurances",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "allianz",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "generali",
+      "name": "Generali",
+      "aliases": [],
+      "category": "Assurances",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "generali",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "maif",
+      "name": "MAIF",
+      "aliases": [],
+      "category": "Assurances",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "maif",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "macif",
+      "name": "MACIF",
+      "aliases": [],
+      "category": "Assurances",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "macif",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "matmut",
+      "name": "Matmut",
+      "aliases": [],
+      "category": "Assurances",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "matmut",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "groupama",
+      "name": "Groupama",
+      "aliases": [],
+      "category": "Assurances",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "groupama",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "maaf",
+      "name": "MAAF",
+      "aliases": [],
+      "category": "Assurances",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "maaf",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "mma",
+      "name": "MMA",
+      "aliases": [],
+      "category": "Assurances",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "mma",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "gmf",
+      "name": "GMF",
+      "aliases": [],
+      "category": "Assurances",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "gmf",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "direct_assurance",
+      "name": "Direct Assurance",
+      "aliases": [
+        "directassurance"
+      ],
+      "category": "Assurances",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "directassurance",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "abeille",
+      "name": "Abeille",
+      "aliases": [
+        "abeille assurances"
+      ],
+      "category": "Assurances",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "abeille",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "credit_agricole_assurances",
+      "name": "Crédit Agricole Assurances",
+      "aliases": [
+        "ca assurances"
+      ],
+      "category": "Assurances",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "creditagricole",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "bnp_paribas_cardif",
+      "name": "BNP Paribas Cardif",
+      "aliases": [
+        "cardif"
+      ],
+      "category": "Assurances",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "bnpparibas",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "cnp",
+      "name": "CNP",
+      "aliases": [
+        "cnp assurances"
+      ],
+      "category": "Assurances",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "cnp",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "swiss_life",
+      "name": "Swiss Life",
+      "aliases": [
+        "swisslife"
+      ],
+      "category": "Assurances",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "swisslife",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "april",
+      "name": "April",
+      "aliases": [],
+      "category": "Assurances",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "april",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "alan",
+      "name": "Alan",
+      "aliases": [],
+      "category": "Assurances",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "alan",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "credit_agricole",
+      "name": "Crédit Agricole",
+      "aliases": [
+        "ca",
+        "credit agricole"
+      ],
+      "category": "Banques",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "creditagricole",
+      "defaultFrequency": null,
+      "country": "FR"
+    },
+    {
+      "id": "credit_mutuel",
+      "name": "Crédit Mutuel",
+      "aliases": [
+        "cm",
+        "credit mutuel"
+      ],
+      "category": "Banques",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "creditmutuel",
+      "defaultFrequency": null,
+      "country": "FR"
+    },
+    {
+      "id": "cic",
+      "name": "CIC",
+      "aliases": [],
+      "category": "Banques",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "cic",
+      "defaultFrequency": null,
+      "country": "FR"
+    },
+    {
+      "id": "bnp_paribas",
+      "name": "BNP Paribas",
+      "aliases": [
+        "bnp"
+      ],
+      "category": "Banques",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "bnpparibas",
+      "defaultFrequency": null,
+      "country": "FR"
+    },
+    {
+      "id": "societe_generale",
+      "name": "Société Générale",
+      "aliases": [
+        "sg",
+        "societe generale"
+      ],
+      "category": "Banques",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "societegenerale",
+      "defaultFrequency": null,
+      "country": "FR"
+    },
+    {
+      "id": "banque_populaire",
+      "name": "Banque Populaire",
+      "aliases": [
+        "bp"
+      ],
+      "category": "Banques",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "banquepopulaire",
+      "defaultFrequency": null,
+      "country": "FR"
+    },
+    {
+      "id": "caisse_d_epargne",
+      "name": "Caisse d'Épargne",
+      "aliases": [
+        "caisse depargne"
+      ],
+      "category": "Banques",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "caissedepargne",
+      "defaultFrequency": null,
+      "country": "FR"
+    },
+    {
+      "id": "la_banque_postale",
+      "name": "La Banque Postale",
+      "aliases": [
+        "banque postale"
+      ],
+      "category": "Banques",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "labanquepostale",
+      "defaultFrequency": null,
+      "country": "FR"
+    },
+    {
+      "id": "lcl",
+      "name": "LCL",
+      "aliases": [],
+      "category": "Banques",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "lcl",
+      "defaultFrequency": null,
+      "country": "FR"
+    },
+    {
+      "id": "boursobank",
+      "name": "BoursoBank",
+      "aliases": [
+        "boursorama"
+      ],
+      "category": "Banques",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "boursobank",
+      "defaultFrequency": null,
+      "country": "FR"
+    },
+    {
+      "id": "fortuneo",
+      "name": "Fortuneo",
+      "aliases": [],
+      "category": "Banques",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "fortuneo",
+      "defaultFrequency": null,
+      "country": "FR"
+    },
+    {
+      "id": "hello_bank",
+      "name": "Hello bank!",
+      "aliases": [
+        "hellobank",
+        "hello bank"
+      ],
+      "category": "Banques",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "hellobank",
+      "defaultFrequency": null,
+      "country": "FR"
+    },
+    {
+      "id": "monabanq",
+      "name": "Monabanq",
+      "aliases": [],
+      "category": "Banques",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "monabanq",
+      "defaultFrequency": null,
+      "country": "FR"
+    },
+    {
+      "id": "revolut",
+      "name": "Revolut",
+      "aliases": [],
+      "category": "Banques",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "revolut",
+      "defaultFrequency": null,
+      "country": "FR"
+    },
+    {
+      "id": "n26",
+      "name": "N26",
+      "aliases": [],
+      "category": "Banques",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "n26",
+      "defaultFrequency": null,
+      "country": "FR"
+    },
+    {
+      "id": "nickel",
+      "name": "Nickel",
+      "aliases": [
+        "compte nickel"
+      ],
+      "category": "Banques",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "nickel",
+      "defaultFrequency": null,
+      "country": "FR"
+    },
+    {
+      "id": "lydia",
+      "name": "Lydia",
+      "aliases": [],
+      "category": "Banques",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "lydia",
+      "defaultFrequency": null,
+      "country": "FR"
+    },
+    {
+      "id": "trade_republic",
+      "name": "Trade Republic",
+      "aliases": [
+        "traderepublic"
+      ],
+      "category": "Banques",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "traderepublic",
+      "defaultFrequency": null,
+      "country": "FR"
+    },
+    {
+      "id": "bforbank",
+      "name": "BforBank",
+      "aliases": [
+        "bfor bank"
+      ],
+      "category": "Banques",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "bforbank",
+      "defaultFrequency": null,
+      "country": "FR"
+    },
+    {
+      "id": "tesla",
+      "name": "Tesla",
+      "aliases": [
+        "tesla supercharging"
+      ],
+      "category": "Automobile",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "tesla",
+      "defaultFrequency": null,
+      "country": "FR"
+    },
+    {
+      "id": "chargemap",
+      "name": "Chargemap",
+      "aliases": [],
+      "category": "Automobile",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "chargemap",
+      "defaultFrequency": null,
+      "country": "FR"
+    },
+    {
+      "id": "fulli",
+      "name": "Fulli",
+      "aliases": [],
+      "category": "Automobile",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "fulli",
+      "defaultFrequency": null,
+      "country": "FR"
+    },
+    {
+      "id": "ulys",
+      "name": "Ulys",
+      "aliases": [
+        "ulys vinci"
+      ],
+      "category": "Automobile",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "ulys",
+      "defaultFrequency": null,
+      "country": "FR"
+    },
+    {
+      "id": "bip_go",
+      "name": "Bip&Go",
+      "aliases": [
+        "bip and go",
+        "bipandgo"
+      ],
+      "category": "Automobile",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "bipandgo",
+      "defaultFrequency": null,
+      "country": "FR"
+    },
+    {
+      "id": "aprr",
+      "name": "APRR",
+      "aliases": [],
+      "category": "Automobile",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "aprr",
+      "defaultFrequency": null,
+      "country": "FR"
+    },
+    {
+      "id": "vinci_autoroutes",
+      "name": "VINCI Autoroutes",
+      "aliases": [
+        "vinci autoroutes"
+      ],
+      "category": "Automobile",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "vinciautoroutes",
+      "defaultFrequency": null,
+      "country": "FR"
+    },
+    {
+      "id": "ionity",
+      "name": "Ionity",
+      "aliases": [],
+      "category": "Automobile",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "ionity",
+      "defaultFrequency": null,
+      "country": "FR"
+    },
+    {
+      "id": "fastned",
+      "name": "Fastned",
+      "aliases": [],
+      "category": "Automobile",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "fastned",
+      "defaultFrequency": null,
+      "country": "FR"
+    },
+    {
+      "id": "electra",
+      "name": "Electra",
+      "aliases": [],
+      "category": "Automobile",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "electra",
+      "defaultFrequency": null,
+      "country": "FR"
+    },
+    {
+      "id": "sncf",
+      "name": "SNCF",
+      "aliases": [
+        "sncf connect"
+      ],
+      "category": "Transport",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "sncf",
+      "defaultFrequency": null,
+      "country": "FR"
+    },
+    {
+      "id": "tgv_inoui",
+      "name": "TGV INOUI",
+      "aliases": [
+        "tgvinoui"
+      ],
+      "category": "Transport",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "sncf",
+      "defaultFrequency": null,
+      "country": "FR"
+    },
+    {
+      "id": "ouigo",
+      "name": "OUIGO",
+      "aliases": [
+        "ouigo train"
+      ],
+      "category": "Transport",
+      "subCategory": "Train",
+      "type": "expense",
+      "icon": "ouigo",
+      "defaultFrequency": null,
+      "country": "FR"
+    },
+    {
+      "id": "ter",
+      "name": "TER",
+      "aliases": [],
+      "category": "Transport",
+      "subCategory": "Train",
+      "type": "expense",
+      "icon": "sncf",
+      "defaultFrequency": null,
+      "country": "FR"
+    },
+    {
+      "id": "ratp",
+      "name": "RATP",
+      "aliases": [],
+      "category": "Transport",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "ratp",
+      "defaultFrequency": null,
+      "country": "FR"
+    },
+    {
+      "id": "ile_de_france_mobilites",
+      "name": "Île-de-France Mobilités",
+      "aliases": [
+        "idf mobilites",
+        "navigo"
+      ],
+      "category": "Transport",
+      "subCategory": "Abonnement",
+      "type": "expense",
+      "icon": "ratp",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "tam_montpellier",
+      "name": "TaM Montpellier",
+      "aliases": [
+        "tam"
+      ],
+      "category": "Transport",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "tam",
+      "defaultFrequency": null,
+      "country": "FR"
+    },
+    {
+      "id": "tisseo",
+      "name": "Tisséo",
+      "aliases": [
+        "tisseo"
+      ],
+      "category": "Transport",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "tisseo",
+      "defaultFrequency": null,
+      "country": "FR"
+    },
+    {
+      "id": "tcl",
+      "name": "TCL",
+      "aliases": [],
+      "category": "Transport",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "tcl",
+      "defaultFrequency": null,
+      "country": "FR"
+    },
+    {
+      "id": "uber",
+      "name": "Uber",
+      "aliases": [],
+      "category": "Transport",
+      "subCategory": "VTC",
+      "type": "expense",
+      "icon": "uber",
+      "defaultFrequency": null,
+      "country": "FR"
+    },
+    {
+      "id": "uber_one",
+      "name": "Uber One",
+      "aliases": [
+        "uberone"
+      ],
+      "category": "Transport",
+      "subCategory": "Abonnement",
+      "type": "expense",
+      "icon": "uber",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "bolt",
+      "name": "Bolt",
+      "aliases": [],
+      "category": "Transport",
+      "subCategory": "VTC",
+      "type": "expense",
+      "icon": "bolt",
+      "defaultFrequency": null,
+      "country": "FR"
+    },
+    {
+      "id": "blablacar",
+      "name": "BlaBlaCar",
+      "aliases": [],
+      "category": "Transport",
+      "subCategory": "Covoiturage",
+      "type": "expense",
+      "icon": "blablacar",
+      "defaultFrequency": null,
+      "country": "FR"
+    },
+    {
+      "id": "blablacar_daily",
+      "name": "BlaBlaCar Daily",
+      "aliases": [
+        "blablacar daily"
+      ],
+      "category": "Transport",
+      "subCategory": "Covoiturage",
+      "type": "expense",
+      "icon": "blablacar",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "basic_fit",
+      "name": "Basic-Fit",
+      "aliases": [
+        "basicfit"
+      ],
+      "category": "Sport",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "basicfit",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "fitness_park",
+      "name": "Fitness Park",
+      "aliases": [
+        "fitnesspark"
+      ],
+      "category": "Sport",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "fitnesspark",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "keep_cool",
+      "name": "Keep Cool",
+      "aliases": [
+        "keepcool"
+      ],
+      "category": "Sport",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "keepcool",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "neoness",
+      "name": "Neoness",
+      "aliases": [],
+      "category": "Sport",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "neoness",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "l_orange_bleue",
+      "name": "L'Orange Bleue",
+      "aliases": [
+        "orange bleue",
+        "lorangebleue"
+      ],
+      "category": "Sport",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "orangebleue",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "crossfit",
+      "name": "CrossFit",
+      "aliases": [
+        "crossfit box"
+      ],
+      "category": "Sport",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "crossfit",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "urban_sports_club",
+      "name": "Urban Sports Club",
+      "aliases": [
+        "urbansportsclub"
+      ],
+      "category": "Sport",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "urbansportsclub",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "classpass",
+      "name": "ClassPass",
+      "aliases": [],
+      "category": "Sport",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "classpass",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "strava",
+      "name": "Strava",
+      "aliases": [],
+      "category": "Sport",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "strava",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "apple_fitness",
+      "name": "Apple Fitness+",
+      "aliases": [
+        "apple fitness",
+        "applefitness"
+      ],
+      "category": "Sport",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "applefitness",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "fitbit_premium",
+      "name": "Fitbit Premium",
+      "aliases": [
+        "fitbit"
+      ],
+      "category": "Sport",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "fitbit",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "garmin_connect",
+      "name": "Garmin Connect+",
+      "aliases": [
+        "garmin connect",
+        "garminconnect"
+      ],
+      "category": "Sport",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "garminconnect",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "amazon",
+      "name": "Amazon",
+      "aliases": [],
+      "category": "Shopping",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "amazon",
+      "defaultFrequency": null,
+      "country": "FR"
+    },
+    {
+      "id": "amazon_prime",
+      "name": "Amazon Prime",
+      "aliases": [
+        "prime"
+      ],
+      "category": "Shopping",
+      "subCategory": "Abonnement",
+      "type": "expense",
+      "icon": "amazon",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "carrefour",
+      "name": "Carrefour",
+      "aliases": [],
+      "category": "Shopping",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "carrefour",
+      "defaultFrequency": null,
+      "country": "FR"
+    },
+    {
+      "id": "auchan",
+      "name": "Auchan",
+      "aliases": [],
+      "category": "Shopping",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "auchan",
+      "defaultFrequency": null,
+      "country": "FR"
+    },
+    {
+      "id": "intermarche",
+      "name": "Intermarché",
+      "aliases": [
+        "intermarche"
+      ],
+      "category": "Shopping",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "intermarche",
+      "defaultFrequency": null,
+      "country": "FR"
+    },
+    {
+      "id": "e_leclerc",
+      "name": "E.Leclerc",
+      "aliases": [
+        "leclerc"
+      ],
+      "category": "Shopping",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "leclerc",
+      "defaultFrequency": null,
+      "country": "FR"
+    },
+    {
+      "id": "monoprix",
+      "name": "Monoprix",
+      "aliases": [],
+      "category": "Shopping",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "monoprix",
+      "defaultFrequency": null,
+      "country": "FR"
+    },
+    {
+      "id": "casino",
+      "name": "Casino",
+      "aliases": [],
+      "category": "Shopping",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "casino",
+      "defaultFrequency": null,
+      "country": "FR"
+    },
+    {
+      "id": "picard",
+      "name": "Picard",
+      "aliases": [],
+      "category": "Shopping",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "picard",
+      "defaultFrequency": null,
+      "country": "FR"
+    },
+    {
+      "id": "lidl",
+      "name": "Lidl",
+      "aliases": [],
+      "category": "Shopping",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "lidl",
+      "defaultFrequency": null,
+      "country": "FR"
+    },
+    {
+      "id": "uber_eats",
+      "name": "Uber Eats",
+      "aliases": [
+        "ubereats"
+      ],
+      "category": "Shopping",
+      "subCategory": "Livraison",
+      "type": "expense",
+      "icon": "ubereats",
+      "defaultFrequency": null,
+      "country": "FR"
+    },
+    {
+      "id": "deliveroo",
+      "name": "Deliveroo",
+      "aliases": [],
+      "category": "Shopping",
+      "subCategory": "Livraison",
+      "type": "expense",
+      "icon": "deliveroo",
+      "defaultFrequency": null,
+      "country": "FR"
+    },
+    {
+      "id": "just_eat",
+      "name": "Just Eat",
+      "aliases": [
+        "justeat"
+      ],
+      "category": "Shopping",
+      "subCategory": "Livraison",
+      "type": "expense",
+      "icon": "justeat",
+      "defaultFrequency": null,
+      "country": "FR"
+    },
+    {
+      "id": "too_good_to_go",
+      "name": "Too Good To Go",
+      "aliases": [
+        "toogoodtogo"
+      ],
+      "category": "Shopping",
+      "subCategory": "Livraison",
+      "type": "expense",
+      "icon": "toogoodtogo",
+      "defaultFrequency": null,
+      "country": "FR"
+    },
+    {
+      "id": "cdiscount",
+      "name": "Cdiscount",
+      "aliases": [],
+      "category": "Shopping",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "cdiscount",
+      "defaultFrequency": null,
+      "country": "FR"
+    },
+    {
+      "id": "fnac",
+      "name": "Fnac+",
+      "aliases": [
+        "fnac",
+        "fnacplus"
+      ],
+      "category": "Shopping",
+      "subCategory": "Abonnement",
+      "type": "expense",
+      "icon": "fnac",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "darty",
+      "name": "Darty",
+      "aliases": [],
+      "category": "Shopping",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "darty",
+      "defaultFrequency": null,
+      "country": "FR"
+    },
+    {
+      "id": "boulanger",
+      "name": "Boulanger",
+      "aliases": [],
+      "category": "Shopping",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "boulanger",
+      "defaultFrequency": null,
+      "country": "FR"
+    },
+    {
+      "id": "rakuten",
+      "name": "Rakuten",
+      "aliases": [],
+      "category": "Shopping",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "rakuten",
+      "defaultFrequency": null,
+      "country": "FR"
+    },
+    {
+      "id": "veepee",
+      "name": "Veepee",
+      "aliases": [],
+      "category": "Shopping",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "veepee",
+      "defaultFrequency": null,
+      "country": "FR"
+    },
+    {
+      "id": "zalando",
+      "name": "Zalando",
+      "aliases": [],
+      "category": "Shopping",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "zalando",
+      "defaultFrequency": null,
+      "country": "FR"
+    },
+    {
+      "id": "la_redoute",
+      "name": "La Redoute",
+      "aliases": [
+        "laredoute"
+      ],
+      "category": "Shopping",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "laredoute",
+      "defaultFrequency": null,
+      "country": "FR"
+    },
+    {
+      "id": "le_monde",
+      "name": "Le Monde",
+      "aliases": [],
+      "category": "Presse",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "lemonde",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "le_figaro",
+      "name": "Le Figaro",
+      "aliases": [],
+      "category": "Presse",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "lefigaro",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "liberation",
+      "name": "Libération",
+      "aliases": [
+        "liberation"
+      ],
+      "category": "Presse",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "liberation",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "les_echos",
+      "name": "Les Échos",
+      "aliases": [
+        "les echos"
+      ],
+      "category": "Presse",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "lesechos",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "mediapart",
+      "name": "Mediapart",
+      "aliases": [],
+      "category": "Presse",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "mediapart",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "l_obs",
+      "name": "L'Obs",
+      "aliases": [
+        "lobs"
+      ],
+      "category": "Presse",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "lobs",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "courrier_international",
+      "name": "Courrier International",
+      "aliases": [
+        "courrierinternational"
+      ],
+      "category": "Presse",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "courrierinternational",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "telerama",
+      "name": "Télérama",
+      "aliases": [
+        "telerama"
+      ],
+      "category": "Presse",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "telerama",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "l_equipe",
+      "name": "L'Équipe",
+      "aliases": [
+        "lequipe",
+        "l equipe"
+      ],
+      "category": "Presse",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "lequipe",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "ouest_france",
+      "name": "Ouest-France",
+      "aliases": [
+        "ouestfrance"
+      ],
+      "category": "Presse",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "ouestfrance",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "le_parisien",
+      "name": "Le Parisien",
+      "aliases": [
+        "leparisien"
+      ],
+      "category": "Presse",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "leparisien",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "numerama",
+      "name": "Numerama",
+      "aliases": [],
+      "category": "Presse",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "numerama",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "next_ink",
+      "name": "Next.ink",
+      "aliases": [
+        "nextink",
+        "next inpact"
+      ],
+      "category": "Presse",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "nextink",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "arret_sur_images",
+      "name": "Arrêt sur images",
+      "aliases": [
+        "arret sur images",
+        "asi"
+      ],
+      "category": "Presse",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "arretsurimages",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "canard_pc",
+      "name": "Canard PC",
+      "aliases": [
+        "canardpc"
+      ],
+      "category": "Presse",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "canardpc",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "duolingo",
+      "name": "Duolingo",
+      "aliases": [],
+      "category": "Éducation",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "duolingo",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "babbel",
+      "name": "Babbel",
+      "aliases": [],
+      "category": "Éducation",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "babbel",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "rosetta_stone",
+      "name": "Rosetta Stone",
+      "aliases": [
+        "rosettastone"
+      ],
+      "category": "Éducation",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "rosettastone",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "busuu",
+      "name": "Busuu",
+      "aliases": [],
+      "category": "Éducation",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "busuu",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "coursera",
+      "name": "Coursera",
+      "aliases": [],
+      "category": "Éducation",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "coursera",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "udemy",
+      "name": "Udemy",
+      "aliases": [],
+      "category": "Éducation",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "udemy",
+      "defaultFrequency": null,
+      "country": "FR"
+    },
+    {
+      "id": "linkedin_learning",
+      "name": "LinkedIn Learning",
+      "aliases": [
+        "linkedinlearning"
+      ],
+      "category": "Éducation",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "linkedinlearning",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "skillshare",
+      "name": "Skillshare",
+      "aliases": [],
+      "category": "Éducation",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "skillshare",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "openclassrooms",
+      "name": "OpenClassrooms",
+      "aliases": [
+        "open classrooms"
+      ],
+      "category": "Éducation",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "openclassrooms",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "brilliant",
+      "name": "Brilliant",
+      "aliases": [],
+      "category": "Éducation",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "brilliant",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "masterclass",
+      "name": "MasterClass",
+      "aliases": [],
+      "category": "Éducation",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "masterclass",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "scribd",
+      "name": "Scribd",
+      "aliases": [],
+      "category": "Éducation",
+      "subCategory": null,
+      "type": "expense",
+      "icon": "scribd",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "babilou",
+      "name": "Babilou",
+      "aliases": [],
+      "category": "Famille",
+      "subCategory": "Garde d'enfants",
+      "type": "expense",
+      "icon": "babilou",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "les_petits_chaperons_rouges",
+      "name": "Les Petits Chaperons Rouges",
+      "aliases": [
+        "petits chaperons rouges"
+      ],
+      "category": "Famille",
+      "subCategory": "Garde d'enfants",
+      "type": "expense",
+      "icon": "petitschaperonsrouges",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "kangourou_kids",
+      "name": "Kangourou Kids",
+      "aliases": [
+        "kangourou"
+      ],
+      "category": "Famille",
+      "subCategory": "Garde d'enfants",
+      "type": "expense",
+      "icon": "kangourou",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "kinougarde",
+      "name": "Kinougarde",
+      "aliases": [],
+      "category": "Famille",
+      "subCategory": "Garde d'enfants",
+      "type": "expense",
+      "icon": "kinougarde",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "yoopala",
+      "name": "Yoopala",
+      "aliases": [],
+      "category": "Famille",
+      "subCategory": "Garde d'enfants",
+      "type": "expense",
+      "icon": "yoopala",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "family_sphere",
+      "name": "Family Sphere",
+      "aliases": [
+        "familysphere"
+      ],
+      "category": "Famille",
+      "subCategory": "Garde d'enfants",
+      "type": "expense",
+      "icon": "familysphere",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "nounou_top",
+      "name": "nounou-top",
+      "aliases": [
+        "nounoutop",
+        "nounou top"
+      ],
+      "category": "Famille",
+      "subCategory": "Garde d'enfants",
+      "type": "expense",
+      "icon": "nounoutop",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "salaire",
+      "name": "Salaire",
+      "aliases": [
+        "paie",
+        "salary"
+      ],
+      "category": "Revenu du travail",
+      "subCategory": null,
+      "type": "income",
+      "icon": "salaire",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "prime",
+      "name": "Prime",
+      "aliases": [],
+      "category": "Revenu du travail",
+      "subCategory": null,
+      "type": "income",
+      "icon": "prime",
+      "defaultFrequency": null,
+      "country": "FR"
+    },
+    {
+      "id": "13e_mois",
+      "name": "13e mois",
+      "aliases": [
+        "treizieme mois",
+        "13eme mois"
+      ],
+      "category": "Revenu du travail",
+      "subCategory": null,
+      "type": "income",
+      "icon": "treiziememois",
+      "defaultFrequency": "yearly",
+      "country": "FR"
+    },
+    {
+      "id": "participation",
+      "name": "Participation",
+      "aliases": [],
+      "category": "Revenu du travail",
+      "subCategory": null,
+      "type": "income",
+      "icon": "participation",
+      "defaultFrequency": "yearly",
+      "country": "FR"
+    },
+    {
+      "id": "interessement",
+      "name": "Intéressement",
+      "aliases": [
+        "interessement"
+      ],
+      "category": "Revenu du travail",
+      "subCategory": null,
+      "type": "income",
+      "icon": "interessement",
+      "defaultFrequency": "yearly",
+      "country": "FR"
+    },
+    {
+      "id": "freelance",
+      "name": "Freelance",
+      "aliases": [
+        "mission freelance"
+      ],
+      "category": "Revenu du travail",
+      "subCategory": null,
+      "type": "income",
+      "icon": "freelance",
+      "defaultFrequency": null,
+      "country": "FR"
+    },
+    {
+      "id": "loyer",
+      "name": "Loyer",
+      "aliases": [
+        "loyer percu"
+      ],
+      "category": "Immobilier",
+      "subCategory": null,
+      "type": "income",
+      "icon": "loyer",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "location_saisonniere",
+      "name": "Location saisonnière",
+      "aliases": [
+        "location saisonniere",
+        "airbnb"
+      ],
+      "category": "Immobilier",
+      "subCategory": null,
+      "type": "income",
+      "icon": "locationsaisonniere",
+      "defaultFrequency": null,
+      "country": "FR"
+    },
+    {
+      "id": "caf",
+      "name": "CAF",
+      "aliases": [],
+      "category": "Aides & prestations",
+      "subCategory": null,
+      "type": "income",
+      "icon": "caf",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "apl",
+      "name": "APL",
+      "aliases": [],
+      "category": "Aides & prestations",
+      "subCategory": null,
+      "type": "income",
+      "icon": "apl",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "allocations_familiales",
+      "name": "Allocations familiales",
+      "aliases": [],
+      "category": "Aides & prestations",
+      "subCategory": null,
+      "type": "income",
+      "icon": "allocationsfamiliales",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "prime_d_activite",
+      "name": "Prime d'activité",
+      "aliases": [
+        "prime activite"
+      ],
+      "category": "Aides & prestations",
+      "subCategory": null,
+      "type": "income",
+      "icon": "primeactivite",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "rsa",
+      "name": "RSA",
+      "aliases": [],
+      "category": "Aides & prestations",
+      "subCategory": null,
+      "type": "income",
+      "icon": "rsa",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "aah",
+      "name": "AAH",
+      "aliases": [],
+      "category": "Aides & prestations",
+      "subCategory": null,
+      "type": "income",
+      "icon": "aah",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "france_travail",
+      "name": "France Travail",
+      "aliases": [
+        "pole emploi"
+      ],
+      "category": "Aides & prestations",
+      "subCategory": null,
+      "type": "income",
+      "icon": "francetravail",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "retraite",
+      "name": "Retraite",
+      "aliases": [],
+      "category": "Retraite",
+      "subCategory": null,
+      "type": "income",
+      "icon": "retraite",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "remboursement",
+      "name": "Remboursement",
+      "aliases": [
+        "remboursement secu",
+        "remboursement mutuelle"
+      ],
+      "category": "Autre revenu",
+      "subCategory": null,
+      "type": "income",
+      "icon": "remboursement",
+      "defaultFrequency": null,
+      "country": "FR"
+    },
+    {
+      "id": "vente",
+      "name": "Vente",
+      "aliases": [
+        "vinted",
+        "leboncoin"
+      ],
+      "category": "Autre revenu",
+      "subCategory": null,
+      "type": "income",
+      "icon": "vente",
+      "defaultFrequency": null,
+      "country": "FR"
+    },
+    {
+      "id": "cadeau",
+      "name": "Cadeau",
+      "aliases": [],
+      "category": "Autre revenu",
+      "subCategory": null,
+      "type": "income",
+      "icon": "cadeau",
+      "defaultFrequency": null,
+      "country": "FR"
+    },
+    {
+      "id": "pension",
+      "name": "Pension",
+      "aliases": [
+        "pension alimentaire"
+      ],
+      "category": "Retraite",
+      "subCategory": null,
+      "type": "income",
+      "icon": "pension",
+      "defaultFrequency": "monthly",
+      "country": "FR"
+    },
+    {
+      "id": "dividendes",
+      "name": "Dividendes",
+      "aliases": [],
+      "category": "Épargne & placements",
+      "subCategory": null,
+      "type": "income",
+      "icon": "dividendes",
+      "defaultFrequency": "yearly",
+      "country": "FR"
+    },
+    {
+      "id": "interets",
+      "name": "Intérêts",
+      "aliases": [
+        "interets",
+        "interets livret"
+      ],
+      "category": "Épargne & placements",
+      "subCategory": null,
+      "type": "income",
+      "icon": "interets",
+      "defaultFrequency": "yearly",
+      "country": "FR"
+    }
+  ]
+}
