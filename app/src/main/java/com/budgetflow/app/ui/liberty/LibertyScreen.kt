@@ -240,6 +240,7 @@ private fun UpcomingRow(occurrence: CalendarOccurrence) {
 @Composable
 private fun libertyMessage(state: LibertyUiState, summary: MonthSummary): String {
     val notable = state.notableUpcomingExpense
+    val freedomPerDay = summary.freedomPerDay
     return when {
         notable != null -> {
             val weekday = notable.date.dayOfWeek.getDisplayName(TextStyle.FULL, Locale.FRENCH)
@@ -247,8 +248,8 @@ private fun libertyMessage(state: LibertyUiState, summary: MonthSummary): String
         }
         summary.freedomState == FreedomState.ALERT -> stringResource(R.string.liberty_message_alert)
         summary.freedomState == FreedomState.CAUTION -> stringResource(R.string.liberty_message_caution)
-        summary.freedomPerDay != null && summary.safetyThreshold > 0 && summary.freedomPerDay > summary.safetyThreshold / 10.0 ->
+        freedomPerDay != null && summary.safetyThreshold > 0 && freedomPerDay > summary.safetyThreshold / 10.0 ->
             stringResource(R.string.liberty_message_comfortable)
-        else -> stringResource(R.string.liberty_message_normal, formatMoney(summary.freedomPerDay ?: 0.0))
+        else -> stringResource(R.string.liberty_message_normal, formatMoney(freedomPerDay ?: 0.0))
     }
 }

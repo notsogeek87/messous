@@ -40,11 +40,12 @@ class LibertyViewModel(
         calendarUseCase.observe(today, month.atEndOfMonth())
     ) { summary, occurrences ->
         val upcoming = occurrences.filter { it.date.isAfter(today) }
+        val freedomPerDay = summary.freedomPerDay
         // "Grosse dépense" = the single largest expense landing within the next 5 days,
         // as long as it would meaningfully dent a day's worth of free money.
         val notable = upcoming
             .filter { it.direction == FlowDirection.EXPENSE && !it.date.isAfter(today.plusDays(5)) }
-            .filter { summary.freedomPerDay == null || it.amount > summary.freedomPerDay * 2 }
+            .filter { freedomPerDay == null || it.amount > freedomPerDay * 2 }
             .maxByOrNull { it.amount }
 
         LibertyUiState(
