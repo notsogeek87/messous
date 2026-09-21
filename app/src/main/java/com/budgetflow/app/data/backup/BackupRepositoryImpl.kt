@@ -38,15 +38,23 @@ class BackupRepositoryImpl(
 
         // Pre-profile exports (schemaVersion 1) carry no profiles table: everything they contain
         // becomes the single "Perso" profile, and Pro/Commun are (re)created empty alongside it.
+        //
+        // Each branch ends with an explicit `val identity: (Long) -> Long = { ... }` bound to a
+        // name, rather than a bare trailing lambda: a lambda literal placed right after a call
+        // statement on the previous line is parsed by Kotlin as a second trailing-lambda argument
+        // to that call, not as the block's own return value ("only one lambda expression is
+        // allowed outside a parenthesized argument list").
         val remapProfileId: (Long) -> Long = if (payload.profiles.isNotEmpty()) {
             payload.profiles.forEach { database.profileDao().upsert(it) }
-            { id -> id }
+            val identity: (Long) -> Long = { id -> id }
+            identity
         } else {
             val now = System.currentTimeMillis()
             val legacyProfileId = database.profileDao().upsert(ProfileEntity(name = "Perso", sortOrder = 0, createdAtEpochMillis = now))
             database.profileDao().upsert(ProfileEntity(name = "Pro", sortOrder = 1, createdAtEpochMillis = now))
             database.profileDao().upsert(ProfileEntity(name = "Commun", sortOrder = 2, createdAtEpochMillis = now))
-            { _ -> legacyProfileId }
+            val toLegacyProfile: (Long) -> Long = { _ -> legacyProfileId }
+            toLegacyProfile
         }
 
         payload.accounts.forEach { database.accountDao().upsert(it.copy(profileId = remapProfileId(it.profileId))) }
