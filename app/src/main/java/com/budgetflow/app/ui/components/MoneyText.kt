@@ -10,14 +10,23 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
-import com.budgetflow.app.ui.theme.NegativeRed
-import com.budgetflow.app.ui.theme.PositiveGreen
+import com.budgetflow.app.ui.theme.negativeRed
+import com.budgetflow.app.ui.theme.positiveGreen
 import java.text.NumberFormat
 import java.util.Locale
 
+// Messous is single-currency (EUR) by design: no account/transaction carries a currency of its
+// own to format against (see Account.currency, kept only as a free-text label). One formatter,
+// one symbol, everywhere.
 private val currencyFormat: NumberFormat = NumberFormat.getCurrencyInstance(Locale.FRANCE)
+private val currencyFormatRounded: NumberFormat = NumberFormat.getCurrencyInstance(Locale.FRANCE).apply {
+    maximumFractionDigits = 0
+    minimumFractionDigits = 0
+}
 
-fun formatMoney(amount: Double): String = currencyFormat.format(amount)
+/** [roundToEuro] drops the cents - for headline figures meant to be read in one glance, never for lists or forms. */
+fun formatMoney(amount: Double, roundToEuro: Boolean = false): String =
+    (if (roundToEuro) currencyFormatRounded else currencyFormat).format(amount)
 
 /** Renders an amount, optionally coloring it green/red based on its sign. */
 @Composable
@@ -26,16 +35,17 @@ fun MoneyText(
     modifier: Modifier = Modifier,
     style: TextStyle = LocalTextStyle.current,
     colorBySign: Boolean = false,
-    color: Color = Color.Unspecified
+    color: Color = Color.Unspecified,
+    roundToEuro: Boolean = false
 ) {
     val resolvedColor = when {
         color != Color.Unspecified -> color
         !colorBySign -> MaterialTheme.colorScheme.onSurface
-        amount > 0 -> PositiveGreen
-        amount < 0 -> NegativeRed
+        amount > 0 -> positiveGreen
+        amount < 0 -> negativeRed
         else -> MaterialTheme.colorScheme.onSurface
     }
-    Text(text = formatMoney(amount), modifier = modifier, style = style, color = resolvedColor)
+    Text(text = formatMoney(amount, roundToEuro), modifier = modifier, style = style, color = resolvedColor)
 }
 
 /**
@@ -51,6 +61,7 @@ fun AnimatedMoneyText(
     style: TextStyle = LocalTextStyle.current,
     colorBySign: Boolean = false,
     color: Color = Color.Unspecified,
+    roundToEuro: Boolean = false,
     durationMillis: Int = 500
 ) {
     val animated by animateFloatAsState(
@@ -58,5 +69,12 @@ fun AnimatedMoneyText(
         animationSpec = tween(durationMillis = durationMillis),
         label = "animatedMoney"
     )
-    MoneyText(amount = animated.toDouble(), modifier = modifier, style = style, colorBySign = colorBySign, color = color)
+    MoneyText(
+        amount = animated.toDouble(),
+        modifier = modifier,
+        style = style,
+        colorBySign = colorBySign,
+        color = color,
+        roundToEuro = roundToEuro
+    )
 }

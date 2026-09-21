@@ -19,6 +19,7 @@ import com.budgetflow.app.ui.budget.AddEditIncomeScreen
 import com.budgetflow.app.ui.budget.BudgetScreen
 import com.budgetflow.app.ui.categories.CategoriesScreen
 import com.budgetflow.app.ui.future.FutureScreen
+import com.budgetflow.app.ui.hub.MonBudgetScreen
 import com.budgetflow.app.ui.liberty.LibertyScreen
 import com.budgetflow.app.ui.settings.SettingsScreen
 import com.budgetflow.app.ui.statistics.StatisticsScreen
@@ -45,7 +46,7 @@ fun BudgetFlowNavHost() {
             composable(Routes.LIBERTY) {
                 LibertyScreen(
                     onOpenBudget = {
-                        navController.navigate(Routes.BUDGET) {
+                        navController.navigate(Routes.budget()) {
                             popUpTo(navController.graph.findStartDestination().id) { saveState = true }
                             launchSingleTop = true
                         }
@@ -73,17 +74,27 @@ fun BudgetFlowNavHost() {
             composable(Routes.FUTURE) { FutureScreen() }
             composable(Routes.WHATIF) { WhatIfScreen() }
             composable(Routes.ME) {
-                SettingsScreen(
-                    onOpenAccounts = { navController.navigate(Routes.ACCOUNTS) },
-                    onOpenCategories = { navController.navigate(Routes.CATEGORIES) },
+                MonBudgetScreen(
+                    onOpenSettings = { navController.navigate(Routes.SETTINGS) },
+                    onOpenIncomes = { navController.navigate(Routes.budget(Routes.BUDGET_TAB_INCOMES)) },
+                    onOpenExpenses = { navController.navigate(Routes.budget(Routes.BUDGET_TAB_EXPENSES)) },
+                    onOpenEnvelopes = { navController.navigate(Routes.budget(Routes.BUDGET_TAB_ENVELOPES)) },
+                    onOpenGoals = { navController.navigate(Routes.budget(Routes.BUDGET_TAB_GOALS)) },
                     onOpenTransactions = { navController.navigate(Routes.TRANSACTIONS) },
-                    onOpenBudget = { navController.navigate(Routes.BUDGET) },
+                    onOpenAccounts = { navController.navigate(Routes.ACCOUNTS) },
                     onOpenStatistics = { navController.navigate(Routes.STATISTICS) }
+                )
+            }
+            composable(Routes.SETTINGS) {
+                SettingsScreen(
+                    onBack = { navController.popBackStack() },
+                    onOpenCategories = { navController.navigate(Routes.CATEGORIES) }
                 )
             }
 
             composable(Routes.TRANSACTIONS) {
                 TransactionsScreen(
+                    onBack = { navController.popBackStack() },
                     onAddTransaction = { navController.navigate(Routes.ADD_TRANSACTION) },
                     onEditTransaction = { id -> navController.navigate(Routes.editTransaction(id)) }
                 )
@@ -98,8 +109,14 @@ fun BudgetFlowNavHost() {
                 val id = entry.arguments?.getLong("transactionId")
                 AddEditTransactionScreen(transactionId = id, onDone = { navController.popBackStack() })
             }
-            composable(Routes.BUDGET) {
+            composable(
+                Routes.BUDGET,
+                arguments = listOf(navArgument("tab") { type = NavType.IntType; defaultValue = Routes.BUDGET_TAB_INCOMES })
+            ) { entry ->
+                val tab = entry.arguments?.getInt("tab") ?: Routes.BUDGET_TAB_INCOMES
                 BudgetScreen(
+                    onBack = { navController.popBackStack() },
+                    initialTab = tab,
                     onAddIncome = { navController.navigate(Routes.ADD_INCOME) },
                     onEditIncome = { id -> navController.navigate(Routes.editIncome(id)) },
                     onAddExpense = { navController.navigate(Routes.ADD_EXPENSE) },
@@ -126,7 +143,12 @@ fun BudgetFlowNavHost() {
                 val id = entry.arguments?.getLong("expenseId")
                 AddEditExpenseScreen(expenseId = id, onDone = { navController.popBackStack() })
             }
-            composable(Routes.STATISTICS) { StatisticsScreen() }
+            composable(Routes.STATISTICS) {
+                StatisticsScreen(
+                    onBack = { navController.popBackStack() },
+                    onAddTransaction = { navController.navigate(Routes.ADD_TRANSACTION) }
+                )
+            }
             composable(Routes.ACCOUNTS) { AccountsScreen(onBack = { navController.popBackStack() }) }
             composable(Routes.CATEGORIES) { CategoriesScreen(onBack = { navController.popBackStack() }) }
         }

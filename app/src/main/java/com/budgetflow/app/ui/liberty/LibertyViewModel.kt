@@ -11,7 +11,6 @@ import com.budgetflow.app.ui.transactions.TransactionListItem
 import com.budgetflow.engine.BudgetEngine
 import com.budgetflow.engine.model.CalendarOccurrence
 import com.budgetflow.engine.model.FlowDirection
-import com.budgetflow.engine.model.FreedomState
 import com.budgetflow.engine.model.MonthSummary
 import com.budgetflow.engine.model.ScheduledFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -31,9 +30,6 @@ data class LibertyUiState(
     /** Every active income/fixed expense this month, for the "tout d'un coup d'œil" recap at the bottom. */
     val incomes: List<ScheduledFlow> = emptyList(),
     val recurringExpenses: List<ScheduledFlow> = emptyList(),
-    /** [BudgetEngine.remainingToSpendAsOf] for every day of the month, indexed 0 = day 1 - backs the interactive gauge. */
-    val remainingToSpendByDay: List<Double> = emptyList(),
-    val remainingToSpendStateByDay: List<FreedomState> = emptyList(),
     /** Every transaction actually recorded this month, most recent first. */
     val transactions: List<TransactionListItem> = emptyList()
 ) {
@@ -76,12 +72,6 @@ class LibertyViewModel(
             .filter { freedomPerDay == null || it.amount > freedomPerDay * 2 }
             .maxByOrNull { it.amount }
 
-        val daysInMonth = plan.monthEnd.dayOfMonth
-        val remainingToSpendByDay = (1..daysInMonth).map { day ->
-            BudgetEngine.remainingToSpendAsOf(plan, plan.monthStart.plusDays((day - 1).toLong()))
-        }
-        val remainingToSpendStateByDay = remainingToSpendByDay.map { BudgetEngine.freedomStateFor(it, plan.safetyThreshold) }
-
         val transactionItems = transactions
             .sortedByDescending { it.date }
             .map { transaction ->
@@ -100,8 +90,6 @@ class LibertyViewModel(
             upcomingOccurrences = upcoming.take(3),
             incomes = plan.incomes,
             recurringExpenses = plan.recurringExpenses,
-            remainingToSpendByDay = remainingToSpendByDay,
-            remainingToSpendStateByDay = remainingToSpendStateByDay,
             transactions = transactionItems
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), LibertyUiState())

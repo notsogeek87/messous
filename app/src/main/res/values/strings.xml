@@ -2,15 +2,10 @@
     <string name="app_name">Messous</string>
 
     <!-- Navigation -->
-    <string name="nav_dashboard">Accueil</string>
-    <string name="nav_transactions">Transactions</string>
-    <string name="nav_budget">Budget</string>
-    <string name="nav_statistics">Statistiques</string>
-    <string name="nav_settings">Paramètres</string>
     <string name="nav_liberty">Liberté</string>
     <string name="nav_future">Futur</string>
     <string name="nav_whatif">Et si…</string>
-    <string name="nav_me">Moi</string>
+    <string name="nav_me">Mon budget</string>
 
     <!-- Freedom state (spec section 6) -->
     <string name="freedom_state_comfort">Confort</string>
@@ -18,25 +13,21 @@
     <string name="freedom_state_alert">Sécurité</string>
 
     <!-- Ma liberté -->
-    <string name="liberty_free_money_label">Argent libre</string>
     <string name="liberty_remaining_to_spend_label">Reste à vivre</string>
-    <string name="liberty_available_budget_caption">sur %1$s prévus ce mois-ci</string>
-    <string name="liberty_real_balance_label">Argent libre (solde réel) : %1$s</string>
-    <string name="liberty_balance_label">Solde</string>
-    <string name="liberty_remaining_today_label">Reste à vivre au jour d\'aujourd\'hui</string>
-    <string name="liberty_day_gauge_day_marker">Jour %1$d / %2$d</string>
-    <string name="liberty_day_gauge_month_target">Objectif du mois : %1$s</string>
     <string name="liberty_recurring_title">Revenus &amp; dépenses fixes</string>
     <string name="liberty_transactions_title">Transactions du mois</string>
-    <string name="liberty_daily_freedom_intro">Tu peux dépenser environ</string>
-    <string name="liberty_daily_freedom_unit">%1$s / jour</string>
-    <string name="liberty_daily_freedom_until_end">jusqu\'à la fin du mois (%1$d j.)</string>
     <string name="liberty_safety_threshold_label">Seuil : %1$s</string>
+    <string name="liberty_safety_gauge_description_positive">Argent libre : %1$s. Seuil de sécurité : %2$s. Marge : %3$s.</string>
+    <string name="liberty_safety_gauge_description_negative">Argent libre : %1$s. Seuil de sécurité : %2$s. %3$s sous le seuil.</string>
+    <string name="liberty_safety_gauge_description_no_threshold">Argent libre : %1$s. Aucun seuil de sécurité défini.</string>
     <string name="liberty_safety_margin_positive">%1$s de marge</string>
     <string name="liberty_safety_margin_negative">%1$s sous le seuil</string>
     <string name="liberty_no_data_title">Aucune donnée pour l\'instant</string>
     <string name="liberty_no_data_body">Ajoute un revenu et tes dépenses fixes pour voir ta liberté.</string>
     <string name="liberty_add_account_cta">Ajouter un compte</string>
+    <string name="liberty_hero_subtitle">Soit %1$s / jour, encore %2$d j. ce mois-ci</string>
+    <string name="liberty_details_toggle">D\'où vient ce chiffre ?</string>
+    <string name="liberty_free_money_row_label">Argent libre</string>
     <string name="liberty_simulate_cta">Et si je dépensais quelque chose ?</string>
     <string name="liberty_add_transaction_cta">Ajouter</string>
     <string name="liberty_upcoming_title">À venir</string>
@@ -68,7 +59,8 @@
     <string name="whatif_cost_in_freedom">Cette dépense réduit ta liberté quotidienne d\'environ %1$s.</string>
     <string name="whatif_threshold_breach">Cette dépense te ferait passer %1$s sous ton seuil de sécurité.</string>
     <string name="whatif_threshold_ok">Ton seuil de sécurité serait respecté.</string>
-    <string name="whatif_goal_impact">Retarderait « %1$s » d\'environ %2$d jours.</string>
+    <string name="whatif_threshold_not_set">Tu n\'as pas encore défini de seuil de sécurité.</string>
+    <string name="whatif_goal_impact">Retarderait « %1$s » d\'environ %2$d jour(s).</string>
     <string name="whatif_scenario_now">Maintenant</string>
     <string name="whatif_scenario_15_days">Dans 15 jours</string>
     <string name="whatif_scenario_next_month">Le mois prochain</string>
@@ -77,39 +69,42 @@
     <string name="whatif_added_confirmation">Dépense ajoutée</string>
     <string name="whatif_empty_prompt">Saisis un montant pour voir l\'impact, tout de suite.</string>
     <string name="whatif_allocate_amount_label">J\'ai cette somme de disponible</string>
-    <string name="whatif_allocate_vacation">Vacances</string>
-    <string name="whatif_allocate_project">Projet</string>
-    <string name="whatif_allocate_security">Sécurité</string>
     <string name="whatif_allocate_balanced">Équilibré</string>
     <string name="whatif_allocate_fun">Plaisir</string>
     <string name="whatif_allocate_savings">Épargne</string>
-    <string name="whatif_allocate_margin">Marge</string>
     <string name="whatif_allocate_goal">Vers un objectif</string>
-    <string name="whatif_allocate_kept">Conservés</string>
+    <string name="whatif_allocate_no_goals">Tu n\'as pas encore d\'objectif d\'épargne. Crée-en un depuis Mon budget pour verser cette somme dessus.</string>
+    <string name="whatif_allocate_goal_impact">Rapprocherait cet objectif d\'environ %1$d jour(s).</string>
+    <string name="whatif_allocate_contribute_cta">Verser %1$s</string>
+    <string name="whatif_allocate_contributed_format">Versé vers « %1$s »</string>
 
     <!-- Onboarding -->
     <string name="onboarding_welcome_title">Bienvenue dans Messous</string>
-    <string name="onboarding_welcome_body">Sachez à tout moment combien vous pouvez encore dépenser ce mois-ci.</string>
-    <string name="onboarding_privacy_title">Vos données restent chez vous</string>
+    <string name="onboarding_welcome_body">Sache à tout moment combien tu peux encore dépenser ce mois-ci.</string>
+    <string name="onboarding_privacy_title">Tes données restent chez toi</string>
     <string name="onboarding_privacy_body">Aucun compte, aucune connexion bancaire, aucune donnée envoyée sur Internet. Tout reste stocké localement sur cet appareil.</string>
-    <string name="onboarding_income_title">Votre revenu mensuel</string>
-    <string name="onboarding_income_body">Indiquez votre revenu principal pour démarrer votre budget.</string>
-    <string name="onboarding_expenses_title">Vos dépenses fixes</string>
-    <string name="onboarding_expenses_body">Ajoutez vos dépenses récurrentes habituelles (loyer, crédit, abonnements...).</string>
-    <string name="onboarding_variable_title">Vos budgets variables</string>
-    <string name="onboarding_variable_body">Définissez des enveloppes mensuelles pour vos dépenses du quotidien.</string>
-    <string name="onboarding_done_title">Votre premier budget est prêt</string>
+    <string name="onboarding_income_title">Ton revenu mensuel</string>
+    <string name="onboarding_income_body">Indique ton revenu principal pour démarrer ton budget.</string>
+    <string name="onboarding_expenses_title">Tes dépenses fixes</string>
+    <string name="onboarding_expenses_body">Ajoute tes dépenses récurrentes habituelles (loyer, crédit, abonnements…).</string>
+    <string name="onboarding_variable_title">Tes budgets variables</string>
+    <string name="onboarding_variable_body">Définis des enveloppes mensuelles pour tes dépenses du quotidien.</string>
+    <string name="onboarding_safety_title">Ta sécurité financière</string>
+    <string name="onboarding_safety_body">Ces deux infos rendent tes chiffres réels dès aujourd\'hui. Tu peux les laisser vides et les régler plus tard, dans Mon budget et Réglages.</string>
+    <string name="onboarding_balance_label">Solde actuel de ton compte</string>
+    <string name="onboarding_threshold_suggestion">Suggestion : %1$s, environ un mois de charges fixes</string>
+    <string name="onboarding_done_title">Ton premier budget est prêt</string>
     <string name="onboarding_skip">Passer</string>
+    <string name="onboarding_previous">Précédent</string>
     <string name="onboarding_next">Suivant</string>
     <string name="onboarding_finish">Commencer</string>
-    <string name="onboarding_add_income">Ajouter ce revenu</string>
     <string name="onboarding_add_expense">Ajouter une dépense</string>
     <string name="onboarding_add_envelope">Ajouter une enveloppe</string>
     <string name="onboarding_nav_intro">Comment ça marche</string>
     <string name="onboarding_nav_liberty_desc">Ce que tu peux dépenser aujourd\'hui sans risque</string>
     <string name="onboarding_nav_future_desc">L\'évolution de ton solde dans les prochains jours</string>
     <string name="onboarding_nav_whatif_desc">Teste l\'impact d\'un achat avant de le faire</string>
-    <string name="onboarding_nav_me_desc">Tes revenus, dépenses fixes et réglages</string>
+    <string name="onboarding_nav_me_desc">Ton budget complet, en un coup d\'œil</string>
 
     <!-- Dashboard -->
     <string name="dashboard_this_month">Ce mois-ci</string>
@@ -119,19 +114,15 @@
     <string name="dashboard_planned_savings">Épargne prévue</string>
     <string name="dashboard_available_budget">Budget disponible</string>
     <string name="dashboard_remaining_to_spend">Reste à dépenser</string>
-    <string name="dashboard_daily_budget">Budget quotidien recommandé</string>
-    <string name="dashboard_daily_budget_unit">%1$s / jour</string>
     <string name="dashboard_bank_balance">Solde bancaire</string>
-    <string name="dashboard_really_available">réellement disponibles</string>
     <string name="dashboard_upcoming_this_month">À venir ce mois-ci</string>
-    <string name="dashboard_empty_title">Aucune donnée pour l\'instant</string>
-    <string name="dashboard_empty_body">Ajoutez un revenu et vos dépenses fixes pour voir votre prévision.</string>
-    <string name="dashboard_future_months">Mois futurs</string>
 
     <!-- Transactions -->
     <string name="transactions_title">Transactions</string>
     <string name="transactions_add">Ajouter une transaction</string>
     <string name="transactions_empty">Aucune transaction enregistrée</string>
+    <string name="transactions_empty_body">Ajoute ta première transaction avec le bouton +.</string>
+    <string name="transaction_deleted">Transaction supprimée</string>
     <string name="transaction_amount">Montant</string>
     <string name="transaction_type">Type</string>
     <string name="transaction_type_income">Revenu</string>
@@ -143,6 +134,7 @@
     <string name="transaction_account">Compte</string>
     <string name="transaction_save">Enregistrer</string>
     <string name="transaction_delete">Supprimer</string>
+    <string name="transaction_delete_confirm_title">Supprimer cette transaction ?</string>
 
     <!-- Budget -->
     <string name="budget_title">Budget</string>
@@ -154,19 +146,14 @@
     <string name="budget_add_expense">Ajouter une dépense fixe</string>
     <string name="budget_add_envelope">Ajouter une enveloppe</string>
     <string name="budget_add_goal">Ajouter un objectif</string>
-    <string name="budget_frequency">Fréquence</string>
     <string name="budget_frequency_weekly">Hebdomadaire</string>
     <string name="budget_frequency_monthly">Mensuel</string>
     <string name="budget_frequency_yearly">Annuel</string>
     <string name="budget_frequency_one_time">Ponctuel</string>
     <string name="budget_day_of_month">Jour de prélèvement</string>
-    <string name="budget_is_fixed">Dépense fixe</string>
-    <string name="budget_is_variable">Dépense variable</string>
     <string name="budget_active">Active</string>
     <string name="budget_monthly_limit">Budget mensuel</string>
     <string name="budget_spent">Dépensé</string>
-    <string name="budget_remaining">Reste</string>
-    <string name="budget_add_expense_to_envelope">Enregistrer une dépense</string>
     <string name="budget_label_name">Nom</string>
     <string name="budget_income_label_hint">Salaire, prime, remboursement…</string>
     <string name="budget_expense_label_hint">Loyer, crédit, abonnement…</string>
@@ -174,16 +161,22 @@
     <string name="budget_impact_income">Ça ajoute environ %1$s / jour à ta liberté (%2$s / mois)</string>
     <string name="budget_impact_expense">Ça retire environ %1$s / jour à ta liberté (%2$s / mois)</string>
     <string name="budget_impact_one_time">Dépense ponctuelle, sans effet récurrent sur ta liberté quotidienne</string>
+    <string name="budget_status_inactive">inactif</string>
+    <string name="budget_incomes_empty_title">Aucun revenu enregistré</string>
+    <string name="budget_incomes_empty_body">Ajoute ton premier revenu pour voir ta liberté.</string>
+    <string name="budget_expenses_empty_title">Aucune dépense fixe enregistrée</string>
+    <string name="budget_expenses_empty_body">Ajoute tes charges récurrentes (loyer, crédit, abonnements…).</string>
+    <string name="budget_envelopes_empty_title">Aucune enveloppe créée</string>
+    <string name="budget_envelopes_empty_body">Crée une enveloppe pour suivre un budget du quotidien.</string>
+    <string name="budget_goals_empty_title">Aucun objectif d\'épargne</string>
+    <string name="budget_goals_empty_body">Crée un objectif pour suivre ton épargne.</string>
 
     <!-- Goals -->
     <string name="goal_target">Objectif</string>
     <string name="goal_saved">Déjà épargné</string>
     <string name="goal_progress">%1$d %% atteint</string>
-    <string name="goal_add_contribution">Ajouter une contribution</string>
 
     <!-- Calendar -->
-    <string name="calendar_title">Calendrier</string>
-    <string name="calendar_empty">Aucune échéance prévue ce mois-ci</string>
 
     <!-- Statistics -->
     <string name="statistics_title">Statistiques</string>
@@ -192,13 +185,20 @@
     <string name="statistics_evolution">Évolution mensuelle</string>
     <string name="statistics_vs_last_month">Par rapport au mois dernier</string>
     <string name="statistics_saved_this_month">Épargné ce mois-ci</string>
+    <string name="statistics_empty_title">Rien à analyser pour l\'instant</string>
+    <string name="statistics_empty_body">Ajoute des transactions pour voir tes statistiques.</string>
+    <string name="category_other">Autre</string>
 
     <!-- Accounts -->
     <string name="accounts_title">Comptes</string>
     <string name="accounts_add">Ajouter un compte</string>
+    <string name="accounts_empty_title">Aucun compte enregistré</string>
+    <string name="accounts_empty_body">Ajoute un compte pour voir ton solde réel et ta liberté.</string>
     <string name="account_name">Nom du compte</string>
     <string name="account_initial_balance">Solde initial</string>
-    <string name="account_currency">Devise</string>
+    <string name="account_delete_confirm_title">Supprimer « %1$s » ?</string>
+    <string name="account_delete_confirm_body">%1$d transaction(s) resteront enregistrées mais ne seront plus rattachées à un compte.</string>
+    <string name="account_delete_confirm_body_empty">Cette action est définitive.</string>
 
     <!-- Categories -->
     <string name="categories_title">Catégories</string>
@@ -206,29 +206,44 @@
     <string name="category_name">Nom</string>
     <string name="category_group">Groupe</string>
     <string name="category_icon">Icône</string>
-    <string name="category_delete_confirm">Supprimer cette catégorie ?</string>
+    <string name="category_delete_confirm">Supprimer « %1$s » ?</string>
 
-    <!-- Settings (Moi) -->
-    <string name="settings_title">Moi</string>
-    <string name="settings_section_situation">Ma situation</string>
+    <!-- Mon budget (hub - spec §10.2) -->
+    <string name="hub_section_plan">Mon plan</string>
+    <string name="hub_section_money">Mon argent</string>
+    <string name="hub_incomes_subtitle">%1$s / mois</string>
+    <string name="hub_expenses_subtitle">%1$s / mois</string>
+    <string name="hub_envelopes_subtitle">%1$s dépensés sur %2$s</string>
+    <string name="hub_envelopes_empty">Aucune enveloppe créée</string>
+    <string name="hub_goals_subtitle">%1$d en cours</string>
+    <string name="hub_goals_empty">Aucun objectif</string>
+    <string name="hub_threshold_not_set">Non défini — appuie pour le configurer</string>
+    <string name="hub_transactions_subtitle">%1$d ce mois-ci</string>
+    <string name="hub_accounts_empty">Ajoute un compte</string>
+
+    <!-- Réglages -->
+    <string name="settings_title">Réglages</string>
     <string name="settings_transactions">Transactions</string>
-    <string name="settings_budgets">Revenus &amp; budgets</string>
     <string name="settings_statistics">Statistiques</string>
-    <string name="settings_section_freedom">Ma sécurité financière</string>
+    <string name="settings_accounts">Comptes</string>
     <string name="settings_safety_threshold">Seuil de sécurité</string>
     <string name="settings_safety_threshold_body">%1$s toujours gardés de côté</string>
     <string name="settings_safety_threshold_dialog_title">Mon seuil de sécurité</string>
     <string name="settings_safety_threshold_dialog_body">Messous ne te laissera jamais l\'oublier : ce montant sera toujours mis de côté avant de calculer ton argent libre.</string>
-    <string name="settings_section_data">Données</string>
+    <string name="settings_section_data">Mes données</string>
     <string name="settings_export">Exporter mes données</string>
-    <string name="settings_export_body">Génère un fichier JSON lisible contenant toutes vos données.</string>
+    <string name="settings_export_body">Génère un fichier JSON lisible contenant toutes tes données.</string>
+    <string name="settings_export_success">Export réussi</string>
     <string name="settings_import">Importer mes données</string>
-    <string name="settings_import_body">Restaure vos données depuis un export JSON précédent.</string>
+    <string name="settings_import_body">Restaure tes données depuis un export JSON précédent.</string>
+    <string name="settings_import_success">Import réussi</string>
+    <string name="settings_import_error">L\'import a échoué : fichier invalide.</string>
     <string name="settings_import_confirm_title">Remplacer les données actuelles ?</string>
     <string name="settings_import_confirm_body">L\'import remplacera toutes les données existantes par celles du fichier sélectionné.</string>
-    <string name="settings_section_security">Sécurité</string>
+    <string name="settings_section_security">Sécurité de l\'app</string>
     <string name="settings_biometric_lock">Verrouillage biométrique</string>
     <string name="settings_biometric_lock_body">Demander une empreinte ou un visage à l\'ouverture de l\'application.</string>
+    <string name="settings_biometric_unavailable">Configure d\'abord un verrouillage d\'écran (empreinte, visage ou code) dans les réglages de ton téléphone.</string>
     <string name="settings_section_appearance">Apparence</string>
     <string name="settings_theme">Thème</string>
     <string name="settings_theme_system">Système</string>
@@ -238,7 +253,6 @@
     <string name="settings_section_about">À propos</string>
     <string name="settings_privacy_statement">Messous ne collecte aucune donnée, ne contient aucun traceur et fonctionne entièrement hors ligne.</string>
     <string name="settings_version">Version %1$s</string>
-    <string name="settings_accounts">Comptes</string>
     <string name="settings_categories">Catégories</string>
 
     <!-- Common -->
@@ -248,7 +262,14 @@
     <string name="action_delete">Supprimer</string>
     <string name="action_add">Ajouter</string>
     <string name="action_save">Enregistrer</string>
+    <string name="action_back">Retour</string>
+    <string name="action_undo">Annuler</string>
+    <string name="action_delete_item">Supprimer %1$s</string>
+    <string name="item_deleted_format">« %1$s » supprimé</string>
+    <string name="form_error_amount">Indique un montant supérieur à 0</string>
+    <string name="form_error_no_account">Ajoute d\'abord un compte pour enregistrer une transaction</string>
     <string name="unlock_title">Messous verrouillé</string>
-    <string name="unlock_prompt">Déverrouillez pour accéder à vos données</string>
+    <string name="unlock_prompt">Déverrouille pour accéder à tes données</string>
     <string name="unlock_button">Déverrouiller</string>
+    <string name="unlock_disable_lock">Désactiver le verrouillage et continuer</string>
 </resources>

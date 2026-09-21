@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bolt
 import androidx.compose.material.icons.filled.CheckCircle
@@ -22,19 +21,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.unit.dp
 import com.budgetflow.app.R
-import com.budgetflow.app.ui.theme.NegativeRed
-import com.budgetflow.app.ui.theme.NeutralAmber
-import com.budgetflow.app.ui.theme.PositiveGreen
+import com.budgetflow.app.ui.theme.negativeRed
+import com.budgetflow.app.ui.theme.neutralAmber
+import com.budgetflow.app.ui.theme.positiveGreen
 import com.budgetflow.engine.model.FreedomState
 
 /** Color for a [FreedomState] - never the only signal (spec section 24: always paired with icon + text). */
 @Composable
 fun FreedomState.color(): Color = when (this) {
-    FreedomState.COMFORT -> PositiveGreen
-    FreedomState.CAUTION -> NeutralAmber
-    FreedomState.ALERT -> NegativeRed
+    FreedomState.COMFORT -> positiveGreen
+    FreedomState.CAUTION -> neutralAmber
+    FreedomState.ALERT -> negativeRed
 }
 
 fun FreedomState.icon() = when (this) {
@@ -64,7 +65,8 @@ fun FreedomStateBadge(state: FreedomState, modifier: Modifier = Modifier) {
 /**
  * The "seuil de sécurité" bar (spec section 5): free money as a filled bar, with a marker at
  * the safety threshold and the margin called out. Never the sole way the margin is conveyed -
- * the numeric values are always shown alongside it.
+ * the numeric values are always shown alongside it, and the whole gauge carries one merged
+ * [contentDescription] for TalkBack since the [Canvas] drawing itself is otherwise invisible to it.
  */
 @Composable
 fun SafetyThresholdGauge(freeMoney: Double, safetyThreshold: Double, state: FreedomState, modifier: Modifier = Modifier) {
@@ -78,9 +80,25 @@ fun SafetyThresholdGauge(freeMoney: Double, safetyThreshold: Double, state: Free
     val trackColor = MaterialTheme.colorScheme.surfaceVariant
     val fillColor = state.color()
     val markerColor = MaterialTheme.colorScheme.onSurface
+    val margin = freeMoney - safetyThreshold
+    val gaugeDescription = if (safetyThreshold > 0.0) {
+        stringResource(
+            if (margin >= 0) R.string.liberty_safety_gauge_description_positive else R.string.liberty_safety_gauge_description_negative,
+            formatMoney(freeMoney),
+            formatMoney(safetyThreshold),
+            formatMoney(kotlin.math.abs(margin))
+        )
+    } else {
+        stringResource(R.string.liberty_safety_gauge_description_no_threshold, formatMoney(freeMoney))
+    }
 
     Column(modifier = modifier) {
-        Canvas(modifier = Modifier.fillMaxWidth().height(20.dp)) {
+        Canvas(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(20.dp)
+                .clearAndSetSemantics { contentDescription = gaugeDescription }
+        ) {
             val barHeight = size.height
             drawRoundRect(color = trackColor, cornerRadius = CornerRadius(barHeight / 2, barHeight / 2))
             if (filledFraction > 0f) {
@@ -107,14 +125,13 @@ fun SafetyThresholdGauge(freeMoney: Double, safetyThreshold: Double, state: Free
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
-                val margin = freeMoney - safetyThreshold
                 Text(
                     stringResource(
                         if (margin >= 0) R.string.liberty_safety_margin_positive else R.string.liberty_safety_margin_negative,
                         formatMoney(kotlin.math.abs(margin))
                     ),
                     style = MaterialTheme.typography.bodySmall,
-                    color = if (margin >= 0) MaterialTheme.colorScheme.onSurfaceVariant else NegativeRed
+                    color = if (margin >= 0) MaterialTheme.colorScheme.onSurfaceVariant else negativeRed
                 )
             }
         }

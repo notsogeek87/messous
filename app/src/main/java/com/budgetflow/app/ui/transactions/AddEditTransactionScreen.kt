@@ -2,6 +2,7 @@ package com.budgetflow.app.ui.transactions
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
@@ -10,6 +11,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
@@ -44,6 +47,7 @@ import com.budgetflow.app.ui.components.AmountField
 import com.budgetflow.app.ui.components.CategoryDropdown
 import com.budgetflow.app.ui.components.ServiceLogo
 import com.budgetflow.app.ui.components.ServiceSuggestionsPanel
+import com.budgetflow.app.ui.components.isInvalidAmount
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneOffset
@@ -68,17 +72,28 @@ fun AddEditTransactionScreen(transactionId: Long?, onDone: () -> Unit) {
     )
     val state by viewModel.uiState.collectAsState()
     var showDatePicker by remember { mutableStateOf(false) }
+    var showDeleteConfirm by remember { mutableStateOf(false) }
+    val isEditing = transactionId != null
 
-    LaunchedEffect(state.isSaved) {
-        if (state.isSaved) onDone()
+    LaunchedEffect(state.isSaved, state.isDeleted) {
+        if (state.isSaved || state.isDeleted) onDone()
     }
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(stringResource(R.string.transactions_add)) },
+                title = { Text(stringResource(if (isEditing) R.string.action_edit else R.string.transactions_add)) },
                 navigationIcon = {
-                    IconButton(onClick = onDone) { Icon(Icons.Filled.ArrowBack, contentDescription = null) }
+                    IconButton(onClick = onDone) {
+                        Icon(Icons.Filled.ArrowBack, contentDescription = stringResource(R.string.action_back))
+                    }
+                },
+                actions = {
+                    if (isEditing) {
+                        IconButton(onClick = { showDeleteConfirm = true }) {
+                            Icon(Icons.Filled.Delete, contentDescription = stringResource(R.string.transaction_delete))
+                        }
+                    }
                 }
             )
         }
@@ -94,7 +109,7 @@ fun AddEditTransactionScreen(transactionId: Long?, onDone: () -> Unit) {
         ) {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Text(stringResource(R.string.transaction_type))
-                androidx.compose.foundation.layout.Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     FilterChip(
                         selected = state.type == TransactionType.EXPENSE,
                         onClick = { viewModel.updateType(TransactionType.EXPENSE) },
@@ -122,7 +137,13 @@ fun AddEditTransactionScreen(transactionId: Long?, onDone: () -> Unit) {
                 ServiceSuggestionsPanel(matches = state.suggestions, onSelect = viewModel::selectSuggestion)
             }
 
-            AmountField(value = state.amount, onValueChange = viewModel::updateAmount, modifier = Modifier.fillMaxWidth())
+            AmountField(
+                value = state.amount,
+                onValueChange = viewModel::updateAmount,
+                isError = state.amount.isInvalidAmount(),
+                supportingText = if (state.amount.isInvalidAmount()) stringResource(R.string.form_error_amount) else null,
+                modifier = Modifier.fillMaxWidth()
+            )
 
             CategoryDropdown(
                 categories = state.categories,
@@ -135,6 +156,8 @@ fun AddEditTransactionScreen(transactionId: Long?, onDone: () -> Unit) {
                 accounts = state.accounts,
                 selectedAccountId = state.accountId,
                 onAccountSelected = viewModel::updateAccount,
+                isError = state.accounts.isEmpty(),
+                supportingText = if (state.accounts.isEmpty()) stringResource(R.string.form_error_no_account) else null,
                 modifier = Modifier.fillMaxWidth()
             )
 
@@ -142,7 +165,7 @@ fun AddEditTransactionScreen(transactionId: Long?, onDone: () -> Unit) {
                 Text("${stringResource(R.string.transaction_date)}: ${state.date.format(dateFormatter)}")
             }
 
-            Button(onClick = viewModel::save, modifier = Modifier.fillMaxWidth()) {
+            Button(onClick = viewModel::save, enabled = state.canSave, modifier = Modifier.fillMaxWidth()) {
                 Text(stringResource(R.string.transaction_save))
             }
         }
@@ -169,5 +192,20 @@ fun AddEditTransactionScreen(transactionId: Long?, onDone: () -> Unit) {
         ) {
             DatePicker(state = datePickerState)
         }
+    }
+
+    if (showDeleteConfirm) {
+        AlertDialog(
+            onDismissRequest = { showDeleteConfirm = false },
+            title = { Text(stringResource(R.string.transaction_delete_confirm_title)) },
+            confirmButton = {
+                TextButton(onClick = { showDeleteConfirm = false; viewModel.delete() }) {
+                    Text(stringResource(R.string.action_delete))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDeleteConfirm = false }) { Text(stringResource(R.string.action_cancel)) }
+            }
+        )
     }
 }

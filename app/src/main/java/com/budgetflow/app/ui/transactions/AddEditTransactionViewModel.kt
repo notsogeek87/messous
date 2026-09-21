@@ -37,8 +37,13 @@ data class TransactionFormState(
     /** Live suggestions for [description] (spec section 3) - never forced, just offered while typing. */
     val suggestions: List<ServiceMatch> = emptyList(),
     /** Set only right after the user taps a suggestion; cleared as soon as they edit the description again. */
-    val recognizedService: RecognizableService? = null
-)
+    val recognizedService: RecognizableService? = null,
+    val isDeleted: Boolean = false
+) {
+    val isAmountValid: Boolean get() = amount.toAmountOrNull()?.let { it > 0.0 } == true
+    /** Gates the Save button - visible validation instead of a silent no-op on tap (spec: never fail quietly). */
+    val canSave: Boolean get() = isAmountValid && accountId != null
+}
 
 class AddEditTransactionViewModel(
     transactionId: Long?,
@@ -143,6 +148,26 @@ class AddEditTransactionViewModel(
                 )
             )
             _uiState.update { it.copy(isSaved = true) }
+        }
+    }
+
+    fun delete() {
+        val state = _uiState.value
+        val id = state.transactionId ?: return
+        viewModelScope.launch {
+            transactionRepository.delete(
+                Transaction(
+                    id = id,
+                    amount = state.amount.toAmountOrNull() ?: 0.0,
+                    type = state.type,
+                    categoryId = state.categoryId,
+                    date = state.date,
+                    description = state.description,
+                    accountId = state.accountId ?: 0,
+                    createdAtEpochMillis = existingCreatedAt.value ?: System.currentTimeMillis()
+                )
+            )
+            _uiState.update { it.copy(isDeleted = true) }
         }
     }
 }

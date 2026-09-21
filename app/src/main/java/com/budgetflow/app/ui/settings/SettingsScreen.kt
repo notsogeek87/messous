@@ -11,20 +11,16 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountBalance
-import androidx.compose.material.icons.filled.AccountBalanceWallet
-import androidx.compose.material.icons.filled.BarChart
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Category
-import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.Download
-import androidx.compose.material.icons.filled.Receipt
-import androidx.compose.material.icons.filled.Security
 import androidx.compose.material.icons.filled.Upload
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -51,22 +47,18 @@ import com.budgetflow.app.R
 import com.budgetflow.app.data.prefs.ThemeMode
 import com.budgetflow.app.di.ServiceLocator
 import com.budgetflow.app.di.simpleViewModelFactory
-import com.budgetflow.app.ui.components.AmountField
-import com.budgetflow.app.ui.components.formatMoney
-import com.budgetflow.app.ui.components.toAmountOrNull
+import com.budgetflow.app.ui.lock.canUseBiometricLock
 import kotlinx.coroutines.launch
 import java.io.BufferedReader
 import java.io.InputStreamReader
 
+/**
+ * "Réglages" (spec §10.2): app configuration only - theme, the app's own lock, data in/out,
+ * categories. Everything about the user's actual budget lives one level up, in "Mon budget".
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingsScreen(
-    onOpenAccounts: () -> Unit,
-    onOpenCategories: () -> Unit,
-    onOpenTransactions: () -> Unit,
-    onOpenBudget: () -> Unit,
-    onOpenStatistics: () -> Unit
-) {
+fun SettingsScreen(onBack: () -> Unit, onOpenCategories: () -> Unit) {
     val viewModel: SettingsViewModel = viewModel(
         factory = simpleViewModelFactory { SettingsViewModel(ServiceLocator.preferences, ServiceLocator.backupRepository) }
     )
@@ -75,14 +67,18 @@ fun SettingsScreen(
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
     var pendingImportJson by remember { mutableStateOf<String?>(null) }
-    var showThresholdDialog by remember { mutableStateOf(false) }
+
+    val exportSuccessMessage = stringResource(R.string.settings_export_success)
+    val importSuccessMessage = stringResource(R.string.settings_import_success)
+    val importErrorMessage = stringResource(R.string.settings_import_error)
+    val biometricUnavailableMessage = stringResource(R.string.settings_biometric_unavailable)
 
     val exportLauncher = rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("application/json")) { uri ->
         if (uri == null) return@rememberLauncherForActivityResult
         scope.launch {
             val json = viewModel.exportJson()
             context.contentResolver.openOutputStream(uri)?.use { it.write(json.toByteArray()) }
-            snackbarHostState.showSnackbar(context.getString(R.string.settings_export))
+            snackbarHostState.showSnackbar(exportSuccessMessage)
         }
     }
 
@@ -97,63 +93,32 @@ fun SettingsScreen(
     }
 
     Scaffold(
-        topBar = { TopAppBar(title = { Text(stringResource(R.string.settings_title)) }) },
+        topBar = {
+            TopAppBar(
+                title = { Text(stringResource(R.string.settings_title)) },
+                navigationIcon = {
+                    IconButton(onClick = onBack) {
+                        Icon(Icons.Filled.ArrowBack, contentDescription = stringResource(R.string.action_back))
+                    }
+                }
+            )
+        },
         snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { padding ->
         LazyColumn(modifier = Modifier.fillMaxSize().padding(padding)) {
-            item { SectionHeader(stringResource(R.string.settings_section_situation)) }
-            item {
-                SettingsRow(
-                    icon = Icons.Filled.Receipt,
-                    title = stringResource(R.string.settings_transactions),
-                    onClick = onOpenTransactions
-                )
-            }
-            item {
-                SettingsRow(
-                    icon = Icons.Filled.AccountBalanceWallet,
-                    title = stringResource(R.string.settings_budgets),
-                    onClick = onOpenBudget
-                )
-            }
-            item {
-                SettingsRow(
-                    icon = Icons.Filled.BarChart,
-                    title = stringResource(R.string.settings_statistics),
-                    onClick = onOpenStatistics
-                )
-            }
-            item {
-                SettingsRow(
-                    icon = Icons.Filled.AccountBalance,
-                    title = stringResource(R.string.settings_accounts),
-                    onClick = onOpenAccounts
-                )
-            }
-            item {
-                SettingsRow(
-                    icon = Icons.Filled.Category,
-                    title = stringResource(R.string.settings_categories),
-                    onClick = onOpenCategories
-                )
-            }
-
-            item { Divider() }
-            item { SectionHeader(stringResource(R.string.settings_section_freedom)) }
-            item {
-                SettingsRow(
-                    icon = Icons.Filled.Security,
-                    title = stringResource(R.string.settings_safety_threshold),
-                    subtitle = stringResource(R.string.settings_safety_threshold_body, formatMoney(state.safetyThreshold)),
-                    onClick = { showThresholdDialog = true }
-                )
-            }
+            item { SectionHeader(stringResource(R.string.settings_section_security)) }
             item {
                 SettingsSwitchRow(
                     title = stringResource(R.string.settings_biometric_lock),
                     subtitle = stringResource(R.string.settings_biometric_lock_body),
                     checked = state.biometricLockEnabled,
-                    onCheckedChange = viewModel::setBiometricLockEnabled
+                    onCheckedChange = { enabled ->
+                        if (enabled && !canUseBiometricLock(context)) {
+                            scope.launch { snackbarHostState.showSnackbar(biometricUnavailableMessage) }
+                        } else {
+                            viewModel.setBiometricLockEnabled(enabled)
+                        }
+                    }
                 )
             }
 
@@ -173,6 +138,13 @@ fun SettingsScreen(
                     title = stringResource(R.string.settings_import),
                     subtitle = stringResource(R.string.settings_import_body),
                     onClick = { importLauncher.launch(arrayOf("application/json")) }
+                )
+            }
+            item {
+                SettingsRow(
+                    icon = Icons.Filled.Category,
+                    title = stringResource(R.string.settings_categories),
+                    onClick = onOpenCategories
                 )
             }
 
@@ -227,47 +199,13 @@ fun SettingsScreen(
                     scope.launch {
                         val result = viewModel.importJson(json)
                         pendingImportJson = null
-                        snackbarHostState.showSnackbar(
-                            if (result.isSuccess) context.getString(R.string.settings_import) else result.exceptionOrNull()?.message.orEmpty()
-                        )
+                        snackbarHostState.showSnackbar(if (result.isSuccess) importSuccessMessage else importErrorMessage)
                     }
                 }) { Text(stringResource(R.string.action_confirm)) }
             },
             dismissButton = { TextButton(onClick = { pendingImportJson = null }) { Text(stringResource(R.string.action_cancel)) } }
         )
     }
-
-    if (showThresholdDialog) {
-        SafetyThresholdDialog(
-            initialAmount = state.safetyThreshold,
-            onDismiss = { showThresholdDialog = false },
-            onSave = { amount -> viewModel.setSafetyThreshold(amount); showThresholdDialog = false }
-        )
-    }
-}
-
-@Composable
-private fun SafetyThresholdDialog(initialAmount: Double, onDismiss: () -> Unit, onSave: (Double) -> Unit) {
-    var input by remember { mutableStateOf(if (initialAmount > 0.0) initialAmount.toString() else "") }
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text(stringResource(R.string.settings_safety_threshold_dialog_title)) },
-        text = {
-            Column {
-                Text(
-                    stringResource(R.string.settings_safety_threshold_dialog_body),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(bottom = 12.dp)
-                )
-                AmountField(value = input, onValueChange = { input = it }, label = stringResource(R.string.settings_safety_threshold))
-            }
-        },
-        confirmButton = {
-            TextButton(onClick = { onSave(input.toAmountOrNull() ?: 0.0) }) { Text(stringResource(R.string.action_confirm)) }
-        },
-        dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_cancel)) } }
-    )
 }
 
 @Composable
@@ -294,7 +232,6 @@ private fun SettingsRow(icon: androidx.compose.ui.graphics.vector.ImageVector, t
                 subtitle?.let { Text(it, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant) }
             }
         }
-        Icon(Icons.Filled.ChevronRight, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
     }
 }
 

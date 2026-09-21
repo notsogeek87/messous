@@ -2,7 +2,6 @@ package com.budgetflow.app.ui.whatif
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,6 +14,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
@@ -44,6 +44,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.budgetflow.app.R
 import com.budgetflow.app.di.ServiceLocator
 import com.budgetflow.app.di.simpleViewModelFactory
+import com.budgetflow.app.domain.model.SavingsGoal
 import com.budgetflow.app.ui.components.AmountField
 import com.budgetflow.app.ui.components.AnimatedMoneyText
 import com.budgetflow.app.ui.components.FreedomStateBadge
@@ -51,6 +52,7 @@ import com.budgetflow.app.ui.components.MoneyText
 import com.budgetflow.app.ui.components.color
 import com.budgetflow.app.ui.components.formatMoney
 import com.budgetflow.app.ui.components.toAmountOrNull
+import com.budgetflow.engine.BudgetEngine
 import com.budgetflow.engine.model.ExpenseSimulation
 import kotlinx.coroutines.launch
 
@@ -91,7 +93,10 @@ fun WhatIfScreen() {
                     modifier = Modifier.weight(1f),
                     onExpenseAdded = { message -> scope.launch { snackbarHostState.showSnackbar(message) } }
                 )
-                WhatIfMode.ALLOCATE -> AllocateContent(modifier = Modifier.weight(1f))
+                WhatIfMode.ALLOCATE -> AllocateContent(
+                    modifier = Modifier.weight(1f),
+                    onContributed = { message -> scope.launch { snackbarHostState.showSnackbar(message) } }
+                )
             }
         }
     }
@@ -213,8 +218,13 @@ private fun ImpactCard(simulation: ExpenseSimulation) {
 
 @Composable
 private fun ThresholdMessageCard(simulation: ExpenseSimulation) {
-    val message = simulation.amountUnderThreshold?.let { stringResource(R.string.whatif_threshold_breach, formatMoney(it)) }
-        ?: stringResource(R.string.whatif_threshold_ok)
+    // A threshold of 0 isn't "respected", it's unset - "Ton seuil serait respecté" would be a
+    // reassurance about a check that was never actually configured (audit §6/Lot 4 P5).
+    val message = when {
+        simulation.after.safetyThreshold <= 0.0 -> stringResource(R.string.whatif_threshold_not_set)
+        simulation.amountUnderThreshold != null -> stringResource(R.string.whatif_threshold_breach, formatMoney(simulation.amountUnderThreshold!!))
+        else -> stringResource(R.string.whatif_threshold_ok)
+    }
     Text(
         message,
         style = MaterialTheme.typography.bodyLarge,
@@ -232,10 +242,21 @@ private fun ScenarioRow(label: String, simulation: ExpenseSimulation) {
 
 // --- "Que faire de X €?" (spec section 13) ---------------------------------------------------
 
+/**
+ * Unlike the four fixed-percentage cards this used to show, every card here acts on a real
+ * savings goal - "Verser" genuinely writes to it, so picking a scenario is never a dead end
+ * (audit §9/Lot 4 P19). The balanced épargne/plaisir slider stays as pure, honest exploration:
+ * it never claimed to save anything, so it needs no action to stop being a dead end.
+ */
 @Composable
-private fun AllocateContent(modifier: Modifier = Modifier) {
+private fun AllocateContent(modifier: Modifier = Modifier, onContributed: (String) -> Unit) {
+    val viewModel: AllocateViewModel = viewModel(
+        factory = simpleViewModelFactory { AllocateViewModel(ServiceLocator.savingsGoalRepository) }
+    )
+    val goals by viewModel.goals.collectAsState()
     var amountInput by remember { mutableStateOf("") }
     val amount = amountInput.toAmountOrNull()?.takeIf { it > 0.0 }
+    val contributedFormat = stringResource(R.string.whatif_allocate_contributed_format)
 
     LazyColumn(
         modifier = modifier.fillMaxSize(),
@@ -261,20 +282,26 @@ private fun AllocateContent(modifier: Modifier = Modifier) {
                 )
             }
         } else {
-            item {
-                ScenarioCard(stringResource(R.string.whatif_allocate_vacation)) {
-                    SplitRow(stringResource(R.string.whatif_allocate_fun), amount * 0.6)
-                    SplitRow(stringResource(R.string.whatif_allocate_margin), amount * 0.4)
+            if (goals.isEmpty()) {
+                item {
+                    Text(
+                        stringResource(R.string.whatif_allocate_no_goals),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
                 }
-            }
-            item {
-                ScenarioCard(stringResource(R.string.whatif_allocate_project)) {
-                    SplitRow(stringResource(R.string.whatif_allocate_goal), amount)
-                }
-            }
-            item {
-                ScenarioCard(stringResource(R.string.whatif_allocate_security)) {
-                    SplitRow(stringResource(R.string.whatif_allocate_kept), amount)
+            } else {
+                item { Text(stringResource(R.string.whatif_allocate_goal), style = MaterialTheme.typography.titleSmall) }
+                items(goals, key = { it.id }) { goal ->
+                    GoalAllocationCard(
+                        goal = goal,
+                        amount = amount,
+                        onContribute = {
+                            viewModel.contribute(goal, amount) {
+                                onContributed(contributedFormat.format(goal.label))
+                            }
+                        }
+                    )
                 }
             }
             item { BalancedScenarioCard(amount) }
@@ -283,11 +310,32 @@ private fun AllocateContent(modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun ScenarioCard(title: String, content: @Composable ColumnScope.() -> Unit) {
+private fun GoalAllocationCard(goal: SavingsGoal, amount: Double, onContribute: () -> Unit) {
+    val delayDays = BudgetEngine.goalDelayDays(amount, goal.monthlyContribution)
     Card(modifier = Modifier.fillMaxWidth()) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Text(title, style = MaterialTheme.typography.titleMedium)
-            content()
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                Text(goal.label, style = MaterialTheme.typography.titleMedium)
+                Text(
+                    stringResource(R.string.goal_progress, goal.progressPercent),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+            LinearProgressIndicator(
+                progress = { goal.progressPercent / 100f },
+                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
+            )
+            delayDays?.let {
+                Text(
+                    stringResource(R.string.whatif_allocate_goal_impact, it),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+            Button(onClick = onContribute, modifier = Modifier.fillMaxWidth().padding(top = 8.dp)) {
+                Text(stringResource(R.string.whatif_allocate_contribute_cta, formatMoney(amount)))
+            }
         }
     }
 }

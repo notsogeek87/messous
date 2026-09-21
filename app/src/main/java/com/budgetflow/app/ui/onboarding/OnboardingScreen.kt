@@ -18,9 +18,9 @@ import androidx.compose.material.icons.filled.AccountBalanceWallet
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Lightbulb
 import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Savings
 import androidx.compose.material.icons.filled.Timeline
+import androidx.compose.material.icons.filled.Today
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
@@ -98,13 +98,14 @@ fun OnboardingScreen(onFinished: () -> Unit) {
                     ONBOARDING_STEP_INCOME -> IncomeStep(state, viewModel)
                     ONBOARDING_STEP_EXPENSES -> ExpensesStep(state, viewModel)
                     ONBOARDING_STEP_VARIABLE -> VariableStep(state, viewModel)
+                    ONBOARDING_STEP_SAFETY -> SafetyStep(state, viewModel)
                     ONBOARDING_STEP_DONE -> DoneStep(state)
                 }
             }
 
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 if (state.step > ONBOARDING_STEP_WELCOME) {
-                    OutlinedButton(onClick = viewModel::previousStep) { Text(stringResource(R.string.action_cancel)) }
+                    OutlinedButton(onClick = viewModel::previousStep) { Text(stringResource(R.string.onboarding_previous)) }
                 } else {
                     Spacer(modifier = Modifier.size(1.dp))
                 }
@@ -240,6 +241,40 @@ private fun VariableStep(state: OnboardingUiState, viewModel: OnboardingViewMode
     }
 }
 
+/** "Ta sécurité financière" (spec §6/Lot 4 - P5): the two numbers the whole "seuil de sécurité"
+ * story depends on, asked once, up front, each with a way to skip it and a sensible default
+ * instead of a blank page. Both remain editable later from "Mon budget" and Réglages. */
+@Composable
+private fun SafetyStep(state: OnboardingUiState, viewModel: OnboardingViewModel) {
+    Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+        Text(stringResource(R.string.onboarding_safety_title), style = MaterialTheme.typography.headlineMedium)
+        Text(stringResource(R.string.onboarding_safety_body), color = MaterialTheme.colorScheme.onSurfaceVariant)
+
+        AmountField(
+            value = state.currentBalance,
+            onValueChange = viewModel::updateCurrentBalance,
+            label = stringResource(R.string.onboarding_balance_label),
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+            AmountField(
+                value = state.safetyThreshold,
+                onValueChange = viewModel::updateSafetyThreshold,
+                label = stringResource(R.string.settings_safety_threshold),
+                modifier = Modifier.fillMaxWidth()
+            )
+            if (state.suggestedSafetyThreshold > 0.0) {
+                Text(
+                    stringResource(R.string.onboarding_threshold_suggestion, com.budgetflow.app.ui.components.formatMoney(state.suggestedSafetyThreshold)),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+        }
+    }
+}
+
 @Composable
 private fun PendingItemRow(label: String, amount: Double, onRemove: () -> Unit) {
     Card(modifier = Modifier.fillMaxWidth()) {
@@ -247,7 +282,9 @@ private fun PendingItemRow(label: String, amount: Double, onRemove: () -> Unit) 
             Text(label)
             Row(verticalAlignment = Alignment.CenterVertically) {
                 MoneyText(amount = amount)
-                IconButton(onClick = onRemove) { Icon(Icons.Filled.Delete, contentDescription = null) }
+                IconButton(onClick = onRemove) {
+                    Icon(Icons.Filled.Delete, contentDescription = stringResource(R.string.action_delete_item, label))
+                }
             }
         }
     }
@@ -267,6 +304,9 @@ private fun DoneStep(state: OnboardingUiState) {
             SectionCard(title = stringResource(R.string.dashboard_this_month)) {
                 LabeledRow(stringResource(R.string.dashboard_available_budget)) { MoneyText(summary.availableBudget, colorBySign = true) }
                 LabeledRow(stringResource(R.string.dashboard_remaining_to_spend)) { MoneyText(summary.remainingToSpend, colorBySign = true) }
+                summary.freeMoney?.let { free ->
+                    LabeledRow(stringResource(R.string.liberty_free_money_row_label)) { MoneyText(free, colorBySign = true) }
+                }
             }
         }
 
@@ -283,10 +323,10 @@ private fun NavIntro() {
             color = MaterialTheme.colorScheme.primary,
             modifier = Modifier.padding(bottom = 4.dp)
         )
-        NavIntroRow(Icons.Filled.AccountBalanceWallet, stringResource(R.string.nav_liberty), stringResource(R.string.onboarding_nav_liberty_desc))
+        NavIntroRow(Icons.Filled.Today, stringResource(R.string.nav_liberty), stringResource(R.string.onboarding_nav_liberty_desc))
         NavIntroRow(Icons.Filled.Timeline, stringResource(R.string.nav_future), stringResource(R.string.onboarding_nav_future_desc))
         NavIntroRow(Icons.Filled.Lightbulb, stringResource(R.string.nav_whatif), stringResource(R.string.onboarding_nav_whatif_desc))
-        NavIntroRow(Icons.Filled.Person, stringResource(R.string.nav_me), stringResource(R.string.onboarding_nav_me_desc))
+        NavIntroRow(Icons.Filled.AccountBalanceWallet, stringResource(R.string.nav_me), stringResource(R.string.onboarding_nav_me_desc))
     }
 }
 

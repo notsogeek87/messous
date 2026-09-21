@@ -17,7 +17,9 @@ fun AmountField(
     value: String,
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
-    label: String = stringResource(R.string.transaction_amount)
+    label: String = stringResource(R.string.transaction_amount),
+    isError: Boolean = false,
+    supportingText: String? = null
 ) {
     OutlinedTextField(
         value = value,
@@ -30,8 +32,14 @@ fun AmountField(
         label = { Text(label) },
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
         suffix = { Text("€") },
+        isError = isError,
+        supportingText = supportingText?.let { { Text(it) } },
         modifier = modifier
     )
 }
 
 fun String.toAmountOrNull(): Double? = replace(',', '.').toDoubleOrNull()
+
+/** True once [this] has content that cannot become a valid, strictly-positive amount. Blank is
+ * not itself an error - a pristine, untouched field should not scold the user before they type. */
+fun String.isInvalidAmount(): Boolean = isNotBlank() && (toAmountOrNull() == null || toAmountOrNull()!! <= 0.0)

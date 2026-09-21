@@ -504,6 +504,17 @@ rare, pour une quinzaine de lignes de Compose.
 
 ## 11. Backlog proposé
 
+> **Statut : implémenté** sur la branche `claude/audit-ux-app-rt-mmigug` (les 23 points ci-dessous).
+> Écarts assumés par rapport au libellé d'origine : l'item 15 a **supprimé** le curseur de jour de
+> l'accueil plutôt que de le déplacer tel quel — le curseur temporel déjà présent sur « Mon futur »
+> couvre le même besoin (solde et liberté quotidienne à une date choisie), donc dupliquer son code
+> n'apportait rien ; l'item 20 couvre les `contentDescription`/`semantics` mais n'ajoute pas de tests
+> d'instrumentation (aucun n'existait dans le projet) ; l'item 21 n'a pas touché les abréviations de
+> mois/jours codées en dur (l'app est mono-langue par construction, aucun bénéfice réel) ; l'item 23
+> a choisi l'option « mono-devise assumée » plutôt que le formatage par compte. Compilation non
+> vérifiée dans cet environnement (SDK Android et dépôt Maven Google inaccessibles) : revue humaine
+> et build avant merge recommandés.
+
 **Lot 1 — Confiance et fondamentaux** (correctifs courts, gros gain)
 1. Aligner le chiffre héros et sa couleur sur une seule base de calcul (P2).
 2. Flèche retour sur Budget / Transactions / Statistiques (P3).

@@ -1,5 +1,6 @@
 package com.budgetflow.app.ui.theme
 
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
 // Fallback palette for API < 31 (no dynamic color) and as seed for the brand identity.
@@ -23,6 +24,27 @@ val DarkSurface = Color(0xFF191C1A)
 val DarkError = Color(0xFFFFB4AB)
 
 // Semantic colors used across the dashboard/statistics, independent of the Material scheme.
-val PositiveGreen = Color(0xFF2E7D5B)
-val NegativeRed = Color(0xFFBA1A1A)
-val NeutralAmber = Color(0xFFB8860B)
+//
+// Each one has a light-theme and a dark-theme value: a single fixed hex cannot clear WCAG AA
+// (4.5:1) against both a near-white and a near-black surface at once. Use the composable
+// [positiveGreen]/[negativeRed]/[neutralAmber] accessors below instead of these directly - they
+// pick the right variant for the theme actually in effect (including a user-forced light/dark
+// mode, not just the system setting).
+val PositiveGreenLight = Color(0xFF2E7D5B) // 4.9:1 on LightSurface
+val PositiveGreenDark = Color(0xFF9AD4B9) // 10.2:1 on DarkSurface
+val NegativeRedLight = Color(0xFFBA1A1A) // 6.3:1 on LightSurface
+val NegativeRedDark = Color(0xFFFFB4AB) // 10.1:1 on DarkSurface
+val NeutralAmberLight = Color(0xFF8F6A0A) // 4.9:1 on LightSurface
+val NeutralAmberDark = Color(0xFFB8860B) // 5.3:1 on DarkSurface
+
+/** "Positive" amounts/states - theme-aware, always ≥4.5:1 against the current surface. */
+val positiveGreen: Color
+    @Composable get() = if (LocalIsDarkTheme.current) PositiveGreenDark else PositiveGreenLight
+
+/** "Negative" amounts/states - theme-aware, always ≥4.5:1 against the current surface. */
+val negativeRed: Color
+    @Composable get() = if (LocalIsDarkTheme.current) NegativeRedDark else NegativeRedLight
+
+/** "Caution" amounts/states - theme-aware, always ≥4.5:1 against the current surface. */
+val neutralAmber: Color
+    @Composable get() = if (LocalIsDarkTheme.current) NeutralAmberDark else NeutralAmberLight
