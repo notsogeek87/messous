@@ -14,7 +14,8 @@ import kotlinx.coroutines.launch
 data class SettingsUiState(
     val themeMode: ThemeMode = ThemeMode.SYSTEM,
     val dynamicColorEnabled: Boolean = true,
-    val biometricLockEnabled: Boolean = false
+    val biometricLockEnabled: Boolean = false,
+    val safetyThreshold: Double = 0.0
 )
 
 class SettingsViewModel(
@@ -25,14 +26,16 @@ class SettingsViewModel(
     val uiState: StateFlow<SettingsUiState> = combine(
         preferences.themeMode,
         preferences.dynamicColorEnabled,
-        preferences.biometricLockEnabled
-    ) { theme, dynamic, biometric ->
-        SettingsUiState(themeMode = theme, dynamicColorEnabled = dynamic, biometricLockEnabled = biometric)
+        preferences.biometricLockEnabled,
+        preferences.safetyThreshold
+    ) { theme, dynamic, biometric, safetyThreshold ->
+        SettingsUiState(themeMode = theme, dynamicColorEnabled = dynamic, biometricLockEnabled = biometric, safetyThreshold = safetyThreshold)
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), SettingsUiState())
 
     fun setThemeMode(mode: ThemeMode) = viewModelScope.launch { preferences.setThemeMode(mode) }
     fun setDynamicColorEnabled(enabled: Boolean) = viewModelScope.launch { preferences.setDynamicColorEnabled(enabled) }
     fun setBiometricLockEnabled(enabled: Boolean) = viewModelScope.launch { preferences.setBiometricLockEnabled(enabled) }
+    fun setSafetyThreshold(amount: Double) = viewModelScope.launch { preferences.setSafetyThreshold(amount) }
 
     suspend fun exportJson(): String = backupRepository.exportToJson()
 

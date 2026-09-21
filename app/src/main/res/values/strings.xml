@@ -7,6 +7,78 @@
     <string name="nav_budget">Budget</string>
     <string name="nav_statistics">Statistiques</string>
     <string name="nav_settings">Paramètres</string>
+    <string name="nav_liberty">Liberté</string>
+    <string name="nav_future">Futur</string>
+    <string name="nav_whatif">Et si…</string>
+    <string name="nav_me">Moi</string>
+
+    <!-- Freedom state (spec section 6) -->
+    <string name="freedom_state_comfort">Confort</string>
+    <string name="freedom_state_caution">Attention</string>
+    <string name="freedom_state_alert">Sécurité</string>
+
+    <!-- Ma liberté -->
+    <string name="liberty_free_money_label">Argent libre</string>
+    <string name="liberty_balance_label">Solde</string>
+    <string name="liberty_daily_freedom_intro">Tu peux dépenser environ</string>
+    <string name="liberty_daily_freedom_unit">%1$s / jour</string>
+    <string name="liberty_daily_freedom_until_end">jusqu\'à la fin du mois (%1$d j.)</string>
+    <string name="liberty_safety_threshold_label">Seuil : %1$s</string>
+    <string name="liberty_safety_margin_positive">%1$s de marge</string>
+    <string name="liberty_safety_margin_negative">%1$s sous le seuil</string>
+    <string name="liberty_no_account_title">Ajoute un compte</string>
+    <string name="liberty_no_account_body">Renseigne le solde d\'un compte pour découvrir ton argent libre.</string>
+    <string name="liberty_no_data_title">Aucune donnée pour l\'instant</string>
+    <string name="liberty_no_data_body">Ajoute un revenu et tes dépenses fixes pour voir ta liberté.</string>
+    <string name="liberty_add_account_cta">Ajouter un compte</string>
+    <string name="liberty_simulate_cta">Et si je dépensais quelque chose ?</string>
+    <string name="liberty_upcoming_title">À venir</string>
+    <string name="liberty_see_future">Voir mon futur →</string>
+    <string name="liberty_message_big_expense">Une grosse dépense arrive %1$s.</string>
+    <string name="liberty_message_alert">Garde un peu de marge pour la fin du mois.</string>
+    <string name="liberty_message_caution">Ta liberté quotidienne diminue, fais attention.</string>
+    <string name="liberty_message_comfortable">Tu peux vivre normalement aujourd\'hui.</string>
+    <string name="liberty_message_normal">Tout va bien. Tu as %1$s de liberté aujourd\'hui.</string>
+
+    <!-- Mon futur -->
+    <string name="future_title">Mon futur</string>
+    <string name="future_today">Aujourd\'hui</string>
+    <string name="future_month_end_estimate">Fin de mois estimée</string>
+    <string name="future_time_travel_label">Voyage dans le temps</string>
+    <string name="future_next_months">Mois suivants</string>
+    <string name="future_empty">Aucune échéance prévue ce mois-ci</string>
+    <string name="future_free_money_at_date">Argent libre ce jour-là</string>
+    <string name="future_daily_freedom_at_date">Liberté quotidienne restante</string>
+
+    <!-- Et si...? -->
+    <string name="whatif_title">Et si…?</string>
+    <string name="whatif_mode_expense">Simuler une dépense</string>
+    <string name="whatif_mode_allocate">Que faire de cette somme ?</string>
+    <string name="whatif_amount_label">Montant</string>
+    <string name="whatif_label_hint">Pour quoi ? (optionnel)</string>
+    <string name="whatif_before">Avant</string>
+    <string name="whatif_after">Après</string>
+    <string name="whatif_cost_in_freedom">Cette dépense réduit ta liberté quotidienne d\'environ %1$s.</string>
+    <string name="whatif_threshold_breach">Cette dépense te ferait passer %1$s sous ton seuil de sécurité.</string>
+    <string name="whatif_threshold_ok">Ton seuil de sécurité serait respecté.</string>
+    <string name="whatif_goal_impact">Retarderait « %1$s » d\'environ %2$d jours.</string>
+    <string name="whatif_scenario_now">Maintenant</string>
+    <string name="whatif_scenario_15_days">Dans 15 jours</string>
+    <string name="whatif_scenario_next_month">Le mois prochain</string>
+    <string name="whatif_cancel">Annuler</string>
+    <string name="whatif_add_real_expense">Ajouter réellement cette dépense</string>
+    <string name="whatif_added_confirmation">Dépense ajoutée</string>
+    <string name="whatif_empty_prompt">Saisis un montant pour voir l\'impact, tout de suite.</string>
+    <string name="whatif_allocate_amount_label">J\'ai cette somme de disponible</string>
+    <string name="whatif_allocate_vacation">Vacances</string>
+    <string name="whatif_allocate_project">Projet</string>
+    <string name="whatif_allocate_security">Sécurité</string>
+    <string name="whatif_allocate_balanced">Équilibré</string>
+    <string name="whatif_allocate_fun">Plaisir</string>
+    <string name="whatif_allocate_savings">Épargne</string>
+    <string name="whatif_allocate_margin">Marge</string>
+    <string name="whatif_allocate_goal">Vers un objectif</string>
+    <string name="whatif_allocate_kept">Conservés</string>
 
     <!-- Onboarding -->
     <string name="onboarding_welcome_title">Bienvenue dans BudgetFlow</string>
@@ -116,8 +188,17 @@
     <string name="category_icon">Icône</string>
     <string name="category_delete_confirm">Supprimer cette catégorie ?</string>
 
-    <!-- Settings -->
-    <string name="settings_title">Paramètres</string>
+    <!-- Settings (Moi) -->
+    <string name="settings_title">Moi</string>
+    <string name="settings_section_situation">Ma situation</string>
+    <string name="settings_transactions">Transactions</string>
+    <string name="settings_budgets">Revenus &amp; budgets</string>
+    <string name="settings_statistics">Statistiques</string>
+    <string name="settings_section_freedom">Ma sécurité financière</string>
+    <string name="settings_safety_threshold">Seuil de sécurité</string>
+    <string name="settings_safety_threshold_body">%1$s toujours gardés de côté</string>
+    <string name="settings_safety_threshold_dialog_title">Mon seuil de sécurité</string>
+    <string name="settings_safety_threshold_dialog_body">BudgetFlow ne te laissera jamais l\'oublier : ce montant sera toujours mis de côté avant de calculer ton argent libre.</string>
     <string name="settings_section_data">Données</string>
     <string name="settings_export">Exporter mes données</string>
     <string name="settings_export_body">Génère un fichier JSON lisible contenant toutes vos données.</string>

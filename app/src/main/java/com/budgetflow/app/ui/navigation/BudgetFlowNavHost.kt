@@ -15,13 +15,14 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.budgetflow.app.ui.accounts.AccountsScreen
 import com.budgetflow.app.ui.budget.BudgetScreen
-import com.budgetflow.app.ui.calendar.CalendarScreen
 import com.budgetflow.app.ui.categories.CategoriesScreen
-import com.budgetflow.app.ui.dashboard.DashboardScreen
+import com.budgetflow.app.ui.future.FutureScreen
+import com.budgetflow.app.ui.liberty.LibertyScreen
 import com.budgetflow.app.ui.settings.SettingsScreen
 import com.budgetflow.app.ui.statistics.StatisticsScreen
 import com.budgetflow.app.ui.transactions.AddEditTransactionScreen
 import com.budgetflow.app.ui.transactions.TransactionsScreen
+import com.budgetflow.app.ui.whatif.WhatIfScreen
 
 /** The main app shell, shown once onboarding is complete: bottom nav + all secondary screens pushed on top. */
 @Composable
@@ -36,20 +37,46 @@ fun BudgetFlowNavHost() {
     ) { padding ->
         NavHost(
             navController = navController,
-            startDestination = Routes.DASHBOARD,
+            startDestination = Routes.LIBERTY,
             modifier = Modifier.padding(padding)
         ) {
-            composable(Routes.DASHBOARD) {
-                DashboardScreen(
-                    onOpenCalendar = { navController.navigate(Routes.CALENDAR) },
+            composable(Routes.LIBERTY) {
+                LibertyScreen(
                     onOpenBudget = {
                         navController.navigate(Routes.BUDGET) {
                             popUpTo(navController.graph.findStartDestination().id) { saveState = true }
                             launchSingleTop = true
                         }
+                    },
+                    onOpenAccounts = { navController.navigate(Routes.ACCOUNTS) },
+                    onOpenFuture = {
+                        navController.navigate(Routes.FUTURE) {
+                            popUpTo(navController.graph.findStartDestination().id) { saveState = true }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                    },
+                    onOpenWhatIf = {
+                        navController.navigate(Routes.WHATIF) {
+                            popUpTo(navController.graph.findStartDestination().id) { saveState = true }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
                     }
                 )
             }
+            composable(Routes.FUTURE) { FutureScreen() }
+            composable(Routes.WHATIF) { WhatIfScreen() }
+            composable(Routes.ME) {
+                SettingsScreen(
+                    onOpenAccounts = { navController.navigate(Routes.ACCOUNTS) },
+                    onOpenCategories = { navController.navigate(Routes.CATEGORIES) },
+                    onOpenTransactions = { navController.navigate(Routes.TRANSACTIONS) },
+                    onOpenBudget = { navController.navigate(Routes.BUDGET) },
+                    onOpenStatistics = { navController.navigate(Routes.STATISTICS) }
+                )
+            }
+
             composable(Routes.TRANSACTIONS) {
                 TransactionsScreen(
                     onAddTransaction = { navController.navigate(Routes.ADD_TRANSACTION) },
@@ -68,13 +95,6 @@ fun BudgetFlowNavHost() {
             }
             composable(Routes.BUDGET) { BudgetScreen() }
             composable(Routes.STATISTICS) { StatisticsScreen() }
-            composable(Routes.SETTINGS) {
-                SettingsScreen(
-                    onOpenAccounts = { navController.navigate(Routes.ACCOUNTS) },
-                    onOpenCategories = { navController.navigate(Routes.CATEGORIES) }
-                )
-            }
-            composable(Routes.CALENDAR) { CalendarScreen(onBack = { navController.popBackStack() }) }
             composable(Routes.ACCOUNTS) { AccountsScreen(onBack = { navController.popBackStack() }) }
             composable(Routes.CATEGORIES) { CategoriesScreen(onBack = { navController.popBackStack() }) }
         }

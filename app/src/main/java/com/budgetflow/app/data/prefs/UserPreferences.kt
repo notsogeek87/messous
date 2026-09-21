@@ -2,6 +2,7 @@ package com.budgetflow.app.data.prefs
 
 import android.content.Context
 import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.doublePreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
@@ -23,6 +24,7 @@ class UserPreferences(private val context: Context) {
         val THEME_MODE = stringPreferencesKey("theme_mode")
         val DYNAMIC_COLOR = booleanPreferencesKey("dynamic_color")
         val BIOMETRIC_LOCK = booleanPreferencesKey("biometric_lock")
+        val SAFETY_THRESHOLD = doublePreferencesKey("safety_threshold")
     }
 
     val isOnboardingDone: Flow<Boolean> =
@@ -52,5 +54,13 @@ class UserPreferences(private val context: Context) {
 
     suspend fun setBiometricLockEnabled(enabled: Boolean) {
         context.dataStore.edit { it[Keys.BIOMETRIC_LOCK] = enabled }
+    }
+
+    /** "Mon seuil de sécurité" (spec section 5): the minimum amount the user always wants kept untouched. */
+    val safetyThreshold: Flow<Double> =
+        context.dataStore.data.map { it[Keys.SAFETY_THRESHOLD] ?: 0.0 }
+
+    suspend fun setSafetyThreshold(amount: Double) {
+        context.dataStore.edit { it[Keys.SAFETY_THRESHOLD] = amount.coerceAtLeast(0.0) }
     }
 }

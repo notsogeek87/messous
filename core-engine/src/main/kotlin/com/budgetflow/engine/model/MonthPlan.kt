@@ -17,6 +17,8 @@ import java.time.YearMonth
  * @param plannedMonthlySavings amount the user intends to set aside this month.
  * @param currentAccountBalances the current real balance of every account (only
  *   meaningful when [today] actually falls inside [month]; otherwise pass an empty list).
+ * @param safetyThreshold the minimum amount the user always wants to keep untouched
+ *   (spec section 5, "mon seuil de sécurité"). Defaults to 0, i.e. no cushion requested.
  */
 data class MonthPlan(
     val month: YearMonth,
@@ -25,7 +27,8 @@ data class MonthPlan(
     val recurringExpenses: List<ScheduledFlow>,
     val variableBudgets: List<VariableBudgetInput>,
     val plannedMonthlySavings: Double,
-    val currentAccountBalances: List<Double> = emptyList()
+    val currentAccountBalances: List<Double> = emptyList(),
+    val safetyThreshold: Double = 0.0
 ) {
     val monthStart: LocalDate get() = month.atDay(1)
     val monthEnd: LocalDate get() = month.atEndOfMonth()

@@ -1,5 +1,6 @@
 package com.budgetflow.app.domain.usecase
 
+import com.budgetflow.app.data.prefs.UserPreferences
 import com.budgetflow.app.domain.model.Account
 import com.budgetflow.app.domain.model.Income
 import com.budgetflow.app.domain.model.RecurringExpense
@@ -19,6 +20,7 @@ import com.budgetflow.engine.model.MonthSummary
 import com.budgetflow.engine.model.VariableBudgetInput
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import java.time.LocalDate
 import java.time.YearMonth
 
@@ -27,6 +29,10 @@ import java.time.YearMonth
  * ce mois-ci ?" - by assembling a [MonthPlan] from every repository and
  * handing it to [BudgetEngine]. Reactive: recomputes whenever any underlying
  * table changes.
+ *
+ * [observePlan] is exposed separately from [observe] so other features (the
+ * "Et si...?" simulator, the future timeline) can reuse the exact same plan
+ * construction logic without duplicating it or touching the database.
  */
 class GetDashboardForMonthUseCase(
     private val incomeRepository: IncomeRepository,
@@ -34,9 +40,10 @@ class GetDashboardForMonthUseCase(
     private val variableBudgetRepository: VariableBudgetRepository,
     private val savingsGoalRepository: SavingsGoalRepository,
     private val accountRepository: AccountRepository,
-    private val transactionRepository: TransactionRepository
+    private val transactionRepository: TransactionRepository,
+    private val userPreferences: UserPreferences
 ) {
-    private data class Inputs(
+    private data class RepositoryInputs(
         val incomes: List<Income>,
         val expenses: List<RecurringExpense>,
         val budgets: List<VariableBudget>,
@@ -44,28 +51,51 @@ class GetDashboardForMonthUseCase(
         val accounts: List<Account>
     )
 
-    fun observe(month: YearMonth, today: LocalDate): Flow<MonthSummary> {
-        val inputsFlow = combine(
+    private data class Inputs(
+        val incomes: List<Income>,
+        val expenses: List<RecurringExpense>,
+        val budgets: List<VariableBudget>,
+        val goals: List<SavingsGoal>,
+        val accounts: List<Account>,
+        val safetyThreshold: Double
+    )
+
+    fun observe(month: YearMonth, today: LocalDate): Flow<MonthSummary> =
+        observePlan(month, today).map(BudgetEngine::summarizeMonth)
+
+    fun observePlan(month: YearMonth, today: LocalDate): Flow<MonthPlan> {
+        val repositoryInputsFlow = combine(
             incomeRepository.observeIncomes(),
             recurringExpenseRepository.observeExpenses(),
             variableBudgetRepository.observeBudgets(),
             savingsGoalRepository.observeGoals(),
             accountRepository.observeAccounts()
         ) { incomes, expenses, budgets, goals, accounts ->
-            Inputs(incomes, expenses, budgets, goals, accounts)
+            RepositoryInputs(incomes, expenses, budgets, goals, accounts)
+        }
+
+        val inputsFlow = combine(repositoryInputsFlow, userPreferences.safetyThreshold) { repositoryInputs, safetyThreshold ->
+            Inputs(
+                incomes = repositoryInputs.incomes,
+                expenses = repositoryInputs.expenses,
+                budgets = repositoryInputs.budgets,
+                goals = repositoryInputs.goals,
+                accounts = repositoryInputs.accounts,
+                safetyThreshold = safetyThreshold
+            )
         }
 
         return inputsFlow.combine(transactionRepository.observeAll()) { inputs, transactions ->
-            buildSummary(inputs, transactions, month, today)
+            buildPlan(inputs, transactions, month, today)
         }
     }
 
-    private fun buildSummary(
+    private fun buildPlan(
         inputs: Inputs,
         transactions: List<Transaction>,
         month: YearMonth,
         today: LocalDate
-    ): MonthSummary {
+    ): MonthPlan {
         val monthStart = month.atDay(1)
         val monthEnd = month.atEndOfMonth()
 
@@ -90,16 +120,15 @@ class GetDashboardForMonthUseCase(
 
         val plannedSavings = inputs.goals.filter { it.isActive }.sumOf { it.monthlyContribution }
 
-        val plan = MonthPlan(
+        return MonthPlan(
             month = month,
             today = today,
             incomes = inputs.incomes.filter { it.isActive }.map { it.toScheduledFlow() },
             recurringExpenses = inputs.expenses.filter { it.isActive }.map { it.toScheduledFlow() },
             variableBudgets = variableBudgetInputs,
             plannedMonthlySavings = plannedSavings,
-            currentAccountBalances = accountBalances
+            currentAccountBalances = accountBalances,
+            safetyThreshold = inputs.safetyThreshold
         )
-
-        return BudgetEngine.summarizeMonth(plan)
     }
 }

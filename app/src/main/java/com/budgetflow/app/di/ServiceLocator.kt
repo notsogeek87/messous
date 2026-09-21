@@ -20,8 +20,10 @@ import com.budgetflow.app.domain.repository.SavingsGoalRepository
 import com.budgetflow.app.domain.repository.TransactionRepository
 import com.budgetflow.app.domain.repository.VariableBudgetRepository
 import com.budgetflow.app.domain.usecase.GetCalendarOccurrencesUseCase
+import com.budgetflow.app.domain.usecase.GetDailyProjectionUseCase
 import com.budgetflow.app.domain.usecase.GetDashboardForMonthUseCase
 import com.budgetflow.app.domain.usecase.GetMonthlyForecastsUseCase
+import com.budgetflow.app.domain.usecase.SimulateExpenseUseCase
 
 /**
  * Hand-rolled dependency container. BudgetFlow deliberately avoids an
@@ -57,7 +59,7 @@ object ServiceLocator {
     val dashboardUseCase: GetDashboardForMonthUseCase by lazy {
         GetDashboardForMonthUseCase(
             incomeRepository, recurringExpenseRepository, variableBudgetRepository,
-            savingsGoalRepository, accountRepository, transactionRepository
+            savingsGoalRepository, accountRepository, transactionRepository, preferences
         )
     }
     val calendarUseCase: GetCalendarOccurrencesUseCase by lazy {
@@ -66,4 +68,6 @@ object ServiceLocator {
     val forecastUseCase: GetMonthlyForecastsUseCase by lazy {
         GetMonthlyForecastsUseCase(incomeRepository, recurringExpenseRepository, variableBudgetRepository, savingsGoalRepository)
     }
+    val simulateExpenseUseCase: SimulateExpenseUseCase by lazy { SimulateExpenseUseCase(dashboardUseCase) }
+    val dailyProjectionUseCase: GetDailyProjectionUseCase by lazy { GetDailyProjectionUseCase(dashboardUseCase) }
 }

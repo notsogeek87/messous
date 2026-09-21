@@ -1,7 +1,10 @@
 package com.budgetflow.engine
 
 import com.budgetflow.engine.model.CalendarOccurrence
+import com.budgetflow.engine.model.DailyProjection
+import com.budgetflow.engine.model.ExpenseSimulation
 import com.budgetflow.engine.model.FlowDirection
+import com.budgetflow.engine.model.FreedomState
 import com.budgetflow.engine.model.MonthPlan
 import com.budgetflow.engine.model.MonthSummary
 import com.budgetflow.engine.model.MonthlyForecast
@@ -9,6 +12,7 @@ import com.budgetflow.engine.model.ScheduledFlow
 import com.budgetflow.engine.model.VariableBudgetInput
 import java.time.LocalDate
 import java.time.YearMonth
+import kotlin.math.roundToInt
 
 /**
  * BudgetFlow's financial calculation engine.
@@ -50,6 +54,15 @@ object BudgetEngine {
         val currentBankBalance = if (plan.currentAccountBalances.isEmpty()) null else plan.currentAccountBalances.sum()
         val reallyAvailableNow = currentBankBalance?.let { it + upcomingIncome - upcomingFixedExpenses }
 
+        // Money already spoken for beyond fixed expenses: envelopes not yet spent, savings not yet set aside.
+        val remainingVariableBudget = (totalVariableBudgetAllocated - totalVariableSpent).coerceAtLeast(0.0)
+        val remainingPlannedSavings = plannedSavings.coerceAtLeast(0.0)
+
+        val freeMoney = reallyAvailableNow?.let { it - remainingVariableBudget - remainingPlannedSavings }
+        val safetyMargin = freeMoney?.let { it - plan.safetyThreshold }
+        val freedomState = freedomState(safetyMargin, plan.safetyThreshold)
+        val freedomPerDay = if (freeMoney != null && remainingDaysInMonth > 0) freeMoney / remainingDaysInMonth else null
+
         return MonthSummary(
             totalIncome = totalIncome,
             totalFixedExpenses = totalFixedExpenses,
@@ -63,8 +76,93 @@ object BudgetEngine {
             currentBankBalance = currentBankBalance,
             upcomingIncome = upcomingIncome,
             upcomingFixedExpenses = upcomingFixedExpenses,
-            reallyAvailableNow = reallyAvailableNow
+            reallyAvailableNow = reallyAvailableNow,
+            remainingVariableBudget = remainingVariableBudget,
+            remainingPlannedSavings = remainingPlannedSavings,
+            freeMoney = freeMoney,
+            safetyThreshold = plan.safetyThreshold,
+            safetyMargin = safetyMargin,
+            freedomState = freedomState,
+            freedomPerDay = freedomPerDay
         )
+    }
+
+    /**
+     * [FreedomState] is deliberately relative to the user's own threshold, never absolute:
+     * - no margin data (no accounts) -> COMFORT, so an empty ledger never reads as an alarm.
+     * - a negative margin (free money already under the threshold) -> ALERT.
+     * - a positive margin smaller than the threshold itself (less than one more "cushion's worth"
+     *   of buffer beyond it) -> CAUTION.
+     * - anything else -> COMFORT.
+     */
+    private fun freedomState(safetyMargin: Double?, safetyThreshold: Double): FreedomState = when {
+        safetyMargin == null -> FreedomState.COMFORT
+        safetyMargin < 0 -> FreedomState.ALERT
+        safetyThreshold > 0 && safetyMargin < safetyThreshold -> FreedomState.CAUTION
+        else -> FreedomState.COMFORT
+    }
+
+    /**
+     * Simulates spending [amount] right now, without mutating anything (spec section 23):
+     * only the account balance total moves, exactly as a real expense recorded today would.
+     * Every other input (incomes, recurring expenses, envelopes, savings, threshold) is
+     * evaluated identically before and after, so the whole delta is attributable to [amount].
+     */
+    fun simulateExpense(plan: MonthPlan, amount: Double): ExpenseSimulation {
+        val before = summarizeMonth(plan)
+        val simulatedPlan = plan.copy(
+            currentAccountBalances = if (plan.currentAccountBalances.isEmpty()) {
+                emptyList()
+            } else {
+                listOf(plan.currentAccountBalances.sum() - amount)
+            }
+        )
+        val after = summarizeMonth(simulatedPlan)
+        return ExpenseSimulation(amount = amount, before = before, after = after)
+    }
+
+    /**
+     * How many days a savings goal would slip if [amount] were diverted away from it,
+     * assuming its current [monthlyContribution] rate. Null when the goal has no active
+     * contribution rate to measure a delay against.
+     */
+    fun goalDelayDays(amount: Double, monthlyContribution: Double): Int? {
+        if (monthlyContribution <= 0.0 || amount <= 0.0) return null
+        val dailyContribution = monthlyContribution / 30.0
+        return (amount / dailyContribution).roundToInt()
+    }
+
+    /**
+     * Day-by-day running balance from [MonthPlan.today] to [MonthPlan.monthEnd] (spec sections
+     * 8 & 9, "Mon futur" / "voyage dans le temps"). The first entry is always today itself, with
+     * no occurrences attached (today's balance already reflects whatever happened today).
+     * Empty when there is no account balance to project from.
+     */
+    fun projectDailyBalances(plan: MonthPlan): List<DailyProjection> {
+        if (plan.currentAccountBalances.isEmpty()) return emptyList()
+        val today = plan.today
+        val monthEnd = plan.monthEnd
+        if (today.isAfter(monthEnd)) return emptyList()
+
+        val futureStart = today.plusDays(1)
+        val occurrencesByDate = if (!futureStart.isAfter(monthEnd)) {
+            calendarOccurrences(plan.incomes, plan.recurringExpenses, futureStart, monthEnd).groupBy { it.date }
+        } else {
+            emptyMap()
+        }
+
+        var runningBalance = plan.currentAccountBalances.sum()
+        val projections = mutableListOf(DailyProjection(today, runningBalance, emptyList()))
+
+        var date = futureStart
+        while (!date.isAfter(monthEnd)) {
+            val todaysOccurrences = occurrencesByDate[date].orEmpty()
+            val net = todaysOccurrences.sumOf { if (it.direction == FlowDirection.INCOME) it.amount else -it.amount }
+            runningBalance += net
+            projections += DailyProjection(date, runningBalance, todaysOccurrences)
+            date = date.plusDays(1)
+        }
+        return projections
     }
 
     /**
