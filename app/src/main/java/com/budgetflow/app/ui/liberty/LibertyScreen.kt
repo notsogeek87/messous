@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -28,6 +29,8 @@ import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Slider
+import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -45,20 +48,27 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.budgetflow.app.R
 import com.budgetflow.app.di.ServiceLocator
 import com.budgetflow.app.di.simpleViewModelFactory
+import com.budgetflow.app.domain.model.TransactionType
 import com.budgetflow.app.ui.components.AnimatedMoneyText
-import com.budgetflow.app.ui.components.DailyRemainingGauge
 import com.budgetflow.app.ui.components.EmptyState
 import com.budgetflow.app.ui.components.FreedomStateBadge
 import com.budgetflow.app.ui.components.MoneyText
 import com.budgetflow.app.ui.components.SafetyThresholdGauge
 import com.budgetflow.app.ui.components.color
 import com.budgetflow.app.ui.components.formatMoney
+import com.budgetflow.app.ui.components.frequencyLabel
+import com.budgetflow.app.ui.transactions.TransactionListItem
 import com.budgetflow.engine.model.CalendarOccurrence
 import com.budgetflow.engine.model.FlowDirection
 import com.budgetflow.engine.model.FreedomState
 import com.budgetflow.engine.model.MonthSummary
+import com.budgetflow.engine.model.ScheduledFlow
+import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
 import java.util.Locale
+import kotlin.math.roundToInt
+
+private val transactionDateFormatter = DateTimeFormatter.ofPattern("dd/MM")
 
 /**
  * "Ma liberté" (spec section 3): the app's home screen and its single most important surface.
@@ -76,7 +86,15 @@ fun LibertyScreen(
     onAddExpense: () -> Unit
 ) {
     val viewModel: LibertyViewModel = viewModel(
-        factory = simpleViewModelFactory { LibertyViewModel(ServiceLocator.dashboardUseCase, ServiceLocator.calendarUseCase) }
+        factory = simpleViewModelFactory {
+            LibertyViewModel(
+                ServiceLocator.dashboardUseCase,
+                ServiceLocator.calendarUseCase,
+                ServiceLocator.transactionRepository,
+                ServiceLocator.categoryRepository,
+                ServiceLocator.accountRepository
+            )
+        }
     )
     val state by viewModel.uiState.collectAsState()
     val summary = state.summary
@@ -198,6 +216,13 @@ private fun LibertyContent(
         }
 
         item {
+            val maxDay = maxOf(state.remainingToSpendByDay.size, 1)
+            var selectedDay by remember(state.today, maxDay) {
+                mutableStateOf(state.today.dayOfMonth.coerceIn(1, maxDay))
+            }
+            val remainingForSelectedDay = state.remainingToSpendByDay.getOrElse(selectedDay - 1) { summary.remainingToSpendToday }
+            val stateForSelectedDay = state.remainingToSpendStateByDay.getOrElse(selectedDay - 1) { summary.remainingToSpendTodayState }
+
             Card(modifier = Modifier.fillMaxWidth()) {
                 Column(modifier = Modifier.padding(20.dp)) {
                     Text(
@@ -206,19 +231,34 @@ private fun LibertyContent(
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     AnimatedMoneyText(
-                        amount = summary.remainingToSpendToday,
+                        amount = remainingForSelectedDay,
                         style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
-                        color = summary.remainingToSpendTodayState.color(),
-                        modifier = Modifier.padding(top = 4.dp, bottom = 12.dp)
+                        color = stateForSelectedDay.color(),
+                        modifier = Modifier.padding(top = 4.dp, bottom = 8.dp)
                     )
-                    DailyRemainingGauge(
-                        remainingToday = summary.remainingToSpendToday,
-                        remainingForMonth = summary.remainingToSpend,
-                        dayOfMonth = state.today.dayOfMonth,
-                        totalDaysInMonth = state.today.lengthOfMonth(),
-                        state = summary.remainingToSpendTodayState,
+                    Slider(
+                        value = selectedDay.toFloat(),
+                        onValueChange = { selectedDay = it.roundToInt().coerceIn(1, maxDay) },
+                        valueRange = 1f..maxDay.toFloat(),
+                        steps = maxOf(maxDay - 2, 0),
+                        colors = SliderDefaults.colors(
+                            thumbColor = stateForSelectedDay.color(),
+                            activeTrackColor = stateForSelectedDay.color()
+                        ),
                         modifier = Modifier.fillMaxWidth()
                     )
+                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                        Text(
+                            stringResource(R.string.liberty_day_gauge_day_marker, selectedDay, maxDay),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                        Text(
+                            stringResource(R.string.liberty_day_gauge_month_target, formatMoney(summary.remainingToSpend)),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
                 }
             }
         }
@@ -297,6 +337,75 @@ private fun LibertyContent(
                     )
                 }
             }
+        }
+
+        if (state.incomes.isNotEmpty() || state.recurringExpenses.isNotEmpty()) {
+            item {
+                Text(stringResource(R.string.liberty_recurring_title), style = MaterialTheme.typography.titleMedium)
+            }
+            items(state.incomes, key = { "income-${it.id}" }) { income -> RecurringFlowRow(income, isExpense = false) }
+            items(state.recurringExpenses, key = { "expense-${it.id}" }) { expense -> RecurringFlowRow(expense, isExpense = true) }
+        }
+
+        if (state.transactions.isNotEmpty()) {
+            item {
+                Text(
+                    stringResource(R.string.liberty_transactions_title),
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.padding(top = 4.dp)
+                )
+            }
+            items(state.transactions, key = { "tx-${it.transaction.id}" }) { item -> LibertyTransactionRow(item) }
+        }
+    }
+}
+
+@Composable
+private fun RecurringFlowRow(flow: ScheduledFlow, isExpense: Boolean) {
+    Card(modifier = Modifier.fillMaxWidth()) {
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(12.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column {
+                Text(flow.label, style = MaterialTheme.typography.bodyMedium)
+                Text(
+                    frequencyLabel(flow.frequency, flow.dayOfMonth, flow.dayOfWeek, flow.monthOfYear, flow.oneTimeDate),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+            MoneyText(
+                amount = if (isExpense) -flow.amount else flow.amount,
+                colorBySign = true,
+                style = MaterialTheme.typography.bodyMedium
+            )
+        }
+    }
+}
+
+@Composable
+private fun LibertyTransactionRow(item: TransactionListItem) {
+    Card(modifier = Modifier.fillMaxWidth()) {
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(12.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column {
+                Text(
+                    item.transaction.description.ifBlank { item.category?.name ?: "" },
+                    style = MaterialTheme.typography.bodyMedium
+                )
+                Text(
+                    "${item.transaction.date.format(transactionDateFormatter)} · ${item.account?.name ?: ""}",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+            val signedAmount = if (item.transaction.type == TransactionType.EXPENSE) -item.transaction.amount else item.transaction.amount
+            MoneyText(amount = signedAmount, colorBySign = true, style = MaterialTheme.typography.bodyMedium)
         }
     }
 }

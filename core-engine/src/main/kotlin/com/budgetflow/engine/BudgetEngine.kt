@@ -42,18 +42,8 @@ object BudgetEngine {
         val remainingDaysInMonth = remainingDaysInMonth(plan.today, monthStart, monthEnd)
         val dailyRecommendedBudget = if (remainingDaysInMonth > 0) remainingToSpend / remainingDaysInMonth else 0.0
 
-        // "Reste à vivre" as of today: only the income/fixed expenses actually due by today count,
-        // so this moves as the month's real income/expense dates pass - unlike [remainingToSpend],
-        // which always counts the whole month regardless of what has actually landed yet.
-        val elapsedRangeEnd = when {
-            plan.today.isBefore(monthStart) -> null
-            plan.today.isAfter(monthEnd) -> monthEnd
-            else -> plan.today
-        }
-        val incomeSoFar = elapsedRangeEnd?.let { end -> plan.incomes.sumOf { FrequencyProjector.totalDueInRange(it, monthStart, end) } } ?: 0.0
-        val fixedExpensesSoFar = elapsedRangeEnd?.let { end -> plan.recurringExpenses.sumOf { FrequencyProjector.totalDueInRange(it, monthStart, end) } } ?: 0.0
-        val remainingToSpendToday = incomeSoFar - fixedExpensesSoFar - totalVariableBudgetAllocated - plannedSavings - totalVariableSpent
-        val remainingToSpendTodayState = freedomState(remainingToSpendToday - plan.safetyThreshold, plan.safetyThreshold)
+        val remainingToSpendToday = remainingToSpendAsOf(plan, plan.today)
+        val remainingToSpendTodayState = freedomStateFor(remainingToSpendToday, plan.safetyThreshold)
 
         val futureWindowStart = maxOf(plan.today.plusDays(1), monthStart)
         val hasFutureWindow = !futureWindowStart.isAfter(monthEnd)
@@ -101,6 +91,29 @@ object BudgetEngine {
             freedomPerDay = freedomPerDay
         )
     }
+
+    /**
+     * [remainingToSpend] but counting only the income/fixed expenses actually due by [asOfDate] -
+     * the same plan-based projection [summarizeMonth] uses for "today" ([MonthSummary.remainingToSpendToday]),
+     * generalized to any day within [plan]'s month so an interactive gauge can preview any day the
+     * user picks, independently of the real "today". Before the month starts nothing has landed
+     * yet (0.0); on or after its last day, every flow has (same as [remainingToSpend]).
+     */
+    fun remainingToSpendAsOf(plan: MonthPlan, asOfDate: LocalDate): Double {
+        val monthStart = plan.monthStart
+        val monthEnd = plan.monthEnd
+        if (asOfDate.isBefore(monthStart)) return 0.0
+        val clamped = if (asOfDate.isAfter(monthEnd)) monthEnd else asOfDate
+
+        val incomeSoFar = plan.incomes.sumOf { FrequencyProjector.totalDueInRange(it, monthStart, clamped) }
+        val fixedExpensesSoFar = plan.recurringExpenses.sumOf { FrequencyProjector.totalDueInRange(it, monthStart, clamped) }
+        val totalVariableBudgetAllocated = plan.variableBudgets.sumOf(VariableBudgetInput::monthlyLimit)
+        val totalVariableSpent = plan.variableBudgets.sumOf(VariableBudgetInput::spentSoFar)
+        return incomeSoFar - fixedExpensesSoFar - totalVariableBudgetAllocated - plan.plannedMonthlySavings - totalVariableSpent
+    }
+
+    /** [freedomState] applied to an already-computed amount, e.g. [remainingToSpendAsOf] on a day other than today. */
+    fun freedomStateFor(amount: Double, safetyThreshold: Double): FreedomState = freedomState(amount - safetyThreshold, safetyThreshold)
 
     /**
      * [FreedomState] is deliberately relative to the user's own threshold, never absolute:
