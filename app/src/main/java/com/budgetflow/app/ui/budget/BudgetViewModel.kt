@@ -22,7 +22,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import java.time.LocalDate
 import java.time.YearMonth
 
 data class EnvelopeItem(val budget: VariableBudget, val category: Category?, val spentSoFar: Double) {
@@ -49,15 +48,6 @@ class BudgetViewModel(
     private val accountRepository: AccountRepository,
     private val transactionRepository: TransactionRepository
 ) : ViewModel() {
-
-    private data class Base(
-        val incomes: List<Income>,
-        val expenses: List<RecurringExpense>,
-        val budgets: List<VariableBudget>,
-        val goals: List<SavingsGoal>,
-        val categories: List<Category>,
-        val accounts: List<Account>
-    )
 
     val uiState: StateFlow<BudgetUiState> = combine(
         combine(incomeRepository.observeIncomes(), recurringExpenseRepository.observeExpenses(), variableBudgetRepository.observeBudgets()) { i, e, b -> Triple(i, e, b) },

@@ -113,6 +113,7 @@
     <string name="categories_add">Ajouter une catégorie</string>
     <string name="category_name">Nom</string>
     <string name="category_group">Groupe</string>
+    <string name="category_icon">Icône</string>
     <string name="category_delete_confirm">Supprimer cette catégorie ?</string>
 
     <!-- Settings -->
