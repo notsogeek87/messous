@@ -19,6 +19,9 @@
 
     <!-- Ma liberté -->
     <string name="liberty_free_money_label">Argent libre</string>
+    <string name="liberty_remaining_to_spend_label">Reste à vivre</string>
+    <string name="liberty_available_budget_caption">sur %1$s prévus ce mois-ci</string>
+    <string name="liberty_real_balance_label">Argent libre (solde réel) : %1$s</string>
     <string name="liberty_balance_label">Solde</string>
     <string name="liberty_daily_freedom_intro">Tu peux dépenser environ</string>
     <string name="liberty_daily_freedom_unit">%1$s / jour</string>
@@ -26,8 +29,6 @@
     <string name="liberty_safety_threshold_label">Seuil : %1$s</string>
     <string name="liberty_safety_margin_positive">%1$s de marge</string>
     <string name="liberty_safety_margin_negative">%1$s sous le seuil</string>
-    <string name="liberty_no_account_title">Ajoute un compte</string>
-    <string name="liberty_no_account_body">Renseigne le solde d\'un compte pour découvrir ton argent libre.</string>
     <string name="liberty_no_data_title">Aucune donnée pour l\'instant</string>
     <string name="liberty_no_data_body">Ajoute un revenu et tes dépenses fixes pour voir ta liberté.</string>
     <string name="liberty_add_account_cta">Ajouter un compte</string>

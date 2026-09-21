@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountBalance
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Savings
@@ -85,7 +84,7 @@ fun LibertyScreen(
 
     Scaffold(
         floatingActionButton = {
-            if (summary?.freeMoney != null) {
+            if (state.hasAnyData) {
                 Box {
                     ExtendedFloatingActionButton(onClick = { addMenuExpanded = true }, icon = {
                         Icon(Icons.Filled.Add, contentDescription = null)
@@ -114,18 +113,6 @@ fun LibertyScreen(
         when {
             state.isLoading || summary == null -> Box(modifier = Modifier.fillMaxSize().padding(padding))
 
-            summary.freeMoney == null -> Column(modifier = Modifier.fillMaxSize().padding(padding)) {
-                EmptyState(
-                    icon = Icons.Filled.AccountBalance,
-                    title = stringResource(R.string.liberty_no_account_title),
-                    body = stringResource(R.string.liberty_no_account_body),
-                    modifier = Modifier.weight(1f)
-                )
-                Button(onClick = onOpenAccounts, modifier = Modifier.fillMaxWidth().padding(16.dp)) {
-                    Text(stringResource(R.string.liberty_add_account_cta))
-                }
-            }
-
             !state.hasAnyData -> Column(modifier = Modifier.fillMaxSize().padding(padding)) {
                 EmptyState(
                     icon = Icons.Filled.Savings,
@@ -143,7 +130,8 @@ fun LibertyScreen(
                 summary = summary,
                 padding = padding,
                 onOpenFuture = onOpenFuture,
-                onOpenWhatIf = onOpenWhatIf
+                onOpenWhatIf = onOpenWhatIf,
+                onOpenAccounts = onOpenAccounts
             )
         }
     }
@@ -155,9 +143,10 @@ private fun LibertyContent(
     summary: MonthSummary,
     padding: PaddingValues,
     onOpenFuture: () -> Unit,
-    onOpenWhatIf: () -> Unit
+    onOpenWhatIf: () -> Unit,
+    onOpenAccounts: () -> Unit
 ) {
-    val freeMoney = summary.freeMoney!!
+    val freeMoney = summary.freeMoney
     val freedomState = summary.freedomState
 
     LazyColumn(
@@ -169,23 +158,40 @@ private fun LibertyContent(
             Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
                 FreedomStateBadge(freedomState)
                 Text(
-                    text = stringResource(R.string.liberty_free_money_label),
+                    text = stringResource(R.string.liberty_remaining_to_spend_label),
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.padding(top = 12.dp)
                 )
                 AnimatedMoneyText(
-                    amount = freeMoney,
+                    amount = summary.remainingToSpend,
                     style = MaterialTheme.typography.displayMedium.copy(fontWeight = FontWeight.Bold),
                     color = freedomState.color()
                 )
-                summary.currentBankBalance?.let { balance ->
+                Text(
+                    text = stringResource(R.string.liberty_available_budget_caption, formatMoney(summary.availableBudget)),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(top = 4.dp)
+                )
+                if (freeMoney != null) {
                     Text(
-                        text = "${stringResource(R.string.liberty_balance_label)} : ${formatMoney(balance)}",
+                        text = stringResource(R.string.liberty_real_balance_label, formatMoney(freeMoney)),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.padding(top = 4.dp)
                     )
+                    summary.currentBankBalance?.let { balance ->
+                        Text(
+                            text = "${stringResource(R.string.liberty_balance_label)} : ${formatMoney(balance)}",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                } else {
+                    TextButton(onClick = onOpenAccounts, modifier = Modifier.padding(top = 4.dp)) {
+                        Text(stringResource(R.string.liberty_add_account_cta))
+                    }
                 }
             }
         }
@@ -201,13 +207,11 @@ private fun LibertyContent(
                         style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
-                    summary.freedomPerDay?.let { perDay ->
-                        AnimatedMoneyText(
-                            amount = perDay,
-                            style = MaterialTheme.typography.displaySmall.copy(fontWeight = FontWeight.Bold),
-                            color = freedomState.color()
-                        )
-                    }
+                    AnimatedMoneyText(
+                        amount = summary.dailyRecommendedBudget,
+                        style = MaterialTheme.typography.displaySmall.copy(fontWeight = FontWeight.Bold),
+                        color = freedomState.color()
+                    )
                     Text(
                         stringResource(R.string.liberty_daily_freedom_until_end, summary.remainingDaysInMonth),
                         style = MaterialTheme.typography.bodyMedium,
@@ -217,15 +221,17 @@ private fun LibertyContent(
             }
         }
 
-        item {
-            Card(modifier = Modifier.fillMaxWidth()) {
-                Column(modifier = Modifier.padding(20.dp)) {
-                    SafetyThresholdGauge(
-                        freeMoney = freeMoney,
-                        safetyThreshold = summary.safetyThreshold,
-                        state = freedomState,
-                        modifier = Modifier.fillMaxWidth()
-                    )
+        if (freeMoney != null) {
+            item {
+                Card(modifier = Modifier.fillMaxWidth()) {
+                    Column(modifier = Modifier.padding(20.dp)) {
+                        SafetyThresholdGauge(
+                            freeMoney = freeMoney,
+                            safetyThreshold = summary.safetyThreshold,
+                            state = freedomState,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
                 }
             }
         }
@@ -297,6 +303,6 @@ private fun libertyMessage(state: LibertyUiState, summary: MonthSummary): String
         summary.freedomState == FreedomState.CAUTION -> stringResource(R.string.liberty_message_caution)
         freedomPerDay != null && summary.safetyThreshold > 0 && freedomPerDay > summary.safetyThreshold / 10.0 ->
             stringResource(R.string.liberty_message_comfortable)
-        else -> stringResource(R.string.liberty_message_normal, formatMoney(freedomPerDay ?: 0.0))
+        else -> stringResource(R.string.liberty_message_normal, formatMoney(freedomPerDay ?: summary.dailyRecommendedBudget))
     }
 }
