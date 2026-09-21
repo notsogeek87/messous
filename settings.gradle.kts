@@ -14,7 +14,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "BudgetFlow"
+rootProject.name = "Messous"
 
 include(":app")
 include(":core-engine")

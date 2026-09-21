@@ -164,7 +164,7 @@ fun SettingsScreen(
                     icon = Icons.Filled.Download,
                     title = stringResource(R.string.settings_export),
                     subtitle = stringResource(R.string.settings_export_body),
-                    onClick = { exportLauncher.launch("budgetflow-export.json") }
+                    onClick = { exportLauncher.launch("messous-export.json") }
                 )
             }
             item {
