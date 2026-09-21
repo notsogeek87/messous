@@ -77,9 +77,9 @@ fun AddEditExpenseScreen(expenseId: Long?, onDone: () -> Unit) {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
+                .imePadding()
                 .verticalScroll(rememberScrollState())
-                .padding(20.dp)
-                .imePadding(),
+                .padding(20.dp),
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
             val recognizedService = state.recognizedService
