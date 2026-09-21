@@ -14,10 +14,37 @@ android {
         applicationId = "com.budgetflow.app"
         minSdk = 26
         targetSdk = 35
-        versionCode = 1
-        versionName = "1.0.0"
+        // Surchargeable en CI via -PbudgetflowVersionCode=N -PbudgetflowVersionName=X.Y.N
+        // pour que chaque release GitHub porte une version unique et croissante.
+        versionCode = if (project.hasProperty("budgetflowVersionCode")) {
+            (project.property("budgetflowVersionCode") as String).toInt()
+        } else {
+            1
+        }
+        versionName = if (project.hasProperty("budgetflowVersionName")) {
+            project.property("budgetflowVersionName") as String
+        } else {
+            "1.0.0"
+        }
 
         vectorDrawables.useSupportLibrary = true
+    }
+
+    // Clé debug FIXE, committée dans le repo (app/debug.keystore).
+    // Sans ça, chaque runner CI neuf régénère sa propre clé debug aléatoire
+    // (~/.android/debug.keystore n'existe pas encore) : deux builds
+    // successifs sont alors signés différemment, et Android refuse
+    // d'installer la mise à jour par-dessus l'ancienne ("app non installée")
+    // tant qu'on n'a pas désinstallé à la main. Une clé debug n'a rien de
+    // secret (mot de passe "android" documenté par Google) — la committer
+    // est la pratique standard pour des builds CI reproductibles.
+    signingConfigs {
+        getByName("debug") {
+            storeFile = file("debug.keystore")
+            storePassword = "android"
+            keyAlias = "androiddebugkey"
+            keyPassword = "android"
+        }
     }
 
     buildTypes {
@@ -28,6 +55,7 @@ android {
         }
         debug {
             isMinifyEnabled = false
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
 
