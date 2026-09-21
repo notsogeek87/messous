@@ -74,6 +74,48 @@ class BudgetEngineTest {
         assertEquals(1623.0, summary.remainingToSpend, 0.0001)
     }
 
+    // --- Reste à vivre au jour le jour, selon la date des flux -----------------------------
+
+    @Test
+    fun `remaining to spend today only counts income and fixed expenses due so far`() {
+        val plan = MonthPlan(
+            month = YearMonth.of(2026, 10),
+            today = LocalDate.of(2026, 10, 10),
+            incomes = listOf(monthlyIncome(day = 28, amount = 4000.0)), // not paid yet
+            recurringExpenses = listOf(monthlyExpense(day = 5, amount = 1650.0, label = "fixed")), // already paid
+            variableBudgets = listOf(VariableBudgetInput(id = 1, label = "Courses", monthlyLimit = 1050.0, spentSoFar = 0.0)),
+            plannedMonthlySavings = 500.0
+        )
+        val summary = BudgetEngine.summarizeMonth(plan)
+        // Nothing received yet, the fixed expense already fell due, envelope/savings reserved from day 1:
+        // 0 - 1650 - 1050 - 500 = -3200, very different from the whole-month remainingToSpend of 800.
+        assertEquals(800.0, summary.remainingToSpend, 0.0001)
+        assertEquals(-3200.0, summary.remainingToSpendToday, 0.0001)
+    }
+
+    @Test
+    fun `remaining to spend today matches remaining to spend once every flow has landed`() {
+        val plan = MonthPlan(
+            month = YearMonth.of(2026, 10),
+            today = LocalDate.of(2026, 10, 31),
+            incomes = listOf(monthlyIncome(day = 1, amount = 4000.0)),
+            recurringExpenses = listOf(monthlyExpense(day = 5, amount = 1650.0, label = "fixed")),
+            variableBudgets = listOf(VariableBudgetInput(id = 1, label = "Courses", monthlyLimit = 1050.0, spentSoFar = 0.0)),
+            plannedMonthlySavings = 500.0
+        )
+        val summary = BudgetEngine.summarizeMonth(plan)
+        assertEquals(summary.remainingToSpend, summary.remainingToSpendToday, 0.0001)
+    }
+
+    @Test
+    fun `remaining to spend today is zero before the month starts, like an untouched month`() {
+        val plan = basePlan(YearMonth.of(2026, 12), today = LocalDate.of(2026, 9, 1)).copy(
+            incomes = listOf(monthlyIncome(day = 1, amount = 4000.0))
+        )
+        val summary = BudgetEngine.summarizeMonth(plan)
+        assertEquals(0.0, summary.remainingToSpendToday, 0.0001)
+    }
+
     // --- Section 5 "really available" example ---------------------------------------------
 
     @Test

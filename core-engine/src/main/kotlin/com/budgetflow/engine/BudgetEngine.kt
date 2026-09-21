@@ -42,6 +42,19 @@ object BudgetEngine {
         val remainingDaysInMonth = remainingDaysInMonth(plan.today, monthStart, monthEnd)
         val dailyRecommendedBudget = if (remainingDaysInMonth > 0) remainingToSpend / remainingDaysInMonth else 0.0
 
+        // "Reste à vivre" as of today: only the income/fixed expenses actually due by today count,
+        // so this moves as the month's real income/expense dates pass - unlike [remainingToSpend],
+        // which always counts the whole month regardless of what has actually landed yet.
+        val elapsedRangeEnd = when {
+            plan.today.isBefore(monthStart) -> null
+            plan.today.isAfter(monthEnd) -> monthEnd
+            else -> plan.today
+        }
+        val incomeSoFar = elapsedRangeEnd?.let { end -> plan.incomes.sumOf { FrequencyProjector.totalDueInRange(it, monthStart, end) } } ?: 0.0
+        val fixedExpensesSoFar = elapsedRangeEnd?.let { end -> plan.recurringExpenses.sumOf { FrequencyProjector.totalDueInRange(it, monthStart, end) } } ?: 0.0
+        val remainingToSpendToday = incomeSoFar - fixedExpensesSoFar - totalVariableBudgetAllocated - plannedSavings - totalVariableSpent
+        val remainingToSpendTodayState = freedomState(remainingToSpendToday - plan.safetyThreshold, plan.safetyThreshold)
+
         val futureWindowStart = maxOf(plan.today.plusDays(1), monthStart)
         val hasFutureWindow = !futureWindowStart.isAfter(monthEnd)
         val upcomingIncome = if (hasFutureWindow) {
@@ -73,6 +86,8 @@ object BudgetEngine {
             remainingToSpend = remainingToSpend,
             remainingDaysInMonth = remainingDaysInMonth,
             dailyRecommendedBudget = dailyRecommendedBudget,
+            remainingToSpendToday = remainingToSpendToday,
+            remainingToSpendTodayState = remainingToSpendTodayState,
             currentBankBalance = currentBankBalance,
             upcomingIncome = upcomingIncome,
             upcomingFixedExpenses = upcomingFixedExpenses,

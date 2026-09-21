@@ -23,6 +23,9 @@
     <string name="liberty_available_budget_caption">sur %1$s prévus ce mois-ci</string>
     <string name="liberty_real_balance_label">Argent libre (solde réel) : %1$s</string>
     <string name="liberty_balance_label">Solde</string>
+    <string name="liberty_remaining_today_label">Reste à vivre au jour d\'aujourd\'hui</string>
+    <string name="liberty_day_gauge_day_marker">Jour %1$d / %2$d</string>
+    <string name="liberty_day_gauge_month_target">Objectif du mois : %1$s</string>
     <string name="liberty_daily_freedom_intro">Tu peux dépenser environ</string>
     <string name="liberty_daily_freedom_unit">%1$s / jour</string>
     <string name="liberty_daily_freedom_until_end">jusqu\'à la fin du mois (%1$d j.)</string>

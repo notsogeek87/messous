@@ -26,6 +26,14 @@ data class MonthSummary(
     val remainingDaysInMonth: Int,
     /** [remainingToSpend] / [remainingDaysInMonth], 0 if there are no days left. */
     val dailyRecommendedBudget: Double,
+    /**
+     * [remainingToSpend] but counting only the income/fixed expenses actually due by [MonthPlan.today] -
+     * a plan-based projection like [remainingToSpend], but one that moves as the month's real
+     * income/expense dates pass, instead of assuming the whole month has already happened.
+     */
+    val remainingToSpendToday: Double,
+    /** [remainingToSpendToday] compared against [safetyThreshold], the same way [freedomState] compares [freeMoney]. */
+    val remainingToSpendTodayState: FreedomState,
     /** Sum of every account's current balance. Null when the month is a future forecast, not "now". */
     val currentBankBalance: Double?,
     /** Sum of future income occurrences (after [MonthPlan.today]) still expected this month. */

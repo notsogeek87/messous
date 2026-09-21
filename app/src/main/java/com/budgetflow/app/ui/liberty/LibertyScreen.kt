@@ -46,6 +46,7 @@ import com.budgetflow.app.R
 import com.budgetflow.app.di.ServiceLocator
 import com.budgetflow.app.di.simpleViewModelFactory
 import com.budgetflow.app.ui.components.AnimatedMoneyText
+import com.budgetflow.app.ui.components.DailyRemainingGauge
 import com.budgetflow.app.ui.components.EmptyState
 import com.budgetflow.app.ui.components.FreedomStateBadge
 import com.budgetflow.app.ui.components.MoneyText
@@ -192,6 +193,32 @@ private fun LibertyContent(
                     TextButton(onClick = onOpenAccounts, modifier = Modifier.padding(top = 4.dp)) {
                         Text(stringResource(R.string.liberty_add_account_cta))
                     }
+                }
+            }
+        }
+
+        item {
+            Card(modifier = Modifier.fillMaxWidth()) {
+                Column(modifier = Modifier.padding(20.dp)) {
+                    Text(
+                        stringResource(R.string.liberty_remaining_today_label),
+                        style = MaterialTheme.typography.titleSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    AnimatedMoneyText(
+                        amount = summary.remainingToSpendToday,
+                        style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
+                        color = summary.remainingToSpendTodayState.color(),
+                        modifier = Modifier.padding(top = 4.dp, bottom = 12.dp)
+                    )
+                    DailyRemainingGauge(
+                        remainingToday = summary.remainingToSpendToday,
+                        remainingForMonth = summary.remainingToSpend,
+                        dayOfMonth = state.today.dayOfMonth,
+                        totalDaysInMonth = state.today.lengthOfMonth(),
+                        state = summary.remainingToSpendTodayState,
+                        modifier = Modifier.fillMaxWidth()
+                    )
                 }
             }
         }
