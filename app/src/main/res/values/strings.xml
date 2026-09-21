@@ -99,6 +99,11 @@
     <string name="onboarding_add_income">Ajouter ce revenu</string>
     <string name="onboarding_add_expense">Ajouter une dépense</string>
     <string name="onboarding_add_envelope">Ajouter une enveloppe</string>
+    <string name="onboarding_nav_intro">Comment ça marche</string>
+    <string name="onboarding_nav_liberty_desc">Ce que tu peux dépenser aujourd\'hui sans risque</string>
+    <string name="onboarding_nav_future_desc">L\'évolution de ton solde dans les prochains jours</string>
+    <string name="onboarding_nav_whatif_desc">Teste l\'impact d\'un achat avant de le faire</string>
+    <string name="onboarding_nav_me_desc">Tes revenus, dépenses fixes et réglages</string>
 
     <!-- Dashboard -->
     <string name="dashboard_this_month">Ce mois-ci</string>

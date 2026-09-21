@@ -14,9 +14,13 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountBalanceWallet
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Lightbulb
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Savings
+import androidx.compose.material.icons.filled.Timeline
 import androidx.compose.material.icons.filled.WavingHand
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -36,6 +40,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.foundation.background
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -232,7 +238,11 @@ private fun PendingItemRow(label: String, amount: Double, onRemove: () -> Unit) 
 
 @Composable
 private fun DoneStep(state: OnboardingUiState) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(16.dp)) {
+    Column(
+        modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
         Icon(Icons.Filled.Savings, contentDescription = null, modifier = Modifier.size(56.dp), tint = MaterialTheme.colorScheme.primary)
         Text(stringResource(R.string.onboarding_done_title), style = MaterialTheme.typography.headlineMedium, textAlign = TextAlign.Center)
 
@@ -241,6 +251,39 @@ private fun DoneStep(state: OnboardingUiState) {
                 LabeledRow(stringResource(R.string.dashboard_available_budget)) { MoneyText(summary.availableBudget, colorBySign = true) }
                 LabeledRow(stringResource(R.string.dashboard_remaining_to_spend)) { MoneyText(summary.remainingToSpend, colorBySign = true) }
             }
+        }
+
+        NavIntro()
+    }
+}
+
+@Composable
+private fun NavIntro() {
+    Column(modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+        Text(
+            stringResource(R.string.onboarding_nav_intro),
+            style = MaterialTheme.typography.titleSmall,
+            color = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.padding(bottom = 4.dp)
+        )
+        NavIntroRow(Icons.Filled.AccountBalanceWallet, stringResource(R.string.nav_liberty), stringResource(R.string.onboarding_nav_liberty_desc))
+        NavIntroRow(Icons.Filled.Timeline, stringResource(R.string.nav_future), stringResource(R.string.onboarding_nav_future_desc))
+        NavIntroRow(Icons.Filled.Lightbulb, stringResource(R.string.nav_whatif), stringResource(R.string.onboarding_nav_whatif_desc))
+        NavIntroRow(Icons.Filled.Person, stringResource(R.string.nav_me), stringResource(R.string.onboarding_nav_me_desc))
+    }
+}
+
+@Composable
+private fun NavIntroRow(icon: androidx.compose.ui.graphics.vector.ImageVector, title: String, description: String) {
+    Row(
+        modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        Icon(icon, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
+        Column {
+            Text(title, style = MaterialTheme.typography.bodyLarge)
+            Text(description, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant, textAlign = TextAlign.Start)
         }
     }
 }
