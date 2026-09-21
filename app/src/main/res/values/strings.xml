@@ -32,6 +32,7 @@
     <string name="liberty_no_data_body">Ajoute un revenu et tes dépenses fixes pour voir ta liberté.</string>
     <string name="liberty_add_account_cta">Ajouter un compte</string>
     <string name="liberty_simulate_cta">Et si je dépensais quelque chose ?</string>
+    <string name="liberty_add_transaction_cta">Ajouter</string>
     <string name="liberty_upcoming_title">À venir</string>
     <string name="liberty_see_future">Voir mon futur →</string>
     <string name="liberty_message_big_expense">Une grosse dépense arrive %1$s.</string>

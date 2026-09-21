@@ -14,11 +14,13 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBalance
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Savings
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -56,14 +58,28 @@ import java.util.Locale
  * danger ?" - in the first five seconds, before any secondary detail.
  */
 @Composable
-fun LibertyScreen(onOpenBudget: () -> Unit, onOpenAccounts: () -> Unit, onOpenFuture: () -> Unit, onOpenWhatIf: () -> Unit) {
+fun LibertyScreen(
+    onOpenBudget: () -> Unit,
+    onOpenAccounts: () -> Unit,
+    onOpenFuture: () -> Unit,
+    onOpenWhatIf: () -> Unit,
+    onAddTransaction: () -> Unit
+) {
     val viewModel: LibertyViewModel = viewModel(
         factory = simpleViewModelFactory { LibertyViewModel(ServiceLocator.dashboardUseCase, ServiceLocator.calendarUseCase) }
     )
     val state by viewModel.uiState.collectAsState()
     val summary = state.summary
 
-    Scaffold { padding ->
+    Scaffold(
+        floatingActionButton = {
+            if (summary?.freeMoney != null) {
+                ExtendedFloatingActionButton(onClick = onAddTransaction, icon = {
+                    Icon(Icons.Filled.Add, contentDescription = null)
+                }, text = { Text(stringResource(R.string.liberty_add_transaction_cta)) })
+            }
+        }
+    ) { padding ->
         when {
             state.isLoading || summary == null -> Box(modifier = Modifier.fillMaxSize().padding(padding))
 
