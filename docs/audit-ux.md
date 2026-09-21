@@ -26,7 +26,7 @@ est un défaut.
 - Reconnaissance de service pendant la frappe, extraction du montant depuis le texte, thème dynamique,
   export/import local, tout hors ligne : autant de bons choix.
 
-**Les 5 problèmes qui coûtent le plus cher**
+**Les 6 problèmes qui coûtent le plus cher**
 
 | # | Problème | Impact |
 |---|---|---|
@@ -35,12 +35,15 @@ est un défaut.
 | P3 | **Écrans sans retour** : Budget, Transactions, Statistiques n'ont ni flèche retour ni barre d'onglets | L'utilisateur est piégé (geste système uniquement) |
 | P4 | « Enregistrer » **ne fait rien** en cas de saisie invalide, sans message | Échec silencieux, le pire des feedbacks |
 | P5 | Le **seuil de sécurité vaut 0 par défaut** et n'est jamais proposé | Tout le discours « sécurité » du produit tourne à vide |
+| P6 | L'onglet **« Moi » est un fourre-tout** : seule porte d'entrée vers Transactions, Statistiques et Catégories, sous un nom qui n'en parle pas | La moitié de l'app est introuvable |
 
-**Trois chantiers, par ordre de rentabilité**
+**Quatre chantiers, par ordre de rentabilité**
 1. **Hiérarchiser l'accueil** (P1, P2) — réduire à 1 chiffre + 1 phrase + 1 jauge.
 2. **Réparer les fondamentaux d'interaction** (P3, P4, confirmations de suppression, accessibilité) —
    corrections courtes, gain immédiat.
-3. **Finir le récit de sécurité** (P5, solde initial, mode allocation) — l'app promet une sécurité
+3. **Sortir l'app du tiroir « Moi »** (P6) — séparer le budget de l'utilisateur des réglages de l'app,
+   et aligner le vocabulaire.
+4. **Finir le récit de sécurité** (P5, solde initial, mode allocation) — l'app promet une sécurité
    qu'elle ne configure jamais.
 
 ---
@@ -333,7 +336,173 @@ de prise. C'est aussi ce qui explique l'absence totale de tests d'instrumentatio
 
 ---
 
-## 10. Backlog proposé
+## 10. P6 — L'espace « Moi » est un fourre-tout
+
+`ui/settings/SettingsScreen.kt:103-216`
+
+C'est le défaut le plus signalé à l'usage, et il est structurel : **« Moi » n'est pas un écran, c'est
+le tiroir où a été rangé tout ce qui n'entrait pas dans les trois autres onglets.**
+
+### 10.1 Cinq raisons précises de l'incompréhension
+
+**a) Le nom ne décrit pas le contenu.** L'onglet s'appelle « Moi », son icône est un bonhomme
+(`ui/navigation/Destinations.kt:45`). Dans une app **sans compte, sans profil, sans nom d'utilisateur**
+— c'est l'argument de vente n° 1 de l'onboarding — un onglet « Moi » promet des informations
+personnelles et livre une liste de réglages. L'utilisateur qui cherche ses transactions n'a aucune
+raison d'aller voir sous « Moi ».
+
+**b) « Moi » est pourtant la seule porte d'entrée vers la moitié de l'app.** Vérification des routes
+(`BudgetFlowNavHost.kt:76-81`) : **Transactions, Statistiques et Catégories ne sont accessibles de
+nulle part ailleurs**, et Budget uniquement depuis « Moi » ou depuis l'état vide de l'accueil. Les
+fonctions les plus quotidiennes (consulter son journal de dépenses) sont enterrées à la profondeur
+des réglages, derrière un libellé qui n'en parle pas.
+
+**c) La première section mélange quatre natures d'objets.** « Ma situation » enchaîne cinq lignes
+visuellement identiques (même icône, même chevron, même typographie) qui ne sont pas du tout de même
+nature :
+
+| Ligne | Nature réelle | Fréquence d'usage attendue |
+|---|---|---|
+| Transactions | journal de saisie | quotidienne |
+| Revenus & budgets | configuration du plan | mensuelle |
+| Statistiques | analyse | mensuelle |
+| Comptes | structure | rare |
+| Catégories | taxonomie | très rare |
+
+Du quotidien et du « une fois par an » présentés avec exactement le même poids : rien ne guide l'œil.
+
+**d) Le vocabulaire ne correspond pas aux destinations.** La ligne « Revenus & budgets » ouvre un
+écran intitulé « Budget » (`BudgetScreen.kt:88`), qui contient en réalité quatre onglets
+(Revenus / Dépenses fixes / Budgets variables / Objectifs) qu'on ne devine pas depuis la ligne.
+L'écran d'accueil, lui, appelle les mêmes objets « Revenus & dépenses fixes »
+(`liberty_recurring_title`). Trois noms pour une même chose.
+
+Le code porte d'ailleurs la trace d'une arborescence précédente : `nav_dashboard` (« Accueil »),
+`nav_transactions`, `nav_budget`, `nav_statistics`, `nav_settings` (« Paramètres ») sont toujours
+dans `strings.xml` et **ne sont plus utilisées nulle part**. L'app a changé de modèle de navigation
+sans que le vocabulaire suive : l'incohérence ressentie vient de là.
+
+**e) Le mot « sécurité » désigne quatre choses différentes.** Dans la même app, parfois dans le même
+écran :
+
+| Chaîne | Sens |
+|---|---|
+| `freedom_state_alert` = « Sécurité » | le niveau d'alerte le plus grave sur l'accueil |
+| `settings_section_freedom` = « Ma sécurité financière » | le titre de section |
+| `settings_safety_threshold` = « Seuil de sécurité » | le montant gardé de côté |
+| `settings_biometric_lock` | le verrouillage par empreinte, rangé **dans la section financière** |
+
+Le déverrouillage biométrique — une protection de l'appareil — se retrouve sous « Ma sécurité
+**financière** », juste sous un montant en euros. La section « Sécurité » prévue pour l'accueillir
+(`settings_section_security`) existe dans `strings.xml` mais **n'est appelée nulle part** : le
+regroupement est un accident, pas une intention.
+
+**f) Des lignes muettes.** Sur onze lignes, une seule affiche une valeur (le seuil de sécurité).
+« Comptes » n'annonce pas le solde total, « Transactions » pas le nombre du mois, « Revenus &
+budgets » pas le revenu mensuel. Une liste de libellés nus n'aide pas à décider où aller — et prive
+l'utilisateur d'un coup d'œil qu'il aurait gratuitement.
+
+### 10.2 Proposition principale — séparer « mes données » de « mes réglages »
+
+Le tiroir contient deux choses qui n'ont rien à faire ensemble : **le budget de l'utilisateur**
+(consultable, modifiable, consulté souvent) et **la configuration de l'app** (thème, verrouillage,
+export). Les séparer résout a, b, c et e d'un coup.
+
+**Le 4ᵉ onglet devient « Mon budget »** (icône portefeuille), et les réglages passent derrière une
+roue crantée dans sa barre de titre.
+
+```
+┌────────────────────────────────────────────┐
+│  Mon budget                            ⚙︎  │  ⚙︎ → écran Réglages
+├────────────────────────────────────────────┤
+│  Ce mois-ci                                │
+│  Revenus 2 400 €  ·  Fixes −1 180 €        │  récap : l'équation du mois
+│  Enveloppes −450 €  ·  Épargne −200 €      │  en une carte, pas en cinq lignes
+│  = 570 € à vivre                           │
+├────────────────────────────────────────────┤
+│  MON PLAN                                  │
+│  ↗  Revenus              2 400 € / mois  › │  → Budget, onglet Revenus
+│  ↘  Dépenses fixes       1 180 € / mois  › │  → Budget, onglet Dépenses fixes
+│  ▤  Enveloppes        180 € / 450 €      › │  → Budget, onglet Budgets variables
+│  ◎  Objectifs              2 en cours    › │  → Budget, onglet Objectifs
+│  🛡  Seuil de sécurité         900 €      › │  décision d'argent : sa place est ici
+├────────────────────────────────────────────┤
+│  MON ARGENT                                │
+│  ☰  Transactions        42 ce mois-ci    › │
+│  ▦  Comptes                  1 340 €     › │
+│  ▧  Statistiques                         › │
+└────────────────────────────────────────────┘
+```
+
+Et l'écran **Réglages** (accessible par ⚙︎, avec flèche retour) :
+
+```
+Réglages
+  APPARENCE        Thème · Couleurs dynamiques
+  SÉCURITÉ DE L'APP  Verrouillage biométrique
+  MES DONNÉES      Exporter · Importer · Catégories
+  À PROPOS         Confidentialité · Version
+```
+
+Ce que ce découpage règle :
+- Le nom de l'onglet **décrit enfin son contenu**, et la destination la plus quotidienne
+  (Transactions) devient visible depuis le libellé de l'onglet.
+- Le seuil de sécurité rejoint les **décisions d'argent** ; le verrouillage biométrique rejoint la
+  **sécurité de l'appareil**. Plus aucun doublon de sens sur « sécurité ».
+- Les **Catégories** descendent dans Réglages : c'est de la configuration rare, elle n'a pas à
+  concurrencer « Transactions » dans la liste principale.
+- Chaque ligne porte une valeur : l'écran devient un tableau de bord du plan, pas un sommaire.
+- **Liens directs vers chaque onglet de Budget** (route paramétrée `budget?tab=incomes`) : modifier
+  une enveloppe passe de 4 taps + une découverte d'onglet à 2 taps.
+
+### 10.3 Corollaire : réparer aussi les deux icônes de la barre
+
+`ui/navigation/Destinations.kt:41-46`
+
+| Onglet | Icône actuelle | Ce qu'elle évoque | Proposition |
+|---|---|---|---|
+| Liberté | `AccountBalanceWallet` (portefeuille) | « mes comptes » | `Today` / `Bolt` / un indicateur |
+| Futur | `Timeline` | juste | inchangée |
+| Et si… | `Lightbulb` | juste | inchangée |
+| Moi | `Person` (bonhomme) | « mon profil » | `AccountBalanceWallet`, libéré par Liberté |
+
+Le portefeuille est aujourd'hui sur l'onglet qui ne montre aucun compte, et le bonhomme sur celui qui
+contient tout l'argent. Il suffit de les échanger.
+
+### 10.4 Vocabulaire — un mot, une chose
+
+Passe complète à faire sur `strings.xml` :
+
+| Aujourd'hui | Proposition |
+|---|---|
+| « Moi » / « Paramètres » (mort) / « Mes réglages » | **Mon budget** (onglet) et **Réglages** (écran) |
+| « Revenus & budgets » / « Budget » / « Revenus & dépenses fixes » | **Mon plan** (écran), **Revenus**, **Dépenses fixes** |
+| « Budgets variables » / « Enveloppes » | **Enveloppes** partout |
+| « Sécurité » (état d'alerte) | **Alerte** — libérer le mot « sécurité » pour le seuil |
+| « Ma situation » (titre de section) | supprimé : la section disparaît avec le découpage |
+
+Supprimer au passage les chaînes mortes (`nav_dashboard`, `nav_transactions`, `nav_budget`,
+`nav_statistics`, `nav_settings`, `settings_section_security`, `calendar_title`,
+`dashboard_really_available`, `goal_add_contribution`, `budget_add_expense_to_envelope`) : elles
+entretiennent deux vocabulaires concurrents dans le code.
+
+### 10.5 Variante légère, si la refonte attend
+
+Sans toucher à la navigation ni aux routes, dans l'ordre de rentabilité :
+1. Renommer l'onglet « Moi » → « Mon budget » et échanger les deux icônes (2 lignes).
+2. Scinder « Ma situation » en deux sections : **Mon plan** (Revenus & budgets, Seuil de sécurité) et
+   **Mon argent** (Transactions, Comptes, Statistiques) ; déplacer **Catégories** et **Verrouillage
+   biométrique** vers une section **Réglages** en bas d'écran.
+3. Ajouter la valeur en sous-titre de chaque ligne (solde total, revenu mensuel, nombre de
+   transactions du mois) — les données sont déjà dans les repositories.
+4. Remonter **Transactions** en tête de liste : c'est la ligne la plus utilisée.
+
+À elle seule, l'étape 2 supprime la collision de sens sur « sécurité » et sépare le quotidien du
+rare, pour une quinzaine de lignes de Compose.
+
+---
+
+## 11. Backlog proposé
 
 **Lot 1 — Confiance et fondamentaux** (correctifs courts, gros gain)
 1. Aligner le chiffre héros et sa couleur sur une seule base de calcul (P2).
@@ -344,19 +513,28 @@ de prise. C'est aussi ce qui explique l'absence totale de tests d'instrumentatio
 6. Garde-fou biométrie : `canAuthenticate()` avant activation + `onAuthenticationError` (§9).
 7. Snackbars de confirmation dédiées, bouton « précédent » de l'onboarding renommé (§5, §8).
 
-**Lot 2 — La promesse des 5 secondes**
-8. Refonte de la hiérarchie de l'accueil : 1 chiffre, 1 déclinaison par jour, 1 phrase, 1 jauge (P1).
-9. Détail du calcul dans un bloc « D'où vient ce chiffre ? ».
-10. Curseur de jour déplacé vers « Mon futur », libellé synchronisé avec le jour choisi.
-11. Montants héros arrondis à l'euro.
+**Lot 2 — Sortir l'app du tiroir « Moi »** (§10)
+8. Renommer l'onglet « Moi » → « Mon budget » et échanger les icônes portefeuille / bonhomme (§10.3).
+9. Scinder l'écran : **Mon plan** / **Mon argent** d'un côté, **Réglages** derrière une roue crantée ;
+   le seuil de sécurité passe côté argent, le verrouillage biométrique côté app, les Catégories
+   côté réglages (§10.2).
+10. Une valeur en sous-titre sur chaque ligne (solde total, revenu mensuel, transactions du mois).
+11. Route Budget paramétrée par onglet (`budget?tab=…`) pour des liens directs depuis le hub.
+12. Vocabulaire unifié + suppression des 10 chaînes mortes de `strings.xml` (§10.4).
 
-**Lot 3 — Le récit de sécurité**
-12. Onboarding : solde actuel + seuil de sécurité (avec valeur par défaut suggérée).
-13. Messages « Et si…? » corrects quand le seuil vaut 0.
-14. « Que faire de cette somme ? » branché sur les objectifs, ou retiré de la v1.
+**Lot 3 — La promesse des 5 secondes**
+13. Refonte de la hiérarchie de l'accueil : 1 chiffre, 1 déclinaison par jour, 1 phrase, 1 jauge (P1).
+14. Détail du calcul dans un bloc « D'où vient ce chiffre ? ».
+15. Curseur de jour déplacé vers « Mon futur », libellé synchronisé avec le jour choisi.
+16. Montants héros arrondis à l'euro.
 
-**Lot 4 — Finition**
-15. `contentDescription` et `semantics` sur les contrôles porteurs d'information ; premiers tests d'IHM.
-16. Passage complet de `strings.xml` : tutoiement unique, pluriels, chaînes en dur extraites.
-17. États vides avec action (Statistiques, Budget), état de chargement de l'accueil.
-18. Politique de devise assumée (mono-devise ou formatage par compte).
+**Lot 4 — Le récit de sécurité**
+17. Onboarding : solde actuel + seuil de sécurité (avec valeur par défaut suggérée).
+18. Messages « Et si…? » corrects quand le seuil vaut 0.
+19. « Que faire de cette somme ? » branché sur les objectifs, ou retiré de la v1.
+
+**Lot 5 — Finition**
+20. `contentDescription` et `semantics` sur les contrôles porteurs d'information ; premiers tests d'IHM.
+21. Passage complet de `strings.xml` : tutoiement unique, pluriels, chaînes en dur extraites.
+22. États vides avec action (Statistiques, Budget), état de chargement de l'accueil.
+23. Politique de devise assumée (mono-devise ou formatage par compte).
