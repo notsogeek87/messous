@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.dp
 fun SectionCard(
     title: String,
     modifier: Modifier = Modifier,
-    content: @Composable ColumnScopeContent
+    content: ColumnScopeContent
 ) {
     Card(
         modifier = modifier.fillMaxWidth(),

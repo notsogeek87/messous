@@ -18,6 +18,8 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
@@ -51,6 +53,7 @@ import com.budgetflow.app.domain.model.CategoryGroups
 import com.budgetflow.app.ui.components.CategoryIcons
 import com.budgetflow.app.ui.components.EmptyState
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CategoriesScreen(onBack: () -> Unit) {
     val viewModel: CategoriesViewModel = viewModel(
@@ -142,9 +145,9 @@ private fun CategoryDialog(initial: Category?, onDismiss: () -> Unit, onSave: (C
                         trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = groupExpanded) },
                         modifier = Modifier.fillMaxWidth().menuAnchor()
                     )
-                    androidx.compose.material3.ExposedDropdownMenu(expanded = groupExpanded, onDismissRequest = { groupExpanded = false }) {
+                    DropdownMenu(expanded = groupExpanded, onDismissRequest = { groupExpanded = false }) {
                         CategoryGroups.all.forEach { option ->
-                            androidx.compose.material3.DropdownMenuItem(
+                            DropdownMenuItem(
                                 text = { Text(option) },
                                 onClick = { group = option; groupExpanded = false }
                             )
