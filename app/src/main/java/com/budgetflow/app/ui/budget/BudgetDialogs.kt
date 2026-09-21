@@ -60,11 +60,10 @@ fun IncomeDialog(initial: Income?, onDismiss: () -> Unit, onSave: (Income) -> Un
         confirmButton = {
             TextButton(onClick = {
                 val value = amount.toAmountOrNull() ?: return@TextButton
-                if (label.isBlank()) return@TextButton
                 onSave(
                     Income(
                         id = initial?.id ?: 0,
-                        label = label,
+                        label = label.ifBlank { "Revenu" },
                         amount = value,
                         frequency = frequency,
                         dayOfMonth = if (frequency == Frequency.MONTHLY || frequency == Frequency.YEARLY) dayOfMonth else null,
@@ -113,11 +112,10 @@ fun ExpenseDialog(initial: RecurringExpense?, categories: List<Category>, onDism
         confirmButton = {
             TextButton(onClick = {
                 val value = amount.toAmountOrNull() ?: return@TextButton
-                if (label.isBlank()) return@TextButton
                 onSave(
                     RecurringExpense(
                         id = initial?.id ?: 0,
-                        label = label,
+                        label = label.ifBlank { "Dépense" },
                         amount = value,
                         frequency = frequency,
                         dayOfMonth = if (frequency == Frequency.MONTHLY || frequency == Frequency.YEARLY) dayOfMonth else null,
@@ -156,8 +154,7 @@ fun EnvelopeDialog(initial: VariableBudget?, categories: List<Category>, onDismi
             TextButton(onClick = {
                 val value = monthlyLimit.toAmountOrNull() ?: return@TextButton
                 val category = categoryId ?: return@TextButton
-                if (label.isBlank()) return@TextButton
-                onSave(VariableBudget(id = initial?.id ?: 0, label = label, monthlyLimit = value, categoryId = category, isActive = initial?.isActive ?: true))
+                onSave(VariableBudget(id = initial?.id ?: 0, label = label.ifBlank { "Enveloppe" }, monthlyLimit = value, categoryId = category, isActive = initial?.isActive ?: true))
             }) { Text(stringResource(R.string.action_save)) }
         },
         dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_cancel)) } }
@@ -185,11 +182,10 @@ fun GoalDialog(initial: SavingsGoal?, onDismiss: () -> Unit, onSave: (SavingsGoa
         confirmButton = {
             TextButton(onClick = {
                 val targetValue = target.toAmountOrNull() ?: return@TextButton
-                if (label.isBlank()) return@TextButton
                 onSave(
                     SavingsGoal(
                         id = initial?.id ?: 0,
-                        label = label,
+                        label = label.ifBlank { "Objectif" },
                         targetAmount = targetValue,
                         currentAmount = current.toAmountOrNull() ?: 0.0,
                         monthlyContribution = monthlyContribution.toAmountOrNull() ?: 0.0,

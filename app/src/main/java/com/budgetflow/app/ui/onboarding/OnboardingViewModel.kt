@@ -150,6 +150,12 @@ class OnboardingViewModel(
 
     fun skip() {
         viewModelScope.launch {
+            if (accountRepository.observeAccounts().first().isEmpty()) {
+                // Same as finish(): without at least one account, "Ma liberté" can never
+                // compute a bank-balance-based free money figure, however much income/expense
+                // data the user later adds directly from the Budget screen.
+                accountRepository.upsert(Account(name = "Compte courant", initialBalance = 0.0))
+            }
             preferences.setOnboardingDone(true)
             _uiState.update { it.copy(isFinished = true) }
         }
