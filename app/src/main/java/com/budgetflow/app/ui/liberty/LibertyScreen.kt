@@ -17,9 +17,14 @@ import androidx.compose.material.icons.filled.AccountBalance
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Savings
+import androidx.compose.material.icons.filled.SwapHoriz
+import androidx.compose.material.icons.filled.TrendingDown
+import androidx.compose.material.icons.filled.TrendingUp
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -29,6 +34,9 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -63,7 +71,9 @@ fun LibertyScreen(
     onOpenAccounts: () -> Unit,
     onOpenFuture: () -> Unit,
     onOpenWhatIf: () -> Unit,
-    onAddTransaction: () -> Unit
+    onAddTransaction: () -> Unit,
+    onAddIncome: () -> Unit,
+    onAddExpense: () -> Unit
 ) {
     val viewModel: LibertyViewModel = viewModel(
         factory = simpleViewModelFactory { LibertyViewModel(ServiceLocator.dashboardUseCase, ServiceLocator.calendarUseCase) }
@@ -71,12 +81,33 @@ fun LibertyScreen(
     val state by viewModel.uiState.collectAsState()
     val summary = state.summary
 
+    var addMenuExpanded by remember { mutableStateOf(false) }
+
     Scaffold(
         floatingActionButton = {
             if (summary?.freeMoney != null) {
-                ExtendedFloatingActionButton(onClick = onAddTransaction, icon = {
-                    Icon(Icons.Filled.Add, contentDescription = null)
-                }, text = { Text(stringResource(R.string.liberty_add_transaction_cta)) })
+                Box {
+                    ExtendedFloatingActionButton(onClick = { addMenuExpanded = true }, icon = {
+                        Icon(Icons.Filled.Add, contentDescription = null)
+                    }, text = { Text(stringResource(R.string.liberty_add_transaction_cta)) })
+                    DropdownMenu(expanded = addMenuExpanded, onDismissRequest = { addMenuExpanded = false }) {
+                        DropdownMenuItem(
+                            text = { Text(stringResource(R.string.transactions_add)) },
+                            leadingIcon = { Icon(Icons.Filled.SwapHoriz, contentDescription = null) },
+                            onClick = { addMenuExpanded = false; onAddTransaction() }
+                        )
+                        DropdownMenuItem(
+                            text = { Text(stringResource(R.string.budget_add_income)) },
+                            leadingIcon = { Icon(Icons.Filled.TrendingUp, contentDescription = null) },
+                            onClick = { addMenuExpanded = false; onAddIncome() }
+                        )
+                        DropdownMenuItem(
+                            text = { Text(stringResource(R.string.budget_add_expense)) },
+                            leadingIcon = { Icon(Icons.Filled.TrendingDown, contentDescription = null) },
+                            onClick = { addMenuExpanded = false; onAddExpense() }
+                        )
+                    }
+                }
             }
         }
     ) { padding ->

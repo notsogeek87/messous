@@ -65,7 +65,9 @@ fun BudgetFlowNavHost() {
                             restoreState = true
                         }
                     },
-                    onAddTransaction = { navController.navigate(Routes.ADD_TRANSACTION) }
+                    onAddTransaction = { navController.navigate(Routes.ADD_TRANSACTION) },
+                    onAddIncome = { navController.navigate(Routes.ADD_INCOME) },
+                    onAddExpense = { navController.navigate(Routes.ADD_EXPENSE) }
                 )
             }
             composable(Routes.FUTURE) { FutureScreen() }
