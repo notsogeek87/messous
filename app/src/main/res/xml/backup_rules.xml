@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Applies on API 23-30 via android:fullBackupContent. API 31+ uses
+  data_extraction_rules.xml instead. Both list the same two things:
+  the Room database and the DataStore preferences file, which together
+  are the entirety of what the app stores.
+-->
+<full-backup-content>
+    <include domain="database" path="budgetflow.db" />
+    <include domain="database" path="budgetflow.db-shm" />
+    <include domain="database" path="budgetflow.db-wal" />
+    <include domain="file" path="datastore/budgetflow_prefs.preferences_pb" />
+</full-backup-content>
