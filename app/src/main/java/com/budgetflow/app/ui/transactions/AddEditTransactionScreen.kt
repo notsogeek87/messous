@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -87,7 +88,8 @@ fun AddEditTransactionScreen(transactionId: Long?, onDone: () -> Unit) {
                 .fillMaxSize()
                 .padding(padding)
                 .padding(16.dp)
-                .verticalScroll(rememberScrollState()),
+                .verticalScroll(rememberScrollState())
+                .imePadding(),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -104,6 +106,20 @@ fun AddEditTransactionScreen(transactionId: Long?, onDone: () -> Unit) {
                         label = { Text(stringResource(R.string.transaction_type_income)) }
                     )
                 }
+            }
+
+            val recognizedService = state.recognizedService
+            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                OutlinedTextField(
+                    value = state.description,
+                    onValueChange = viewModel::updateDescription,
+                    label = { Text(stringResource(R.string.transaction_service_name)) },
+                    leadingIcon = if (recognizedService != null) {
+                        { ServiceLogo(service = recognizedService, size = 28.dp) }
+                    } else null,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                ServiceSuggestionsPanel(matches = state.suggestions, onSelect = viewModel::selectSuggestion)
             }
 
             AmountField(value = state.amount, onValueChange = viewModel::updateAmount, modifier = Modifier.fillMaxWidth())
@@ -124,20 +140,6 @@ fun AddEditTransactionScreen(transactionId: Long?, onDone: () -> Unit) {
 
             OutlinedButton(onClick = { showDatePicker = true }, modifier = Modifier.fillMaxWidth()) {
                 Text("${stringResource(R.string.transaction_date)}: ${state.date.format(dateFormatter)}")
-            }
-
-            val recognizedService = state.recognizedService
-            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                OutlinedTextField(
-                    value = state.description,
-                    onValueChange = viewModel::updateDescription,
-                    label = { Text(stringResource(R.string.transaction_description)) },
-                    leadingIcon = if (recognizedService != null) {
-                        { ServiceLogo(service = recognizedService, size = 28.dp) }
-                    } else null,
-                    modifier = Modifier.fillMaxWidth()
-                )
-                ServiceSuggestionsPanel(matches = state.suggestions, onSelect = viewModel::selectSuggestion)
             }
 
             Button(onClick = viewModel::save, modifier = Modifier.fillMaxWidth()) {
