@@ -81,7 +81,7 @@ fun AddEditExpenseScreen(expenseId: Long?, onDone: () -> Unit) {
             OutlinedTextField(
                 value = state.label,
                 onValueChange = viewModel::updateLabel,
-                label = { Text(stringResource(R.string.transaction_description)) },
+                label = { Text(stringResource(R.string.budget_label_name)) },
                 placeholder = { Text(stringResource(R.string.budget_expense_label_hint)) },
                 modifier = Modifier.fillMaxWidth()
             )

@@ -160,6 +160,7 @@
     <string name="budget_spent">Dépensé</string>
     <string name="budget_remaining">Reste</string>
     <string name="budget_add_expense_to_envelope">Enregistrer une dépense</string>
+    <string name="budget_label_name">Nom</string>
     <string name="budget_income_label_hint">Salaire, prime, remboursement…</string>
     <string name="budget_expense_label_hint">Loyer, crédit, abonnement…</string>
     <string name="budget_frequency_section">Fréquence</string>
