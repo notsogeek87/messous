@@ -82,12 +82,6 @@ fun AddEditExpenseScreen(expenseId: Long?, onDone: () -> Unit) {
                 .imePadding(),
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
-            AmountField(
-                value = state.amount,
-                onValueChange = viewModel::updateAmount,
-                modifier = Modifier.fillMaxWidth()
-            )
-
             val recognizedService = state.recognizedService
             Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                 OutlinedTextField(
@@ -102,6 +96,12 @@ fun AddEditExpenseScreen(expenseId: Long?, onDone: () -> Unit) {
                 )
                 ServiceSuggestionsPanel(matches = state.suggestions, onSelect = viewModel::selectSuggestion)
             }
+
+            AmountField(
+                value = state.amount,
+                onValueChange = viewModel::updateAmount,
+                modifier = Modifier.fillMaxWidth()
+            )
 
             CategoryDropdown(
                 categories = state.categories,

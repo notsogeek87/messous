@@ -79,12 +79,6 @@ fun AddEditIncomeScreen(incomeId: Long?, onDone: () -> Unit) {
                 .imePadding(),
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
-            AmountField(
-                value = state.amount,
-                onValueChange = viewModel::updateAmount,
-                modifier = Modifier.fillMaxWidth()
-            )
-
             val recognizedService = state.recognizedService
             Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                 OutlinedTextField(
@@ -99,6 +93,12 @@ fun AddEditIncomeScreen(incomeId: Long?, onDone: () -> Unit) {
                 )
                 ServiceSuggestionsPanel(matches = state.suggestions, onSelect = viewModel::selectSuggestion)
             }
+
+            AmountField(
+                value = state.amount,
+                onValueChange = viewModel::updateAmount,
+                modifier = Modifier.fillMaxWidth()
+            )
 
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 Text(stringResource(R.string.budget_frequency_section), style = MaterialTheme.typography.titleSmall)
