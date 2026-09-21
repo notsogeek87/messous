@@ -133,6 +133,7 @@
     <string name="transaction_category">Catégorie</string>
     <string name="transaction_date">Date</string>
     <string name="transaction_description">Description</string>
+    <string name="transaction_service_name">Nom du service</string>
     <string name="transaction_account">Compte</string>
     <string name="transaction_save">Enregistrer</string>
     <string name="transaction_delete">Supprimer</string>
