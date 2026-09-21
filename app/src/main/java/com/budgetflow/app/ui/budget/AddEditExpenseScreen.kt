@@ -41,9 +41,10 @@ import com.budgetflow.app.ui.components.ServiceLogo
 import com.budgetflow.app.ui.components.ServiceSuggestionsPanel
 import com.budgetflow.app.ui.components.dailyEquivalent
 import com.budgetflow.app.ui.components.formatMoney
+import com.budgetflow.app.ui.components.isInvalidAmount
 import com.budgetflow.app.ui.components.monthlyEquivalent
 import com.budgetflow.app.ui.components.toAmountOrNull
-import com.budgetflow.app.ui.theme.NegativeRed
+import com.budgetflow.app.ui.theme.negativeRed
 import com.budgetflow.engine.model.Frequency
 
 /** "Ajouter une dépense fixe" - same full-page treatment as [AddEditIncomeScreen], with a category. */
@@ -69,7 +70,11 @@ fun AddEditExpenseScreen(expenseId: Long?, onDone: () -> Unit) {
         topBar = {
             TopAppBar(
                 title = { Text(stringResource(if (expenseId == null) R.string.budget_add_expense else R.string.action_edit)) },
-                navigationIcon = { IconButton(onClick = onDone) { Icon(Icons.Filled.ArrowBack, contentDescription = null) } }
+                navigationIcon = {
+                    IconButton(onClick = onDone) {
+                        Icon(Icons.Filled.ArrowBack, contentDescription = stringResource(R.string.action_back))
+                    }
+                }
             )
         }
     ) { padding ->
@@ -100,6 +105,8 @@ fun AddEditExpenseScreen(expenseId: Long?, onDone: () -> Unit) {
             AmountField(
                 value = state.amount,
                 onValueChange = viewModel::updateAmount,
+                isError = state.amount.isInvalidAmount(),
+                supportingText = if (state.amount.isInvalidAmount()) stringResource(R.string.form_error_amount) else null,
                 modifier = Modifier.fillMaxWidth()
             )
 
@@ -127,7 +134,7 @@ fun AddEditExpenseScreen(expenseId: Long?, onDone: () -> Unit) {
                 ExpenseImpactCard(amount, state.frequency)
             }
 
-            Button(onClick = viewModel::save, modifier = Modifier.fillMaxWidth()) {
+            Button(onClick = viewModel::save, enabled = state.canSave, modifier = Modifier.fillMaxWidth()) {
                 Text(stringResource(R.string.action_save))
             }
         }
@@ -136,7 +143,7 @@ fun AddEditExpenseScreen(expenseId: Long?, onDone: () -> Unit) {
 
 @Composable
 private fun ExpenseImpactCard(amount: Double, frequency: Frequency) {
-    Card(colors = CardDefaults.cardColors(containerColor = NegativeRed.copy(alpha = 0.10f)), modifier = Modifier.fillMaxWidth()) {
+    Card(colors = CardDefaults.cardColors(containerColor = negativeRed.copy(alpha = 0.10f)), modifier = Modifier.fillMaxWidth()) {
         Text(
             text = if (frequency == Frequency.ONE_TIME) {
                 stringResource(R.string.budget_impact_one_time)

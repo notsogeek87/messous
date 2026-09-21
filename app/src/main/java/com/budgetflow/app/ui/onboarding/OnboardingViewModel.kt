@@ -33,7 +33,8 @@ const val ONBOARDING_STEP_PRIVACY = 1
 const val ONBOARDING_STEP_INCOME = 2
 const val ONBOARDING_STEP_EXPENSES = 3
 const val ONBOARDING_STEP_VARIABLE = 4
-const val ONBOARDING_STEP_DONE = 5
+const val ONBOARDING_STEP_SAFETY = 5
+const val ONBOARDING_STEP_DONE = 6
 
 data class OnboardingUiState(
     val step: Int = ONBOARDING_STEP_WELCOME,
@@ -42,9 +43,19 @@ data class OnboardingUiState(
     val incomeAmount: String = "",
     val pendingExpenses: List<RecurringExpense> = emptyList(),
     val pendingEnvelopes: List<VariableBudget> = emptyList(),
+    /** "Combien as-tu sur ton compte aujourd'hui ?" (spec §6/Lot 4 P5) - optional, left blank means
+     * "Ma liberté" falls back to the plan-based figure until an account balance exists. */
+    val currentBalance: String = "",
+    /** "Combien veux-tu ne jamais descendre en dessous ?" - prefilled with [suggestedSafetyThreshold]
+     * the first time this step is reached, but always editable/clearable. */
+    val safetyThreshold: String = "",
     val previewSummary: MonthSummary? = null,
     val isFinished: Boolean = false
-)
+) {
+    /** A starting suggestion, not a rule: roughly one month of fixed costs, so the field never
+     * opens on a blank page the user has no idea how to fill. */
+    val suggestedSafetyThreshold: Double get() = pendingExpenses.sumOf { it.amount }
+}
 
 class OnboardingViewModel(
     private val categoryRepository: CategoryRepository,
@@ -68,7 +79,14 @@ class OnboardingViewModel(
     }
 
     fun goToStep(step: Int) {
-        _uiState.update { it.copy(step = step) }
+        _uiState.update { current ->
+            val prefilledThreshold = if (step == ONBOARDING_STEP_SAFETY && current.safetyThreshold.isBlank() && current.suggestedSafetyThreshold > 0.0) {
+                current.suggestedSafetyThreshold.toString()
+            } else {
+                current.safetyThreshold
+            }
+            current.copy(step = step, safetyThreshold = prefilledThreshold)
+        }
         if (step == ONBOARDING_STEP_DONE) computePreview()
     }
 
@@ -104,6 +122,9 @@ class OnboardingViewModel(
     fun removeEnvelope(envelope: VariableBudget) =
         _uiState.update { it.copy(pendingEnvelopes = it.pendingEnvelopes - envelope) }
 
+    fun updateCurrentBalance(value: String) = _uiState.update { it.copy(currentBalance = value) }
+    fun updateSafetyThreshold(value: String) = _uiState.update { it.copy(safetyThreshold = value) }
+
     private fun computePreview() {
         val state = _uiState.value
         val today = LocalDate.now()
@@ -112,13 +133,16 @@ class OnboardingViewModel(
             listOf(Income(label = state.incomeLabel.ifBlank { "Revenu" }, amount = incomeAmount, frequency = Frequency.MONTHLY, dayOfMonth = 1).toScheduledFlow())
         } else emptyList()
 
+        val balance = state.currentBalance.toAmountOrNull()
         val plan = MonthPlan(
             month = YearMonth.from(today),
             today = today,
             incomes = incomes,
             recurringExpenses = state.pendingExpenses.map { it.toScheduledFlow() },
             variableBudgets = state.pendingEnvelopes.map { VariableBudgetInput(0, it.label, it.monthlyLimit, 0.0) },
-            plannedMonthlySavings = 0.0
+            plannedMonthlySavings = 0.0,
+            currentAccountBalances = if (balance != null) listOf(balance) else emptyList(),
+            safetyThreshold = state.safetyThreshold.toAmountOrNull() ?: 0.0
         )
         _uiState.update { it.copy(previewSummary = BudgetEngine.summarizeMonth(plan)) }
     }
@@ -130,7 +154,10 @@ class OnboardingViewModel(
 
             if (accountRepository.observeAccounts().first().isEmpty()) {
                 // Ensure at least one account exists so incomes/expenses can be attached to it later if the user wishes.
-                accountRepository.upsert(Account(name = "Compte courant", initialBalance = 0.0))
+                // Its starting balance is whatever was entered on the safety step, so "Ma liberté"
+                // can show a real, balance-based figure from the very first launch (spec §6/Lot 4).
+                val initialBalance = state.currentBalance.toAmountOrNull() ?: 0.0
+                accountRepository.upsert(Account(name = "Compte courant", initialBalance = initialBalance))
             }
 
             val incomeAmount = state.incomeAmount.toAmountOrNull()
@@ -142,6 +169,10 @@ class OnboardingViewModel(
 
             state.pendingExpenses.forEach { recurringExpenseRepository.upsert(it) }
             state.pendingEnvelopes.forEach { variableBudgetRepository.upsert(it) }
+
+            state.safetyThreshold.toAmountOrNull()?.takeIf { it > 0.0 }?.let { threshold ->
+                preferences.setSafetyThreshold(threshold)
+            }
 
             preferences.setOnboardingDone(true)
             _uiState.update { it.copy(isFinished = true) }

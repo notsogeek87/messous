@@ -24,7 +24,9 @@ fun AccountDropdown(
     accounts: List<Account>,
     selectedAccountId: Long?,
     onAccountSelected: (Long) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    isError: Boolean = false,
+    supportingText: String? = null
 ) {
     var expanded by remember { mutableStateOf(false) }
     val selected = accounts.firstOrNull { it.id == selectedAccountId }
@@ -36,6 +38,8 @@ fun AccountDropdown(
             readOnly = true,
             label = { Text(stringResource(R.string.transaction_account)) },
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+            isError = isError,
+            supportingText = supportingText?.let { { Text(it) } },
             modifier = Modifier.fillMaxWidth().menuAnchor()
         )
         DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {

@@ -18,6 +18,7 @@ data class MonthTotals(val month: YearMonth, val income: Double, val expense: Do
 
 data class StatisticsUiState(
     val isLoading: Boolean = true,
+    val hasAnyTransactions: Boolean = false,
     val categorySlices: List<CategorySpendingSlice> = emptyList(),
     val currentIncome: Double = 0.0,
     val currentExpense: Double = 0.0,
@@ -77,6 +78,7 @@ class StatisticsViewModel(
 
         return StatisticsUiState(
             isLoading = false,
+            hasAnyTransactions = transactions.isNotEmpty(),
             categorySlices = slices,
             currentIncome = currentIncome,
             currentExpense = currentExpense,

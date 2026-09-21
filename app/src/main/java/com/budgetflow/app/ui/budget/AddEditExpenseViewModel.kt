@@ -38,7 +38,9 @@ data class ExpenseFormState(
     val suggestions: List<ServiceMatch> = emptyList(),
     /** Set only right after the user taps a suggestion; cleared as soon as they edit the name again. */
     val recognizedService: RecognizableService? = null
-)
+) {
+    val canSave: Boolean get() = amount.toAmountOrNull()?.let { it > 0.0 } == true
+}
 
 class AddEditExpenseViewModel(
     expenseId: Long?,

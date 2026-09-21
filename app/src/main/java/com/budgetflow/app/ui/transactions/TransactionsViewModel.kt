@@ -51,4 +51,11 @@ class TransactionsViewModel(
     fun delete(transaction: Transaction) {
         viewModelScope.launch { transactionRepository.delete(transaction) }
     }
+
+    /** Suspend twins of [delete], for the undo-snackbar pattern (`deleteWithUndo`): it drives its
+     * own coroutine, so it needs plain suspend functions rather than ones that launch their own. */
+    suspend fun deleteSuspending(transaction: Transaction) = transactionRepository.delete(transaction)
+    suspend fun restoreSuspending(transaction: Transaction) {
+        transactionRepository.upsert(transaction)
+    }
 }

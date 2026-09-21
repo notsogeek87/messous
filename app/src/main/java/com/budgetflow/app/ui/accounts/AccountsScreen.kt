@@ -55,12 +55,17 @@ fun AccountsScreen(onBack: () -> Unit) {
     val accounts by viewModel.accounts.collectAsState()
     var editing by remember { mutableStateOf<Account?>(null) }
     var showDialog by remember { mutableStateOf(false) }
+    var pendingDelete by remember { mutableStateOf<AccountItem?>(null) }
 
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text(stringResource(R.string.accounts_title)) },
-                navigationIcon = { IconButton(onClick = onBack) { Icon(Icons.Filled.ArrowBack, contentDescription = null) } }
+                navigationIcon = {
+                    IconButton(onClick = onBack) {
+                        Icon(Icons.Filled.ArrowBack, contentDescription = stringResource(R.string.action_back))
+                    }
+                }
             )
         },
         floatingActionButton = {
@@ -70,7 +75,14 @@ fun AccountsScreen(onBack: () -> Unit) {
         }
     ) { padding ->
         if (accounts.isEmpty()) {
-            EmptyState(icon = Icons.Filled.CreditCard, title = stringResource(R.string.accounts_add), modifier = Modifier.fillMaxSize().padding(padding))
+            EmptyState(
+                icon = Icons.Filled.CreditCard,
+                title = stringResource(R.string.accounts_empty_title),
+                body = stringResource(R.string.accounts_empty_body),
+                actionLabel = stringResource(R.string.accounts_add),
+                onAction = { editing = null; showDialog = true },
+                modifier = Modifier.fillMaxSize().padding(padding)
+            )
         } else {
             LazyColumn(modifier = Modifier.fillMaxSize().padding(padding).padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 items(accounts, key = { it.account.id }) { item ->
@@ -84,12 +96,14 @@ fun AccountsScreen(onBack: () -> Unit) {
                         ) {
                             Column {
                                 Text(item.account.name, style = MaterialTheme.typography.bodyLarge)
-                                Text(item.account.currency, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                             }
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 MoneyText(item.currentBalance, colorBySign = true)
-                                IconButton(onClick = { viewModel.delete(item.account) }) {
-                                    Icon(Icons.Filled.Delete, contentDescription = stringResource(R.string.action_delete))
+                                IconButton(onClick = { pendingDelete = item }) {
+                                    Icon(
+                                        Icons.Filled.Delete,
+                                        contentDescription = stringResource(R.string.action_delete_item, item.account.name)
+                                    )
                                 }
                             }
                         }
@@ -106,13 +120,36 @@ fun AccountsScreen(onBack: () -> Unit) {
             onSave = { viewModel.save(it); showDialog = false }
         )
     }
+
+    pendingDelete?.let { item ->
+        AlertDialog(
+            onDismissRequest = { pendingDelete = null },
+            title = { Text(stringResource(R.string.account_delete_confirm_title, item.account.name)) },
+            text = {
+                Text(
+                    if (item.transactionCount > 0) {
+                        stringResource(R.string.account_delete_confirm_body, item.transactionCount)
+                    } else {
+                        stringResource(R.string.account_delete_confirm_body_empty)
+                    }
+                )
+            },
+            confirmButton = {
+                TextButton(onClick = { viewModel.delete(item.account); pendingDelete = null }) {
+                    Text(stringResource(R.string.action_delete))
+                }
+            },
+            dismissButton = { TextButton(onClick = { pendingDelete = null }) { Text(stringResource(R.string.action_cancel)) } }
+        )
+    }
 }
 
+// Messous is single-currency (EUR): no per-account currency picker, just the name and the
+// starting balance (spec: never show a control whose value the rest of the app cannot act on).
 @Composable
 private fun AccountDialog(initial: Account?, onDismiss: () -> Unit, onSave: (Account) -> Unit) {
     var name by remember { mutableStateOf(initial?.name ?: "") }
     var balance by remember { mutableStateOf(initial?.initialBalance?.toString() ?: "0") }
-    var currency by remember { mutableStateOf(initial?.currency ?: "EUR") }
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -121,7 +158,6 @@ private fun AccountDialog(initial: Account?, onDismiss: () -> Unit, onSave: (Acc
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 OutlinedTextField(value = name, onValueChange = { name = it }, label = { Text(stringResource(R.string.account_name)) }, modifier = Modifier.fillMaxWidth())
                 AmountField(value = balance, onValueChange = { balance = it }, label = stringResource(R.string.account_initial_balance), modifier = Modifier.fillMaxWidth())
-                OutlinedTextField(value = currency, onValueChange = { currency = it }, label = { Text(stringResource(R.string.account_currency)) }, modifier = Modifier.fillMaxWidth())
             }
         },
         confirmButton = {
@@ -132,7 +168,7 @@ private fun AccountDialog(initial: Account?, onDismiss: () -> Unit, onSave: (Acc
                         id = initial?.id ?: 0,
                         name = name,
                         initialBalance = balance.toAmountOrNull() ?: 0.0,
-                        currency = currency.ifBlank { "EUR" },
+                        currency = "EUR",
                         isArchived = initial?.isArchived ?: false
                     )
                 )

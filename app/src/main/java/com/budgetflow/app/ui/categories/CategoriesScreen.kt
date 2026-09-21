@@ -62,12 +62,17 @@ fun CategoriesScreen(onBack: () -> Unit) {
     val categories by viewModel.categories.collectAsState()
     var editing by remember { mutableStateOf<Category?>(null) }
     var showDialog by remember { mutableStateOf(false) }
+    var pendingDelete by remember { mutableStateOf<Category?>(null) }
 
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text(stringResource(R.string.categories_title)) },
-                navigationIcon = { IconButton(onClick = onBack) { Icon(Icons.Filled.ArrowBack, contentDescription = null) } }
+                navigationIcon = {
+                    IconButton(onClick = onBack) {
+                        Icon(Icons.Filled.ArrowBack, contentDescription = stringResource(R.string.action_back))
+                    }
+                }
             )
         },
         floatingActionButton = {
@@ -102,8 +107,8 @@ fun CategoriesScreen(onBack: () -> Unit) {
                                 Icon(CategoryIcons.of(category.icon), contentDescription = null, tint = MaterialTheme.colorScheme.primary)
                                 Text(category.name)
                             }
-                            IconButton(onClick = { viewModel.delete(category) }) {
-                                Icon(Icons.Filled.Delete, contentDescription = stringResource(R.string.action_delete))
+                            IconButton(onClick = { pendingDelete = category }) {
+                                Icon(Icons.Filled.Delete, contentDescription = stringResource(R.string.action_delete_item, category.name))
                             }
                         }
                     }
@@ -117,6 +122,19 @@ fun CategoriesScreen(onBack: () -> Unit) {
             initial = editing,
             onDismiss = { showDialog = false },
             onSave = { viewModel.save(it); showDialog = false }
+        )
+    }
+
+    pendingDelete?.let { category ->
+        AlertDialog(
+            onDismissRequest = { pendingDelete = null },
+            title = { Text(stringResource(R.string.category_delete_confirm, category.name)) },
+            confirmButton = {
+                TextButton(onClick = { viewModel.delete(category); pendingDelete = null }) {
+                    Text(stringResource(R.string.action_delete))
+                }
+            },
+            dismissButton = { TextButton(onClick = { pendingDelete = null }) { Text(stringResource(R.string.action_cancel)) } }
         )
     }
 }

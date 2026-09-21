@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-data class AccountItem(val account: Account, val currentBalance: Double)
+data class AccountItem(val account: Account, val currentBalance: Double, val transactionCount: Int)
 
 class AccountsViewModel(
     private val accountRepository: AccountRepository,
@@ -27,7 +27,7 @@ class AccountsViewModel(
             val accountTransactions = transactions.filter { it.accountId == account.id }
             val income = accountTransactions.filter { it.type == TransactionType.INCOME }.sumOf { it.amount }
             val expense = accountTransactions.filter { it.type == TransactionType.EXPENSE }.sumOf { it.amount }
-            AccountItem(account, account.initialBalance + income - expense)
+            AccountItem(account, account.initialBalance + income - expense, accountTransactions.size)
         }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 

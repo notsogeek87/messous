@@ -99,6 +99,20 @@ class BudgetViewModel(
     fun saveGoal(goal: SavingsGoal) = viewModelScope.launch { savingsGoalRepository.upsert(goal) }
     fun deleteGoal(goal: SavingsGoal) = viewModelScope.launch { savingsGoalRepository.delete(goal) }
 
+    // Suspend twins for the undo-snackbar pattern (`deleteWithUndo`), which drives its own
+    // coroutine and so needs plain suspend functions rather than ones that launch their own.
+    suspend fun deleteIncomeSuspending(income: Income) = incomeRepository.delete(income)
+    suspend fun restoreIncomeSuspending(income: Income) { incomeRepository.upsert(income) }
+
+    suspend fun deleteExpenseSuspending(expense: RecurringExpense) = recurringExpenseRepository.delete(expense)
+    suspend fun restoreExpenseSuspending(expense: RecurringExpense) { recurringExpenseRepository.upsert(expense) }
+
+    suspend fun deleteEnvelopeSuspending(budget: VariableBudget) = variableBudgetRepository.delete(budget)
+    suspend fun restoreEnvelopeSuspending(budget: VariableBudget) { variableBudgetRepository.upsert(budget) }
+
+    suspend fun deleteGoalSuspending(goal: SavingsGoal) = savingsGoalRepository.delete(goal)
+    suspend fun restoreGoalSuspending(goal: SavingsGoal) { savingsGoalRepository.upsert(goal) }
+
     fun contributeToGoal(goal: SavingsGoal, amount: Double) = viewModelScope.launch {
         savingsGoalRepository.upsert(goal.copy(currentAmount = goal.currentAmount + amount))
     }

@@ -1,5 +1,6 @@
 package com.budgetflow.app.ui.liberty
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -16,6 +17,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material.icons.filled.ExpandLess
+import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.Savings
 import androidx.compose.material.icons.filled.SwapHoriz
 import androidx.compose.material.icons.filled.TrendingDown
@@ -23,14 +26,14 @@ import androidx.compose.material.icons.filled.TrendingUp
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Slider
-import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -52,6 +55,7 @@ import com.budgetflow.app.domain.model.TransactionType
 import com.budgetflow.app.ui.components.AnimatedMoneyText
 import com.budgetflow.app.ui.components.EmptyState
 import com.budgetflow.app.ui.components.FreedomStateBadge
+import com.budgetflow.app.ui.components.LabeledRow
 import com.budgetflow.app.ui.components.MoneyText
 import com.budgetflow.app.ui.components.ProfileSelector
 import com.budgetflow.app.ui.components.SafetyThresholdGauge
@@ -67,14 +71,15 @@ import com.budgetflow.engine.model.ScheduledFlow
 import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
 import java.util.Locale
-import kotlin.math.roundToInt
 
 private val transactionDateFormatter = DateTimeFormatter.ofPattern("dd/MM")
 
 /**
  * "Ma liberté" (spec section 3): the app's home screen and its single most important surface.
  * Everything here answers one question - "combien puis-je dépenser sans mettre mon mois en
- * danger ?" - in the first five seconds, before any secondary detail.
+ * danger ?" - in the first five seconds, before any secondary detail: one hero figure, one
+ * per-day reading of it, one sentence, one gauge. The math behind it moves to a fold-out block
+ * instead of competing with the headline for the first glance (audit §2/§10.2 - Lot 3).
  */
 @Composable
 fun LibertyScreen(
@@ -139,7 +144,9 @@ fun LibertyScreen(
         }
     ) { padding ->
         when {
-            state.isLoading || summary == null -> Box(modifier = Modifier.fillMaxSize().padding(padding))
+            state.isLoading || summary == null -> Box(modifier = Modifier.fillMaxSize().padding(padding), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator()
+            }
 
             !state.hasAnyData -> Column(modifier = Modifier.fillMaxSize().padding(padding)) {
                 EmptyState(
@@ -183,118 +190,7 @@ private fun LibertyContent(
         verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
         item {
-            Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
-                FreedomStateBadge(freedomState)
-                Text(
-                    text = stringResource(R.string.liberty_remaining_to_spend_label),
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(top = 12.dp)
-                )
-                AnimatedMoneyText(
-                    amount = summary.remainingToSpend,
-                    style = MaterialTheme.typography.displayMedium.copy(fontWeight = FontWeight.Bold),
-                    color = freedomState.color()
-                )
-                Text(
-                    text = stringResource(R.string.liberty_available_budget_caption, formatMoney(summary.availableBudget)),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(top = 4.dp)
-                )
-                if (freeMoney != null) {
-                    Text(
-                        text = stringResource(R.string.liberty_real_balance_label, formatMoney(freeMoney)),
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.padding(top = 4.dp)
-                    )
-                    summary.currentBankBalance?.let { balance ->
-                        Text(
-                            text = "${stringResource(R.string.liberty_balance_label)} : ${formatMoney(balance)}",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-                } else {
-                    TextButton(onClick = onOpenAccounts, modifier = Modifier.padding(top = 4.dp)) {
-                        Text(stringResource(R.string.liberty_add_account_cta))
-                    }
-                }
-            }
-        }
-
-        item {
-            val maxDay = maxOf(state.remainingToSpendByDay.size, 1)
-            var selectedDay by remember(state.today, maxDay) {
-                mutableStateOf(state.today.dayOfMonth.coerceIn(1, maxDay))
-            }
-            val remainingForSelectedDay = state.remainingToSpendByDay.getOrElse(selectedDay - 1) { summary.remainingToSpendToday }
-            val stateForSelectedDay = state.remainingToSpendStateByDay.getOrElse(selectedDay - 1) { summary.remainingToSpendTodayState }
-
-            Card(modifier = Modifier.fillMaxWidth()) {
-                Column(modifier = Modifier.padding(20.dp)) {
-                    Text(
-                        stringResource(R.string.liberty_remaining_today_label),
-                        style = MaterialTheme.typography.titleSmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                    AnimatedMoneyText(
-                        amount = remainingForSelectedDay,
-                        style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
-                        color = stateForSelectedDay.color(),
-                        modifier = Modifier.padding(top = 4.dp, bottom = 8.dp)
-                    )
-                    Slider(
-                        value = selectedDay.toFloat(),
-                        onValueChange = { selectedDay = it.roundToInt().coerceIn(1, maxDay) },
-                        valueRange = 1f..maxDay.toFloat(),
-                        steps = maxOf(maxDay - 2, 0),
-                        colors = SliderDefaults.colors(
-                            thumbColor = stateForSelectedDay.color(),
-                            activeTrackColor = stateForSelectedDay.color()
-                        ),
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                        Text(
-                            stringResource(R.string.liberty_day_gauge_day_marker, selectedDay, maxDay),
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                        Text(
-                            stringResource(R.string.liberty_day_gauge_month_target, formatMoney(summary.remainingToSpend)),
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-                }
-            }
-        }
-
-        item {
-            Card(
-                colors = CardDefaults.cardColors(containerColor = freedomState.color().copy(alpha = 0.10f)),
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Column(modifier = Modifier.padding(20.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text(
-                        stringResource(R.string.liberty_daily_freedom_intro),
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                    AnimatedMoneyText(
-                        amount = summary.dailyRecommendedBudget,
-                        style = MaterialTheme.typography.displaySmall.copy(fontWeight = FontWeight.Bold),
-                        color = freedomState.color()
-                    )
-                    Text(
-                        stringResource(R.string.liberty_daily_freedom_until_end, summary.remainingDaysInMonth),
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
-            }
+            LibertyHero(summary = summary, onOpenAccounts = onOpenAccounts)
         }
 
         if (freeMoney != null) {
@@ -365,6 +261,93 @@ private fun LibertyContent(
                 )
             }
             items(state.transactions, key = { "tx-${it.transaction.id}" }) { item -> LibertyTransactionRow(item) }
+        }
+    }
+}
+
+/**
+ * The headline block: one figure ([MonthSummary.freeMoney], the real-balance one - falling back
+ * to the plan-based [MonthSummary.remainingToSpend] only when there is no account to read a real
+ * figure from, and *only then* left uncolored) with its per-day reading directly under it, both
+ * rounded to the euro for a one-glance read. Never two different "per day" figures on this screen
+ * (spec §3 P1/P2): the color and every number here come from the same base quantity.
+ */
+@Composable
+private fun LibertyHero(summary: MonthSummary, onOpenAccounts: () -> Unit) {
+    val freeMoney = summary.freeMoney
+    val freedomState = summary.freedomState
+    val heroAmount = freeMoney ?: summary.remainingToSpend
+    val heroColor = if (freeMoney != null) freedomState.color() else MaterialTheme.colorScheme.onSurface
+    val perDayAmount = summary.freedomPerDay ?: summary.dailyRecommendedBudget
+    var detailsExpanded by remember { mutableStateOf(false) }
+
+    Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
+        FreedomStateBadge(freedomState)
+        Text(
+            text = stringResource(R.string.liberty_remaining_to_spend_label),
+            style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.padding(top = 12.dp)
+        )
+        AnimatedMoneyText(
+            amount = heroAmount,
+            roundToEuro = true,
+            style = MaterialTheme.typography.displayMedium.copy(fontWeight = FontWeight.Bold),
+            color = heroColor
+        )
+        Text(
+            text = stringResource(R.string.liberty_hero_subtitle, formatMoney(perDayAmount, roundToEuro = true), summary.remainingDaysInMonth),
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.padding(top = 4.dp)
+        )
+
+        if (freeMoney == null) {
+            TextButton(onClick = onOpenAccounts, modifier = Modifier.padding(top = 4.dp)) {
+                Text(stringResource(R.string.liberty_add_account_cta))
+            }
+        }
+
+        TextButton(onClick = { detailsExpanded = !detailsExpanded }, modifier = Modifier.padding(top = 8.dp)) {
+            Text(stringResource(R.string.liberty_details_toggle), style = MaterialTheme.typography.labelLarge)
+            Icon(
+                if (detailsExpanded) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore,
+                contentDescription = null,
+                modifier = Modifier.padding(start = 4.dp)
+            )
+        }
+
+        AnimatedVisibility(visible = detailsExpanded) {
+            LibertyDetailBreakdown(summary)
+        }
+    }
+}
+
+/** "D'où vient ce chiffre ?" (spec §2): the full plan-vs-solde math, for trust rather than the
+ * first glance - every field is already computed on [MonthSummary], never re-derived here. */
+@Composable
+private fun LibertyDetailBreakdown(summary: MonthSummary) {
+    Card(modifier = Modifier.fillMaxWidth().padding(top = 12.dp)) {
+        Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+            LabeledRow(stringResource(R.string.dashboard_income)) { MoneyText(summary.totalIncome, colorBySign = true) }
+            LabeledRow(stringResource(R.string.dashboard_fixed_expenses)) { MoneyText(-summary.totalFixedExpenses, colorBySign = true) }
+            LabeledRow(stringResource(R.string.dashboard_variable_budgets)) { MoneyText(-summary.totalVariableBudgetAllocated, colorBySign = true) }
+            if (summary.plannedSavings > 0.0) {
+                LabeledRow(stringResource(R.string.dashboard_planned_savings)) { MoneyText(-summary.plannedSavings, colorBySign = true) }
+            }
+            Divider(modifier = Modifier.padding(vertical = 2.dp))
+            LabeledRow(stringResource(R.string.dashboard_remaining_to_spend)) {
+                MoneyText(summary.remainingToSpend, colorBySign = true, style = MaterialTheme.typography.bodyLarge)
+            }
+            summary.currentBankBalance?.let { balance ->
+                Divider(modifier = Modifier.padding(vertical = 2.dp))
+                LabeledRow(stringResource(R.string.dashboard_bank_balance)) { MoneyText(balance, colorBySign = true) }
+                summary.freeMoney?.let { free ->
+                    LabeledRow(stringResource(R.string.liberty_free_money_row_label)) {
+                        MoneyText(free, colorBySign = true, style = MaterialTheme.typography.bodyLarge)
+                    }
+                }
+            }
         }
     }
 }
