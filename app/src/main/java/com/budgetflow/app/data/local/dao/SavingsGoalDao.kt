@@ -14,8 +14,14 @@ interface SavingsGoalDao {
     @Query("SELECT * FROM savings_goals ORDER BY label")
     fun observeAll(): Flow<List<SavingsGoalEntity>>
 
+    @Query("SELECT * FROM savings_goals WHERE profileId = :profileId ORDER BY label")
+    fun observeAllForProfile(profileId: Long): Flow<List<SavingsGoalEntity>>
+
     @Query("SELECT * FROM savings_goals WHERE isActive = 1")
     suspend fun getAllActive(): List<SavingsGoalEntity>
+
+    @Query("SELECT * FROM savings_goals WHERE isActive = 1 AND profileId = :profileId")
+    suspend fun getAllActiveForProfile(profileId: Long): List<SavingsGoalEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsert(goal: SavingsGoalEntity): Long
@@ -25,4 +31,7 @@ interface SavingsGoalDao {
 
     @Delete
     suspend fun delete(goal: SavingsGoalEntity)
+
+    @Query("DELETE FROM savings_goals WHERE profileId = :profileId")
+    suspend fun deleteByProfile(profileId: Long)
 }

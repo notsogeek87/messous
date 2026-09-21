@@ -14,8 +14,14 @@ interface RecurringExpenseDao {
     @Query("SELECT * FROM recurring_expenses ORDER BY label")
     fun observeAll(): Flow<List<RecurringExpenseEntity>>
 
+    @Query("SELECT * FROM recurring_expenses WHERE profileId = :profileId ORDER BY label")
+    fun observeAllForProfile(profileId: Long): Flow<List<RecurringExpenseEntity>>
+
     @Query("SELECT * FROM recurring_expenses WHERE isActive = 1")
     suspend fun getAllActive(): List<RecurringExpenseEntity>
+
+    @Query("SELECT * FROM recurring_expenses WHERE isActive = 1 AND profileId = :profileId")
+    suspend fun getAllActiveForProfile(profileId: Long): List<RecurringExpenseEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsert(expense: RecurringExpenseEntity): Long
@@ -25,4 +31,7 @@ interface RecurringExpenseDao {
 
     @Delete
     suspend fun delete(expense: RecurringExpenseEntity)
+
+    @Query("DELETE FROM recurring_expenses WHERE profileId = :profileId")
+    suspend fun deleteByProfile(profileId: Long)
 }

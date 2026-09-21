@@ -1,5 +1,6 @@
 package com.budgetflow.app.data.local.entity
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import kotlinx.serialization.Serializable
@@ -13,5 +14,6 @@ data class SavingsGoalEntity(
     val currentAmount: Double = 0.0,
     /** Counted in the monthly "épargne prévue" total when active. */
     val monthlyContribution: Double = 0.0,
-    val isActive: Boolean = true
+    val isActive: Boolean = true,
+    @ColumnInfo(defaultValue = "0") val profileId: Long = 0
 )

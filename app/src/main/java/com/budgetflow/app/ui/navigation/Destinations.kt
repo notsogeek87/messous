@@ -25,6 +25,7 @@ object Routes {
     const val STATISTICS = "statistics"
     const val ACCOUNTS = "accounts"
     const val CATEGORIES = "categories"
+    const val PROFILES = "profiles"
     const val ADD_INCOME = "add_income"
     const val ADD_INCOME_WITH_ID = "add_income?incomeId={incomeId}"
     const val ADD_EXPENSE = "add_expense"

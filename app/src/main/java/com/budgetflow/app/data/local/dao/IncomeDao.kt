@@ -14,8 +14,14 @@ interface IncomeDao {
     @Query("SELECT * FROM incomes ORDER BY label")
     fun observeAll(): Flow<List<IncomeEntity>>
 
+    @Query("SELECT * FROM incomes WHERE profileId = :profileId ORDER BY label")
+    fun observeAllForProfile(profileId: Long): Flow<List<IncomeEntity>>
+
     @Query("SELECT * FROM incomes WHERE isActive = 1")
     suspend fun getAllActive(): List<IncomeEntity>
+
+    @Query("SELECT * FROM incomes WHERE isActive = 1 AND profileId = :profileId")
+    suspend fun getAllActiveForProfile(profileId: Long): List<IncomeEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsert(income: IncomeEntity): Long
@@ -25,4 +31,7 @@ interface IncomeDao {
 
     @Delete
     suspend fun delete(income: IncomeEntity)
+
+    @Query("DELETE FROM incomes WHERE profileId = :profileId")
+    suspend fun deleteByProfile(profileId: Long)
 }

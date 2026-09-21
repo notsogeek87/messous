@@ -53,6 +53,7 @@ import com.budgetflow.app.ui.components.AnimatedMoneyText
 import com.budgetflow.app.ui.components.EmptyState
 import com.budgetflow.app.ui.components.FreedomStateBadge
 import com.budgetflow.app.ui.components.MoneyText
+import com.budgetflow.app.ui.components.ProfileSelector
 import com.budgetflow.app.ui.components.SafetyThresholdGauge
 import com.budgetflow.app.ui.components.color
 import com.budgetflow.app.ui.components.formatMoney
@@ -102,6 +103,14 @@ fun LibertyScreen(
     var addMenuExpanded by remember { mutableStateOf(false) }
 
     Scaffold(
+        topBar = {
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 12.dp),
+                horizontalArrangement = Arrangement.End
+            ) {
+                ProfileSelector()
+            }
+        },
         floatingActionButton = {
             if (state.hasAnyData) {
                 Box {

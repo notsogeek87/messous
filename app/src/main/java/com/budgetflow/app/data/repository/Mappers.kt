@@ -22,12 +22,12 @@ import java.time.LocalDate
 // --- Account -----------------------------------------------------------------------------
 
 fun AccountEntity.toDomain() = Account(id, name, initialBalance, currency, isArchived)
-fun Account.toEntity() = AccountEntity(id, name, initialBalance, currency, isArchived)
+fun Account.toEntity(profileId: Long) = AccountEntity(id, name, initialBalance, currency, isArchived, profileId)
 
 // --- Category ------------------------------------------------------------------------------
 
 fun CategoryEntity.toDomain() = Category(id, name, group, icon, isDefault)
-fun Category.toEntity() = CategoryEntity(id, name, group, icon, isDefault)
+fun Category.toEntity(profileId: Long) = CategoryEntity(id, name, group, icon, isDefault, profileId)
 
 // --- Income / RecurringExpense scheduling fields (shared shape) ------------------------------
 
@@ -46,7 +46,7 @@ fun IncomeEntity.toDomain() = Income(
     isActive = isActive
 )
 
-fun Income.toEntity() = IncomeEntity(
+fun Income.toEntity(profileId: Long) = IncomeEntity(
     id = id,
     label = label,
     amount = amount,
@@ -58,7 +58,8 @@ fun Income.toEntity() = IncomeEntity(
     startDateEpochDay = startDate?.toEpochDay(),
     endDateEpochDay = endDate?.toEpochDay(),
     accountId = accountId,
-    isActive = isActive
+    isActive = isActive,
+    profileId = profileId
 )
 
 fun RecurringExpenseEntity.toDomain() = RecurringExpense(
@@ -78,7 +79,7 @@ fun RecurringExpenseEntity.toDomain() = RecurringExpense(
     isActive = isActive
 )
 
-fun RecurringExpense.toEntity() = RecurringExpenseEntity(
+fun RecurringExpense.toEntity(profileId: Long) = RecurringExpenseEntity(
     id = id,
     label = label,
     amount = amount,
@@ -92,13 +93,14 @@ fun RecurringExpense.toEntity() = RecurringExpenseEntity(
     accountId = accountId,
     categoryId = categoryId,
     isFixedAmount = isFixedAmount,
-    isActive = isActive
+    isActive = isActive,
+    profileId = profileId
 )
 
 // --- VariableBudget --------------------------------------------------------------------------
 
 fun VariableBudgetEntity.toDomain() = VariableBudget(id, label, monthlyLimit, categoryId, isActive)
-fun VariableBudget.toEntity() = VariableBudgetEntity(id, label, monthlyLimit, categoryId, isActive)
+fun VariableBudget.toEntity(profileId: Long) = VariableBudgetEntity(id, label, monthlyLimit, categoryId, isActive, profileId)
 
 // --- Transaction ---------------------------------------------------------------------------
 
@@ -113,7 +115,7 @@ fun TransactionEntity.toDomain() = Transaction(
     createdAtEpochMillis = createdAtEpochMillis
 )
 
-fun Transaction.toEntity() = TransactionEntity(
+fun Transaction.toEntity(profileId: Long) = TransactionEntity(
     id = id,
     amount = amount,
     type = type.name,
@@ -121,10 +123,12 @@ fun Transaction.toEntity() = TransactionEntity(
     dateEpochDay = date.toEpochDay(),
     description = description,
     accountId = accountId,
-    createdAtEpochMillis = createdAtEpochMillis
+    createdAtEpochMillis = createdAtEpochMillis,
+    profileId = profileId
 )
 
 // --- SavingsGoal ----------------------------------------------------------------------------
 
 fun SavingsGoalEntity.toDomain() = SavingsGoal(id, label, targetAmount, currentAmount, monthlyContribution, isActive)
-fun SavingsGoal.toEntity() = SavingsGoalEntity(id, label, targetAmount, currentAmount, monthlyContribution, isActive)
+fun SavingsGoal.toEntity(profileId: Long) =
+    SavingsGoalEntity(id, label, targetAmount, currentAmount, monthlyContribution, isActive, profileId)

@@ -240,6 +240,14 @@
     <string name="settings_version">Version %1$s</string>
     <string name="settings_accounts">Comptes</string>
     <string name="settings_categories">Catégories</string>
+    <string name="settings_profiles">Profils</string>
+
+    <!-- Profiles -->
+    <string name="profiles_title">Profils</string>
+    <string name="profiles_body">Chaque profil a ses propres comptes, catégories, transactions et budgets, entièrement séparés des autres.</string>
+    <string name="profiles_add">Ajouter un profil</string>
+    <string name="profiles_name_label">Nom du profil</string>
+    <string name="profile_selector_label">Profil</string>
 
     <!-- Common -->
     <string name="action_cancel">Annuler</string>

@@ -14,6 +14,9 @@ interface CategoryDao {
     @Query("SELECT * FROM categories ORDER BY `group`, name")
     fun observeAll(): Flow<List<CategoryEntity>>
 
+    @Query("SELECT * FROM categories WHERE profileId = :profileId ORDER BY `group`, name")
+    fun observeAllForProfile(profileId: Long): Flow<List<CategoryEntity>>
+
     @Query("SELECT * FROM categories WHERE id = :id")
     suspend fun getById(id: Long): CategoryEntity?
 
@@ -31,4 +34,10 @@ interface CategoryDao {
 
     @Query("SELECT COUNT(*) FROM categories")
     suspend fun count(): Int
+
+    @Query("SELECT COUNT(*) FROM categories WHERE profileId = :profileId")
+    suspend fun countForProfile(profileId: Long): Int
+
+    @Query("DELETE FROM categories WHERE profileId = :profileId")
+    suspend fun deleteByProfile(profileId: Long)
 }

@@ -14,8 +14,14 @@ interface VariableBudgetDao {
     @Query("SELECT * FROM variable_budgets ORDER BY label")
     fun observeAll(): Flow<List<VariableBudgetEntity>>
 
+    @Query("SELECT * FROM variable_budgets WHERE profileId = :profileId ORDER BY label")
+    fun observeAllForProfile(profileId: Long): Flow<List<VariableBudgetEntity>>
+
     @Query("SELECT * FROM variable_budgets WHERE isActive = 1")
     suspend fun getAllActive(): List<VariableBudgetEntity>
+
+    @Query("SELECT * FROM variable_budgets WHERE isActive = 1 AND profileId = :profileId")
+    suspend fun getAllActiveForProfile(profileId: Long): List<VariableBudgetEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsert(budget: VariableBudgetEntity): Long
@@ -25,4 +31,7 @@ interface VariableBudgetDao {
 
     @Delete
     suspend fun delete(budget: VariableBudgetEntity)
+
+    @Query("DELETE FROM variable_budgets WHERE profileId = :profileId")
+    suspend fun deleteByProfile(profileId: Long)
 }

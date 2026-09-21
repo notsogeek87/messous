@@ -1,5 +1,6 @@
 package com.budgetflow.app.data.local.entity
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import kotlinx.serialization.Serializable
@@ -17,5 +18,6 @@ data class VariableBudgetEntity(
     val label: String,
     val monthlyLimit: Double,
     val categoryId: Long,
-    val isActive: Boolean = true
+    val isActive: Boolean = true,
+    @ColumnInfo(defaultValue = "0") val profileId: Long = 0
 )

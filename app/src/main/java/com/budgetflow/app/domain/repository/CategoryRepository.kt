@@ -8,4 +8,7 @@ interface CategoryRepository {
     suspend fun upsert(category: Category): Long
     suspend fun delete(category: Category)
     suspend fun seedDefaultsIfEmpty()
+
+    /** Seeds the starter categories into [profileId] specifically, regardless of which profile is currently active. */
+    suspend fun seedDefaultsForProfile(profileId: Long)
 }

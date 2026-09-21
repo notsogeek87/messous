@@ -14,6 +14,9 @@ interface AccountDao {
     @Query("SELECT * FROM accounts WHERE isArchived = 0 ORDER BY name")
     fun observeAll(): Flow<List<AccountEntity>>
 
+    @Query("SELECT * FROM accounts WHERE isArchived = 0 AND profileId = :profileId ORDER BY name")
+    fun observeAllForProfile(profileId: Long): Flow<List<AccountEntity>>
+
     @Query("SELECT * FROM accounts WHERE id = :id")
     suspend fun getById(id: Long): AccountEntity?
 
@@ -28,4 +31,7 @@ interface AccountDao {
 
     @Query("SELECT COUNT(*) FROM accounts")
     suspend fun count(): Int
+
+    @Query("DELETE FROM accounts WHERE profileId = :profileId")
+    suspend fun deleteByProfile(profileId: Long)
 }

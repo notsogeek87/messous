@@ -20,6 +20,7 @@ import com.budgetflow.app.ui.budget.BudgetScreen
 import com.budgetflow.app.ui.categories.CategoriesScreen
 import com.budgetflow.app.ui.future.FutureScreen
 import com.budgetflow.app.ui.liberty.LibertyScreen
+import com.budgetflow.app.ui.profiles.ProfilesScreen
 import com.budgetflow.app.ui.settings.SettingsScreen
 import com.budgetflow.app.ui.statistics.StatisticsScreen
 import com.budgetflow.app.ui.transactions.AddEditTransactionScreen
@@ -78,7 +79,8 @@ fun BudgetFlowNavHost() {
                     onOpenCategories = { navController.navigate(Routes.CATEGORIES) },
                     onOpenTransactions = { navController.navigate(Routes.TRANSACTIONS) },
                     onOpenBudget = { navController.navigate(Routes.BUDGET) },
-                    onOpenStatistics = { navController.navigate(Routes.STATISTICS) }
+                    onOpenStatistics = { navController.navigate(Routes.STATISTICS) },
+                    onOpenProfiles = { navController.navigate(Routes.PROFILES) }
                 )
             }
 
@@ -129,6 +131,7 @@ fun BudgetFlowNavHost() {
             composable(Routes.STATISTICS) { StatisticsScreen() }
             composable(Routes.ACCOUNTS) { AccountsScreen(onBack = { navController.popBackStack() }) }
             composable(Routes.CATEGORIES) { CategoriesScreen(onBack = { navController.popBackStack() }) }
+            composable(Routes.PROFILES) { ProfilesScreen(onBack = { navController.popBackStack() }) }
         }
     }
 }

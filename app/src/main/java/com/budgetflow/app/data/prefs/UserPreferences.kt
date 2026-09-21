@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.doublePreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
@@ -25,6 +26,7 @@ class UserPreferences(private val context: Context) {
         val DYNAMIC_COLOR = booleanPreferencesKey("dynamic_color")
         val BIOMETRIC_LOCK = booleanPreferencesKey("biometric_lock")
         val SAFETY_THRESHOLD = doublePreferencesKey("safety_threshold")
+        val CURRENT_PROFILE_ID = longPreferencesKey("current_profile_id")
     }
 
     val isOnboardingDone: Flow<Boolean> =
@@ -62,5 +64,13 @@ class UserPreferences(private val context: Context) {
 
     suspend fun setSafetyThreshold(amount: Double) {
         context.dataStore.edit { it[Keys.SAFETY_THRESHOLD] = amount.coerceAtLeast(0.0) }
+    }
+
+    /** The user's saved profile choice. -1 means "none chosen yet" - resolved to a real profile by [com.budgetflow.app.data.profile.CurrentProfileProvider]. */
+    val currentProfileId: Flow<Long> =
+        context.dataStore.data.map { it[Keys.CURRENT_PROFILE_ID] ?: -1L }
+
+    suspend fun setCurrentProfileId(id: Long) {
+        context.dataStore.edit { it[Keys.CURRENT_PROFILE_ID] = id }
     }
 }

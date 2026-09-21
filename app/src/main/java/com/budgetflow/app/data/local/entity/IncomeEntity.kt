@@ -1,5 +1,6 @@
 package com.budgetflow.app.data.local.entity
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import kotlinx.serialization.Serializable
@@ -25,5 +26,6 @@ data class IncomeEntity(
     val startDateEpochDay: Long? = null,
     val endDateEpochDay: Long? = null,
     val accountId: Long? = null,
-    val isActive: Boolean = true
+    val isActive: Boolean = true,
+    @ColumnInfo(defaultValue = "0") val profileId: Long = 0
 )

@@ -1,5 +1,6 @@
 package com.budgetflow.app.data.local.entity
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import kotlinx.serialization.Serializable
@@ -13,5 +14,6 @@ data class CategoryEntity(
     val group: String,
     /** Key into [com.budgetflow.app.ui.components.CategoryIcons], e.g. "home", "cart", "movie". */
     val icon: String,
-    val isDefault: Boolean = false
+    val isDefault: Boolean = false,
+    @ColumnInfo(defaultValue = "0") val profileId: Long = 0
 )

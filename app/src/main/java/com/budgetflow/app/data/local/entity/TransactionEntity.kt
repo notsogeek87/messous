@@ -1,5 +1,6 @@
 package com.budgetflow.app.data.local.entity
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import kotlinx.serialization.Serializable
@@ -16,5 +17,6 @@ data class TransactionEntity(
     val dateEpochDay: Long,
     val description: String = "",
     val accountId: Long,
-    val createdAtEpochMillis: Long
+    val createdAtEpochMillis: Long,
+    @ColumnInfo(defaultValue = "0") val profileId: Long = 0
 )

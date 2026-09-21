@@ -1,6 +1,7 @@
 package com.budgetflow.app.data.backup
 
 import com.budgetflow.app.data.local.BudgetFlowDatabase
+import com.budgetflow.app.data.local.entity.ProfileEntity
 import com.budgetflow.app.domain.repository.BackupRepository
 import kotlinx.coroutines.flow.first
 import kotlinx.serialization.json.Json
@@ -18,6 +19,7 @@ class BackupRepositoryImpl(
     override suspend fun exportToJson(): String {
         val payload = BackupPayload(
             exportedAtEpochMillis = System.currentTimeMillis(),
+            profiles = database.profileDao().getAll(),
             accounts = database.accountDao().observeAll().first(),
             categories = database.categoryDao().observeAll().first(),
             incomes = database.incomeDao().observeAll().first(),
@@ -34,12 +36,25 @@ class BackupRepositoryImpl(
 
         database.clearAllTables()
 
-        payload.accounts.forEach { database.accountDao().upsert(it) }
-        payload.categories.forEach { database.categoryDao().upsert(it) }
-        payload.incomes.forEach { database.incomeDao().upsert(it) }
-        payload.recurringExpenses.forEach { database.recurringExpenseDao().upsert(it) }
-        payload.variableBudgets.forEach { database.variableBudgetDao().upsert(it) }
-        payload.savingsGoals.forEach { database.savingsGoalDao().upsert(it) }
-        payload.transactions.forEach { database.transactionDao().upsert(it) }
+        // Pre-profile exports (schemaVersion 1) carry no profiles table: everything they contain
+        // becomes the single "Perso" profile, and Pro/Commun are (re)created empty alongside it.
+        val remapProfileId: (Long) -> Long = if (payload.profiles.isNotEmpty()) {
+            payload.profiles.forEach { database.profileDao().upsert(it) }
+            { id -> id }
+        } else {
+            val now = System.currentTimeMillis()
+            val legacyProfileId = database.profileDao().upsert(ProfileEntity(name = "Perso", sortOrder = 0, createdAtEpochMillis = now))
+            database.profileDao().upsert(ProfileEntity(name = "Pro", sortOrder = 1, createdAtEpochMillis = now))
+            database.profileDao().upsert(ProfileEntity(name = "Commun", sortOrder = 2, createdAtEpochMillis = now))
+            { _ -> legacyProfileId }
+        }
+
+        payload.accounts.forEach { database.accountDao().upsert(it.copy(profileId = remapProfileId(it.profileId))) }
+        payload.categories.forEach { database.categoryDao().upsert(it.copy(profileId = remapProfileId(it.profileId))) }
+        payload.incomes.forEach { database.incomeDao().upsert(it.copy(profileId = remapProfileId(it.profileId))) }
+        payload.recurringExpenses.forEach { database.recurringExpenseDao().upsert(it.copy(profileId = remapProfileId(it.profileId))) }
+        payload.variableBudgets.forEach { database.variableBudgetDao().upsert(it.copy(profileId = remapProfileId(it.profileId))) }
+        payload.savingsGoals.forEach { database.savingsGoalDao().upsert(it.copy(profileId = remapProfileId(it.profileId))) }
+        payload.transactions.forEach { database.transactionDao().upsert(it.copy(profileId = remapProfileId(it.profileId))) }
     }
 }

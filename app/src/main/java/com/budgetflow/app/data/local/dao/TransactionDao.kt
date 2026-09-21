@@ -14,14 +14,34 @@ interface TransactionDao {
     @Query("SELECT * FROM transactions ORDER BY dateEpochDay DESC, createdAtEpochMillis DESC")
     fun observeAll(): Flow<List<TransactionEntity>>
 
+    @Query("SELECT * FROM transactions WHERE profileId = :profileId ORDER BY dateEpochDay DESC, createdAtEpochMillis DESC")
+    fun observeAllForProfile(profileId: Long): Flow<List<TransactionEntity>>
+
     @Query("SELECT * FROM transactions WHERE dateEpochDay BETWEEN :startEpochDay AND :endEpochDay ORDER BY dateEpochDay DESC, createdAtEpochMillis DESC")
     fun observeInRange(startEpochDay: Long, endEpochDay: Long): Flow<List<TransactionEntity>>
+
+    @Query(
+        "SELECT * FROM transactions WHERE profileId = :profileId AND dateEpochDay BETWEEN :startEpochDay AND :endEpochDay " +
+            "ORDER BY dateEpochDay DESC, createdAtEpochMillis DESC"
+    )
+    fun observeInRangeForProfile(profileId: Long, startEpochDay: Long, endEpochDay: Long): Flow<List<TransactionEntity>>
 
     @Query(
         "SELECT COALESCE(SUM(amount), 0) FROM transactions " +
             "WHERE categoryId = :categoryId AND type = 'EXPENSE' AND dateEpochDay BETWEEN :startEpochDay AND :endEpochDay"
     )
     suspend fun sumExpensesForCategoryInRange(categoryId: Long, startEpochDay: Long, endEpochDay: Long): Double
+
+    @Query(
+        "SELECT COALESCE(SUM(amount), 0) FROM transactions " +
+            "WHERE profileId = :profileId AND categoryId = :categoryId AND type = 'EXPENSE' AND dateEpochDay BETWEEN :startEpochDay AND :endEpochDay"
+    )
+    suspend fun sumExpensesForCategoryInRangeForProfile(
+        profileId: Long,
+        categoryId: Long,
+        startEpochDay: Long,
+        endEpochDay: Long
+    ): Double
 
     @Query(
         "SELECT COALESCE(SUM(amount), 0) FROM transactions " +
@@ -43,4 +63,7 @@ interface TransactionDao {
 
     @Delete
     suspend fun delete(transaction: TransactionEntity)
+
+    @Query("DELETE FROM transactions WHERE profileId = :profileId")
+    suspend fun deleteByProfile(profileId: Long)
 }

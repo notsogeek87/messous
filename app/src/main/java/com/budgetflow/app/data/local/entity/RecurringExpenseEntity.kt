@@ -1,5 +1,6 @@
 package com.budgetflow.app.data.local.entity
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import kotlinx.serialization.Serializable
@@ -22,5 +23,6 @@ data class RecurringExpenseEntity(
     val categoryId: Long? = null,
     /** True when the amount is identical every period (rent); false when it typically varies (electricity). */
     val isFixedAmount: Boolean = true,
-    val isActive: Boolean = true
+    val isActive: Boolean = true,
+    @ColumnInfo(defaultValue = "0") val profileId: Long = 0
 )

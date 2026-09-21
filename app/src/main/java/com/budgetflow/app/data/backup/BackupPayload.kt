@@ -3,6 +3,7 @@ package com.budgetflow.app.data.backup
 import com.budgetflow.app.data.local.entity.AccountEntity
 import com.budgetflow.app.data.local.entity.CategoryEntity
 import com.budgetflow.app.data.local.entity.IncomeEntity
+import com.budgetflow.app.data.local.entity.ProfileEntity
 import com.budgetflow.app.data.local.entity.RecurringExpenseEntity
 import com.budgetflow.app.data.local.entity.SavingsGoalEntity
 import com.budgetflow.app.data.local.entity.TransactionEntity
@@ -19,6 +20,7 @@ import kotlinx.serialization.Serializable
 data class BackupPayload(
     val schemaVersion: Int = CURRENT_SCHEMA_VERSION,
     val exportedAtEpochMillis: Long,
+    val profiles: List<ProfileEntity> = emptyList(),
     val accounts: List<AccountEntity> = emptyList(),
     val categories: List<CategoryEntity> = emptyList(),
     val incomes: List<IncomeEntity> = emptyList(),
@@ -28,6 +30,7 @@ data class BackupPayload(
     val savingsGoals: List<SavingsGoalEntity> = emptyList()
 ) {
     companion object {
-        const val CURRENT_SCHEMA_VERSION = 1
+        /** Bumped from 1 to 2 when profiles (Perso/Pro/Commun) were introduced - see [com.budgetflow.app.data.backup.BackupRepositoryImpl.importFromJson]. */
+        const val CURRENT_SCHEMA_VERSION = 2
     }
 }

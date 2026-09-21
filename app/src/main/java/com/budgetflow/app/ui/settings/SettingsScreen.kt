@@ -17,6 +17,7 @@ import androidx.compose.material.icons.filled.BarChart
 import androidx.compose.material.icons.filled.Category
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.Download
+import androidx.compose.material.icons.filled.People
 import androidx.compose.material.icons.filled.Receipt
 import androidx.compose.material.icons.filled.Security
 import androidx.compose.material.icons.filled.Upload
@@ -65,7 +66,8 @@ fun SettingsScreen(
     onOpenCategories: () -> Unit,
     onOpenTransactions: () -> Unit,
     onOpenBudget: () -> Unit,
-    onOpenStatistics: () -> Unit
+    onOpenStatistics: () -> Unit,
+    onOpenProfiles: () -> Unit
 ) {
     val viewModel: SettingsViewModel = viewModel(
         factory = simpleViewModelFactory { SettingsViewModel(ServiceLocator.preferences, ServiceLocator.backupRepository) }
@@ -102,6 +104,13 @@ fun SettingsScreen(
     ) { padding ->
         LazyColumn(modifier = Modifier.fillMaxSize().padding(padding)) {
             item { SectionHeader(stringResource(R.string.settings_section_situation)) }
+            item {
+                SettingsRow(
+                    icon = Icons.Filled.People,
+                    title = stringResource(R.string.settings_profiles),
+                    onClick = onOpenProfiles
+                )
+            }
             item {
                 SettingsRow(
                     icon = Icons.Filled.Receipt,
