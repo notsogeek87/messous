@@ -14,6 +14,8 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.budgetflow.app.ui.accounts.AccountsScreen
+import com.budgetflow.app.ui.budget.AddEditExpenseScreen
+import com.budgetflow.app.ui.budget.AddEditIncomeScreen
 import com.budgetflow.app.ui.budget.BudgetScreen
 import com.budgetflow.app.ui.categories.CategoriesScreen
 import com.budgetflow.app.ui.future.FutureScreen
@@ -93,7 +95,34 @@ fun BudgetFlowNavHost() {
                 val id = entry.arguments?.getLong("transactionId")
                 AddEditTransactionScreen(transactionId = id, onDone = { navController.popBackStack() })
             }
-            composable(Routes.BUDGET) { BudgetScreen() }
+            composable(Routes.BUDGET) {
+                BudgetScreen(
+                    onAddIncome = { navController.navigate(Routes.ADD_INCOME) },
+                    onEditIncome = { id -> navController.navigate(Routes.editIncome(id)) },
+                    onAddExpense = { navController.navigate(Routes.ADD_EXPENSE) },
+                    onEditExpense = { id -> navController.navigate(Routes.editExpense(id)) }
+                )
+            }
+            composable(Routes.ADD_INCOME) {
+                AddEditIncomeScreen(incomeId = null, onDone = { navController.popBackStack() })
+            }
+            composable(
+                Routes.ADD_INCOME_WITH_ID,
+                arguments = listOf(navArgument("incomeId") { type = NavType.LongType })
+            ) { entry ->
+                val id = entry.arguments?.getLong("incomeId")
+                AddEditIncomeScreen(incomeId = id, onDone = { navController.popBackStack() })
+            }
+            composable(Routes.ADD_EXPENSE) {
+                AddEditExpenseScreen(expenseId = null, onDone = { navController.popBackStack() })
+            }
+            composable(
+                Routes.ADD_EXPENSE_WITH_ID,
+                arguments = listOf(navArgument("expenseId") { type = NavType.LongType })
+            ) { entry ->
+                val id = entry.arguments?.getLong("expenseId")
+                AddEditExpenseScreen(expenseId = id, onDone = { navController.popBackStack() })
+            }
             composable(Routes.STATISTICS) { StatisticsScreen() }
             composable(Routes.ACCOUNTS) { AccountsScreen(onBack = { navController.popBackStack() }) }
             composable(Routes.CATEGORIES) { CategoriesScreen(onBack = { navController.popBackStack() }) }

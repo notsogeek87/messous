@@ -154,6 +154,12 @@
     <string name="budget_spent">Dépensé</string>
     <string name="budget_remaining">Reste</string>
     <string name="budget_add_expense_to_envelope">Enregistrer une dépense</string>
+    <string name="budget_income_label_hint">Salaire, prime, remboursement…</string>
+    <string name="budget_expense_label_hint">Loyer, crédit, abonnement…</string>
+    <string name="budget_frequency_section">Fréquence</string>
+    <string name="budget_impact_income">Ça ajoute environ %1$s / jour à ta liberté (%2$s / mois)</string>
+    <string name="budget_impact_expense">Ça retire environ %1$s / jour à ta liberté (%2$s / mois)</string>
+    <string name="budget_impact_one_time">Dépense ponctuelle, sans effet récurrent sur ta liberté quotidienne</string>
 
     <!-- Goals -->
     <string name="goal_target">Objectif</string>

@@ -18,121 +18,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.budgetflow.app.R
 import com.budgetflow.app.domain.model.Category
-import com.budgetflow.app.domain.model.Income
-import com.budgetflow.app.domain.model.RecurringExpense
 import com.budgetflow.app.domain.model.SavingsGoal
 import com.budgetflow.app.domain.model.VariableBudget
 import com.budgetflow.app.ui.components.AmountField
 import com.budgetflow.app.ui.components.CategoryDropdown
-import com.budgetflow.app.ui.components.FrequencySelector
-import com.budgetflow.app.ui.components.ScheduleDetailsFields
 import com.budgetflow.app.ui.components.toAmountOrNull
-import com.budgetflow.engine.model.Frequency
-import java.time.DayOfWeek
-
-@Composable
-fun IncomeDialog(initial: Income?, onDismiss: () -> Unit, onSave: (Income) -> Unit) {
-    var label by remember { mutableStateOf(initial?.label ?: "") }
-    var amount by remember { mutableStateOf(initial?.amount?.toString() ?: "") }
-    var frequency by remember { mutableStateOf(initial?.frequency ?: Frequency.MONTHLY) }
-    var dayOfMonth by remember { mutableStateOf(initial?.dayOfMonth ?: 1) }
-    var dayOfWeek by remember { mutableStateOf(initial?.dayOfWeek ?: DayOfWeek.MONDAY) }
-    var monthOfYear by remember { mutableStateOf(initial?.monthOfYear ?: 1) }
-    var isActive by remember { mutableStateOf(initial?.isActive ?: true) }
-
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text(stringResource(if (initial == null) R.string.budget_add_income else R.string.action_edit)) },
-        text = {
-            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                OutlinedTextField(value = label, onValueChange = { label = it }, label = { Text(stringResource(R.string.transaction_description)) }, modifier = Modifier.fillMaxWidth())
-                AmountField(value = amount, onValueChange = { amount = it }, modifier = Modifier.fillMaxWidth())
-                FrequencySelector(frequency = frequency, onFrequencyChange = { frequency = it })
-                ScheduleDetailsFields(
-                    frequency = frequency,
-                    dayOfMonth = dayOfMonth, onDayOfMonthChange = { dayOfMonth = it },
-                    dayOfWeek = dayOfWeek, onDayOfWeekChange = { dayOfWeek = it },
-                    monthOfYear = monthOfYear, onMonthOfYearChange = { monthOfYear = it }
-                )
-                ActiveSwitchRow(isActive) { isActive = it }
-            }
-        },
-        confirmButton = {
-            TextButton(onClick = {
-                val value = amount.toAmountOrNull() ?: return@TextButton
-                onSave(
-                    Income(
-                        id = initial?.id ?: 0,
-                        label = label.ifBlank { "Revenu" },
-                        amount = value,
-                        frequency = frequency,
-                        dayOfMonth = if (frequency == Frequency.MONTHLY || frequency == Frequency.YEARLY) dayOfMonth else null,
-                        dayOfWeek = if (frequency == Frequency.WEEKLY) dayOfWeek else null,
-                        monthOfYear = if (frequency == Frequency.YEARLY) monthOfYear else null,
-                        oneTimeDate = if (frequency == Frequency.ONE_TIME) (initial?.oneTimeDate ?: java.time.LocalDate.now()) else null,
-                        accountId = initial?.accountId,
-                        isActive = isActive
-                    )
-                )
-            }) { Text(stringResource(R.string.action_save)) }
-        },
-        dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_cancel)) } }
-    )
-}
-
-@Composable
-fun ExpenseDialog(initial: RecurringExpense?, categories: List<Category>, onDismiss: () -> Unit, onSave: (RecurringExpense) -> Unit) {
-    var label by remember { mutableStateOf(initial?.label ?: "") }
-    var amount by remember { mutableStateOf(initial?.amount?.toString() ?: "") }
-    var frequency by remember { mutableStateOf(initial?.frequency ?: Frequency.MONTHLY) }
-    var dayOfMonth by remember { mutableStateOf(initial?.dayOfMonth ?: 1) }
-    var dayOfWeek by remember { mutableStateOf(initial?.dayOfWeek ?: DayOfWeek.MONDAY) }
-    var monthOfYear by remember { mutableStateOf(initial?.monthOfYear ?: 1) }
-    var categoryId by remember { mutableStateOf(initial?.categoryId) }
-    var isActive by remember { mutableStateOf(initial?.isActive ?: true) }
-
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text(stringResource(if (initial == null) R.string.budget_add_expense else R.string.action_edit)) },
-        text = {
-            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                OutlinedTextField(value = label, onValueChange = { label = it }, label = { Text(stringResource(R.string.transaction_description)) }, modifier = Modifier.fillMaxWidth())
-                AmountField(value = amount, onValueChange = { amount = it }, modifier = Modifier.fillMaxWidth())
-                CategoryDropdown(categories = categories, selectedCategoryId = categoryId, onCategorySelected = { categoryId = it }, modifier = Modifier.fillMaxWidth())
-                FrequencySelector(frequency = frequency, onFrequencyChange = { frequency = it })
-                ScheduleDetailsFields(
-                    frequency = frequency,
-                    dayOfMonth = dayOfMonth, onDayOfMonthChange = { dayOfMonth = it },
-                    dayOfWeek = dayOfWeek, onDayOfWeekChange = { dayOfWeek = it },
-                    monthOfYear = monthOfYear, onMonthOfYearChange = { monthOfYear = it }
-                )
-                ActiveSwitchRow(isActive) { isActive = it }
-            }
-        },
-        confirmButton = {
-            TextButton(onClick = {
-                val value = amount.toAmountOrNull() ?: return@TextButton
-                onSave(
-                    RecurringExpense(
-                        id = initial?.id ?: 0,
-                        label = label.ifBlank { "Dépense" },
-                        amount = value,
-                        frequency = frequency,
-                        dayOfMonth = if (frequency == Frequency.MONTHLY || frequency == Frequency.YEARLY) dayOfMonth else null,
-                        dayOfWeek = if (frequency == Frequency.WEEKLY) dayOfWeek else null,
-                        monthOfYear = if (frequency == Frequency.YEARLY) monthOfYear else null,
-                        oneTimeDate = if (frequency == Frequency.ONE_TIME) (initial?.oneTimeDate ?: java.time.LocalDate.now()) else null,
-                        accountId = initial?.accountId,
-                        categoryId = categoryId,
-                        isFixedAmount = initial?.isFixedAmount ?: true,
-                        isActive = isActive
-                    )
-                )
-            }) { Text(stringResource(R.string.action_save)) }
-        },
-        dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_cancel)) } }
-    )
-}
 
 @Composable
 fun EnvelopeDialog(initial: VariableBudget?, categories: List<Category>, onDismiss: () -> Unit, onSave: (VariableBudget) -> Unit) {
@@ -199,7 +89,7 @@ fun GoalDialog(initial: SavingsGoal?, onDismiss: () -> Unit, onSave: (SavingsGoa
 }
 
 @Composable
-private fun ActiveSwitchRow(isActive: Boolean, onChange: (Boolean) -> Unit) {
+fun ActiveSwitchRow(isActive: Boolean, onChange: (Boolean) -> Unit) {
     androidx.compose.foundation.layout.Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,

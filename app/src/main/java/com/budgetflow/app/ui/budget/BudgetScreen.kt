@@ -57,7 +57,12 @@ private val tabTitles = listOf(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BudgetScreen() {
+fun BudgetScreen(
+    onAddIncome: () -> Unit,
+    onEditIncome: (Long) -> Unit,
+    onAddExpense: () -> Unit,
+    onEditExpense: (Long) -> Unit
+) {
     val viewModel: BudgetViewModel = viewModel(
         factory = simpleViewModelFactory {
             BudgetViewModel(
@@ -74,10 +79,6 @@ fun BudgetScreen() {
     val state by viewModel.uiState.collectAsState()
     var tab by remember { mutableIntStateOf(0) }
 
-    var editingIncome by remember { mutableStateOf<Income?>(null) }
-    var showIncomeDialog by remember { mutableStateOf(false) }
-    var editingExpense by remember { mutableStateOf<RecurringExpense?>(null) }
-    var showExpenseDialog by remember { mutableStateOf(false) }
     var editingEnvelope by remember { mutableStateOf<VariableBudget?>(null) }
     var showEnvelopeDialog by remember { mutableStateOf(false) }
     var editingGoal by remember { mutableStateOf<SavingsGoal?>(null) }
@@ -88,8 +89,8 @@ fun BudgetScreen() {
         floatingActionButton = {
             FloatingActionButton(onClick = {
                 when (tab) {
-                    0 -> { editingIncome = null; showIncomeDialog = true }
-                    1 -> { editingExpense = null; showExpenseDialog = true }
+                    0 -> onAddIncome()
+                    1 -> onAddExpense()
                     2 -> { editingEnvelope = null; showEnvelopeDialog = true }
                     3 -> { editingGoal = null; showGoalDialog = true }
                 }
@@ -104,29 +105,14 @@ fun BudgetScreen() {
             }
 
             when (tab) {
-                0 -> IncomesTab(state.incomes, onEdit = { editingIncome = it; showIncomeDialog = true }, onDelete = viewModel::deleteIncome)
-                1 -> ExpensesTab(state.expenses, state.categories, onEdit = { editingExpense = it; showExpenseDialog = true }, onDelete = viewModel::deleteExpense)
+                0 -> IncomesTab(state.incomes, onEdit = { onEditIncome(it.id) }, onDelete = viewModel::deleteIncome)
+                1 -> ExpensesTab(state.expenses, state.categories, onEdit = { onEditExpense(it.id) }, onDelete = viewModel::deleteExpense)
                 2 -> EnvelopesTab(state.envelopes, onEdit = { editingEnvelope = it; showEnvelopeDialog = true }, onDelete = viewModel::deleteEnvelope)
                 3 -> GoalsTab(state.goals, onEdit = { editingGoal = it; showGoalDialog = true }, onDelete = viewModel::deleteGoal)
             }
         }
     }
 
-    if (showIncomeDialog) {
-        IncomeDialog(
-            initial = editingIncome,
-            onDismiss = { showIncomeDialog = false },
-            onSave = { viewModel.saveIncome(it); showIncomeDialog = false }
-        )
-    }
-    if (showExpenseDialog) {
-        ExpenseDialog(
-            initial = editingExpense,
-            categories = state.categories,
-            onDismiss = { showExpenseDialog = false },
-            onSave = { viewModel.saveExpense(it); showExpenseDialog = false }
-        )
-    }
     if (showEnvelopeDialog) {
         EnvelopeDialog(
             initial = editingEnvelope,

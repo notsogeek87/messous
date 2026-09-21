@@ -25,8 +25,14 @@ object Routes {
     const val STATISTICS = "statistics"
     const val ACCOUNTS = "accounts"
     const val CATEGORIES = "categories"
+    const val ADD_INCOME = "add_income"
+    const val ADD_INCOME_WITH_ID = "add_income?incomeId={incomeId}"
+    const val ADD_EXPENSE = "add_expense"
+    const val ADD_EXPENSE_WITH_ID = "add_expense?expenseId={expenseId}"
 
     fun editTransaction(id: Long) = "add_transaction?transactionId=$id"
+    fun editIncome(id: Long) = "add_income?incomeId=$id"
+    fun editExpense(id: Long) = "add_expense?expenseId=$id"
 }
 
 /** The four primary destinations shown in the bottom navigation bar (spec section 2). */

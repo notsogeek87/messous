@@ -89,10 +89,8 @@ class BudgetViewModel(
         )
     }
 
-    fun saveIncome(income: Income) = viewModelScope.launch { incomeRepository.upsert(income) }
     fun deleteIncome(income: Income) = viewModelScope.launch { incomeRepository.delete(income) }
 
-    fun saveExpense(expense: RecurringExpense) = viewModelScope.launch { recurringExpenseRepository.upsert(expense) }
     fun deleteExpense(expense: RecurringExpense) = viewModelScope.launch { recurringExpenseRepository.delete(expense) }
 
     fun saveEnvelope(budget: VariableBudget) = viewModelScope.launch { variableBudgetRepository.upsert(budget) }

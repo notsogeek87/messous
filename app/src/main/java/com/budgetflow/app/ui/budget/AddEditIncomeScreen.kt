@@ -1,0 +1,131 @@
+package com.budgetflow.app.ui.budget
+
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.budgetflow.app.R
+import com.budgetflow.app.di.ServiceLocator
+import com.budgetflow.app.di.simpleViewModelFactory
+import com.budgetflow.app.ui.components.AmountField
+import com.budgetflow.app.ui.components.FrequencySelector
+import com.budgetflow.app.ui.components.ScheduleDetailsFields
+import com.budgetflow.app.ui.components.dailyEquivalent
+import com.budgetflow.app.ui.components.formatMoney
+import com.budgetflow.app.ui.components.monthlyEquivalent
+import com.budgetflow.app.ui.components.toAmountOrNull
+import com.budgetflow.app.ui.theme.PositiveGreen
+import com.budgetflow.engine.model.Frequency
+
+/**
+ * "Ajouter un revenu", as a full page instead of a cramped dialog: the amount leads, then the
+ * schedule, then a live preview of what it actually does to daily freedom - so filling this in
+ * feels like the rest of the app, not a form to get through.
+ */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun AddEditIncomeScreen(incomeId: Long?, onDone: () -> Unit) {
+    val viewModel: AddEditIncomeViewModel = viewModel(
+        factory = simpleViewModelFactory { AddEditIncomeViewModel(incomeId, ServiceLocator.incomeRepository) }
+    )
+    val state by viewModel.uiState.collectAsState()
+
+    LaunchedEffect(state.isSaved) { if (state.isSaved) onDone() }
+
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text(stringResource(if (incomeId == null) R.string.budget_add_income else R.string.action_edit)) },
+                navigationIcon = { IconButton(onClick = onDone) { Icon(Icons.Filled.ArrowBack, contentDescription = null) } }
+            )
+        }
+    ) { padding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+                .verticalScroll(rememberScrollState())
+                .padding(20.dp),
+            verticalArrangement = Arrangement.spacedBy(20.dp)
+        ) {
+            AmountField(
+                value = state.amount,
+                onValueChange = viewModel::updateAmount,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            OutlinedTextField(
+                value = state.label,
+                onValueChange = viewModel::updateLabel,
+                label = { Text(stringResource(R.string.transaction_description)) },
+                placeholder = { Text(stringResource(R.string.budget_income_label_hint)) },
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                Text(stringResource(R.string.budget_frequency_section), style = MaterialTheme.typography.titleSmall)
+                FrequencySelector(frequency = state.frequency, onFrequencyChange = viewModel::updateFrequency)
+                ScheduleDetailsFields(
+                    frequency = state.frequency,
+                    dayOfMonth = state.dayOfMonth, onDayOfMonthChange = viewModel::updateDayOfMonth,
+                    dayOfWeek = state.dayOfWeek, onDayOfWeekChange = viewModel::updateDayOfWeek,
+                    monthOfYear = state.monthOfYear, onMonthOfYearChange = viewModel::updateMonthOfYear
+                )
+            }
+
+            ActiveSwitchRow(state.isActive, viewModel::updateIsActive)
+
+            state.amount.toAmountOrNull()?.takeIf { it > 0.0 }?.let { amount ->
+                IncomeImpactCard(amount, state.frequency)
+            }
+
+            Button(onClick = viewModel::save, modifier = Modifier.fillMaxWidth()) {
+                Text(stringResource(R.string.action_save))
+            }
+        }
+    }
+}
+
+@Composable
+private fun IncomeImpactCard(amount: Double, frequency: Frequency) {
+    Card(colors = CardDefaults.cardColors(containerColor = PositiveGreen.copy(alpha = 0.10f)), modifier = Modifier.fillMaxWidth()) {
+        Text(
+            text = if (frequency == Frequency.ONE_TIME) {
+                stringResource(R.string.budget_impact_one_time)
+            } else {
+                stringResource(
+                    R.string.budget_impact_income,
+                    formatMoney(dailyEquivalent(amount, frequency)),
+                    formatMoney(monthlyEquivalent(amount, frequency))
+                )
+            },
+            style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Medium),
+            modifier = Modifier.padding(16.dp)
+        )
+    }
+}
