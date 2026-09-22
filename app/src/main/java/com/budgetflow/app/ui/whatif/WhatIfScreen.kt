@@ -185,33 +185,34 @@ private fun ExpenseSimulatorContent(modifier: Modifier = Modifier, onExpenseAdde
 
 @Composable
 private fun ImpactCard(simulation: ExpenseSimulation) {
+    // Reste à vivre (revenus - dépenses), not the account balance: same base as the home screen's
+    // hero figure (LibertyScreen's planState), so this card never needs a compte to mean something.
+    val planState = BudgetEngine.freedomStateFor(simulation.after.remainingToSpend, simulation.after.safetyThreshold)
     Card(
-        colors = CardDefaults.cardColors(containerColor = simulation.after.freedomState.color().copy(alpha = 0.10f)),
+        colors = CardDefaults.cardColors(containerColor = planState.color().copy(alpha = 0.10f)),
         modifier = Modifier.fillMaxWidth()
     ) {
         Column(modifier = Modifier.padding(20.dp)) {
-            FreedomStateBadge(simulation.after.freedomState)
+            FreedomStateBadge(planState)
             Row(modifier = Modifier.fillMaxWidth().padding(top = 12.dp), horizontalArrangement = Arrangement.SpaceBetween) {
                 Column {
                     Text(stringResource(R.string.whatif_before), style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                    MoneyText(simulation.before.freeMoney ?: 0.0, style = MaterialTheme.typography.titleLarge)
+                    MoneyText(simulation.before.remainingToSpend, style = MaterialTheme.typography.titleLarge)
                 }
                 Column(horizontalAlignment = Alignment.End) {
                     Text(stringResource(R.string.whatif_after), style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     AnimatedMoneyText(
-                        simulation.after.freeMoney ?: 0.0,
+                        simulation.after.remainingToSpend,
                         style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
-                        color = simulation.after.freedomState.color()
+                        color = planState.color()
                     )
                 }
             }
-            simulation.freedomPerDayDelta?.let { delta ->
-                Text(
-                    stringResource(R.string.whatif_cost_in_freedom, formatMoney(delta)),
-                    style = MaterialTheme.typography.bodyMedium,
-                    modifier = Modifier.padding(top = 12.dp)
-                )
-            }
+            Text(
+                stringResource(R.string.whatif_cost_in_freedom, formatMoney(simulation.dailyRecommendedBudgetDelta)),
+                style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier.padding(top = 12.dp)
+            )
         }
     }
 }
@@ -220,15 +221,16 @@ private fun ImpactCard(simulation: ExpenseSimulation) {
 private fun ThresholdMessageCard(simulation: ExpenseSimulation) {
     // A threshold of 0 isn't "respected", it's unset - "Ton seuil serait respecté" would be a
     // reassurance about a check that was never actually configured (audit §6/Lot 4 P5).
+    val planState = BudgetEngine.freedomStateFor(simulation.after.remainingToSpend, simulation.after.safetyThreshold)
     val message = when {
         simulation.after.safetyThreshold <= 0.0 -> stringResource(R.string.whatif_threshold_not_set)
-        simulation.amountUnderThreshold != null -> stringResource(R.string.whatif_threshold_breach, formatMoney(simulation.amountUnderThreshold!!))
+        simulation.planAmountUnderThreshold != null -> stringResource(R.string.whatif_threshold_breach, formatMoney(simulation.planAmountUnderThreshold!!))
         else -> stringResource(R.string.whatif_threshold_ok)
     }
     Text(
         message,
         style = MaterialTheme.typography.bodyLarge,
-        color = if (simulation.wouldBreachSafetyThreshold) simulation.after.freedomState.color() else MaterialTheme.colorScheme.onSurface
+        color = if (simulation.wouldBreachPlanSafetyThreshold) planState.color() else MaterialTheme.colorScheme.onSurface
     )
 }
 
@@ -236,7 +238,7 @@ private fun ThresholdMessageCard(simulation: ExpenseSimulation) {
 private fun ScenarioRow(label: String, simulation: ExpenseSimulation) {
     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
         Text(label, style = MaterialTheme.typography.bodyLarge)
-        MoneyText(simulation.after.freeMoney ?: 0.0, colorBySign = true)
+        MoneyText(simulation.after.remainingToSpend, colorBySign = true)
     }
 }
 

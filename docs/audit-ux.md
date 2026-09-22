@@ -541,6 +541,21 @@ rare, pour une quinzaine de lignes de Compose.
 > reste utile à qui tient son solde à jour. Le module « Et si… ? » n'a pas été modifié pour la même
 > raison : il simule l'effet d'une dépense réelle sur le solde du compte, un usage distinct du
 > chiffre héros de l'accueil.
+>
+> **Révision du 22/09 (« Et si… ? » passe au reste à vivre) :** retour utilisateur direct - l'app
+> sert avant tout à suivre les frais fixes et projeter des projets, le compte bancaire n'a jamais
+> à être renseigné pour que ça marche. Le module « Et si… ? » simulait pourtant une dépense
+> hypothétique uniquement sur le solde du compte (`freeMoney`) : sans compte à jour, « Avant »
+> affichait 0 € en permanence, exactement le même piège déjà corrigé sur l'accueil - et il ne
+> touchait même pas `remainingToSpend`, qui ne bougeait donc pas du tout avec le montant simulé.
+> `BudgetEngine.simulateExpense` répercute désormais le montant simulé sur `remainingToSpend` /
+> `remainingToSpendToday` / `dailyRecommendedBudget` directement (toute dépense, prévue ou non,
+> réduit d'autant ce qui reste à vivre), et « Et si… ? » (carte d'impact, message de seuil, ligne
+> « Voyage dans le temps ») lit désormais ces grandeurs plan-based au lieu de `freeMoney` -
+> exactement la même base et la même fonction `planState` que le chiffre héros de l'accueil. Les
+> champs basés sur le solde (`freeMoneyDelta`, `wouldBreachSafetyThreshold`, `amountUnderThreshold`)
+> restent dans le moteur, inchangés et testés, pour qui tiendrait quand même un compte à jour -
+> mais l'app ne les affiche plus nulle part.
 
 **Lot 1 — Confiance et fondamentaux** (correctifs courts, gros gain)
 1. Aligner le chiffre héros et sa couleur sur une seule base de calcul (P2).

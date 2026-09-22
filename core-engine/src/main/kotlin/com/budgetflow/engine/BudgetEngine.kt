@@ -131,21 +131,41 @@ object BudgetEngine {
     }
 
     /**
-     * Simulates spending [amount] right now, without mutating anything (spec section 23):
-     * only the account balance total moves, exactly as a real expense recorded today would.
-     * Every other input (incomes, recurring expenses, envelopes, savings, threshold) is
-     * evaluated identically before and after, so the whole delta is attributable to [amount].
+     * Simulates spending [amount] right now, without mutating anything (spec section 23).
+     * Moves the account balance total, exactly as a real expense recorded today would (for
+     * users who keep one up to date) - but the primary, account-independent figure is
+     * [MonthSummary.remainingToSpend] ("reste à vivre" = revenus - dépenses - budgets - épargne),
+     * which the account-balance copy alone never touches. Any expense, planned or not, reduces
+     * what is left to live on by its own amount, so that quantity (and everything derived from
+     * it: [MonthSummary.remainingToSpendToday], [MonthSummary.dailyRecommendedBudget],
+     * [MonthSummary.remainingToSpendTodayState]) is adjusted directly by [amount] here.
      */
     fun simulateExpense(plan: MonthPlan, amount: Double): ExpenseSimulation {
         val before = summarizeMonth(plan)
-        val simulatedPlan = plan.copy(
+        val accountAdjustedPlan = plan.copy(
             currentAccountBalances = if (plan.currentAccountBalances.isEmpty()) {
                 emptyList()
             } else {
                 listOf(plan.currentAccountBalances.sum() - amount)
             }
         )
-        val after = summarizeMonth(simulatedPlan)
+        val afterAccountBased = summarizeMonth(accountAdjustedPlan)
+
+        val remainingToSpend = afterAccountBased.remainingToSpend - amount
+        val remainingToSpendToday = afterAccountBased.remainingToSpendToday - amount
+        val dailyRecommendedBudget = if (afterAccountBased.remainingDaysInMonth > 0) {
+            remainingToSpend / afterAccountBased.remainingDaysInMonth
+        } else {
+            0.0
+        }
+        val remainingToSpendTodayState = freedomStateFor(remainingToSpendToday, plan.safetyThreshold)
+
+        val after = afterAccountBased.copy(
+            remainingToSpend = remainingToSpend,
+            remainingToSpendToday = remainingToSpendToday,
+            dailyRecommendedBudget = dailyRecommendedBudget,
+            remainingToSpendTodayState = remainingToSpendTodayState
+        )
         return ExpenseSimulation(amount = amount, before = before, after = after)
     }
 

@@ -573,6 +573,64 @@ class BudgetEngineTest {
         assertEquals(800.0, simulation.after.currentBankBalance!!, 0.0001)
     }
 
+    // --- "Et si...?" plan-based reste à vivre - works with no account configured ------------
+
+    @Test
+    fun `simulating an expense reduces reste a vivre even with no account configured`() {
+        val plan = MonthPlan(
+            month = YearMonth.of(2026, 9), today = LocalDate.of(2026, 9, 22),
+            incomes = listOf(monthlyIncome(day = 1, amount = 3300.0)),
+            recurringExpenses = emptyList(), variableBudgets = emptyList(),
+            plannedMonthlySavings = 0.0, currentAccountBalances = emptyList()
+        )
+        val simulation = BudgetEngine.simulateExpense(plan, amount = 659.0)
+        assertEquals(3300.0, simulation.before.remainingToSpend, 0.0001)
+        assertEquals(2641.0, simulation.after.remainingToSpend, 0.0001)
+        assertEquals(659.0, simulation.remainingToSpendDelta, 0.0001)
+        // No account at all -> the balance-based figure stays null throughout, unaffected.
+        assertNull(simulation.before.freeMoney)
+        assertNull(simulation.after.freeMoney)
+    }
+
+    @Test
+    fun `plan-based daily budget drops by the amount spread over the remaining days`() {
+        val plan = MonthPlan(
+            month = YearMonth.of(2026, 9), today = LocalDate.of(2026, 9, 21),
+            incomes = emptyList(), recurringExpenses = emptyList(), variableBudgets = emptyList(),
+            plannedMonthlySavings = 0.0, currentAccountBalances = emptyList()
+        )
+        val simulation = BudgetEngine.simulateExpense(plan, amount = 100.0)
+        // 10 days remain in September from the 21st.
+        assertEquals(-10.0, simulation.after.dailyRecommendedBudget, 0.0001)
+        assertEquals(10.0, simulation.dailyRecommendedBudgetDelta, 0.0001)
+    }
+
+    @Test
+    fun `an expense that would breach the plan safety threshold is flagged`() {
+        val plan = MonthPlan(
+            month = YearMonth.of(2026, 9), today = LocalDate.of(2026, 9, 21),
+            incomes = listOf(monthlyIncome(day = 1, amount = 1000.0)),
+            recurringExpenses = emptyList(), variableBudgets = emptyList(),
+            plannedMonthlySavings = 0.0, currentAccountBalances = emptyList(), safetyThreshold = 900.0
+        )
+        val simulation = BudgetEngine.simulateExpense(plan, amount = 200.0)
+        assertTrue(simulation.wouldBreachPlanSafetyThreshold)
+        assertEquals(100.0, simulation.planAmountUnderThreshold!!, 0.0001)
+    }
+
+    @Test
+    fun `an expense that stays above the plan safety threshold is not flagged`() {
+        val plan = MonthPlan(
+            month = YearMonth.of(2026, 9), today = LocalDate.of(2026, 9, 21),
+            incomes = listOf(monthlyIncome(day = 1, amount = 1000.0)),
+            recurringExpenses = emptyList(), variableBudgets = emptyList(),
+            plannedMonthlySavings = 0.0, currentAccountBalances = emptyList(), safetyThreshold = 200.0
+        )
+        val simulation = BudgetEngine.simulateExpense(plan, amount = 300.0)
+        assertFalse(simulation.wouldBreachPlanSafetyThreshold)
+        assertNull(simulation.planAmountUnderThreshold)
+    }
+
     // --- Savings goal impact (spec section 15) ----------------------------------------------
 
     @Test
