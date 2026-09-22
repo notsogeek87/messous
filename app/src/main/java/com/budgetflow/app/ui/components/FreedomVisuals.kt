@@ -63,16 +63,17 @@ fun FreedomStateBadge(state: FreedomState, modifier: Modifier = Modifier) {
 }
 
 /**
- * The "seuil de sécurité" bar (spec section 5): free money as a filled bar, with a marker at
- * the safety threshold and the margin called out. Never the sole way the margin is conveyed -
- * the numeric values are always shown alongside it, and the whole gauge carries one merged
- * [contentDescription] for TalkBack since the [Canvas] drawing itself is otherwise invisible to it.
+ * The "seuil de sécurité" bar (spec section 5): the plan's reste à vivre as a filled bar, with a
+ * marker at the safety threshold and the margin called out. Never the sole way the margin is
+ * conveyed - the numeric values are always shown alongside it, and the whole gauge carries one
+ * merged [contentDescription] for TalkBack since the [Canvas] drawing itself is otherwise
+ * invisible to it.
  */
 @Composable
-fun SafetyThresholdGauge(freeMoney: Double, safetyThreshold: Double, state: FreedomState, modifier: Modifier = Modifier) {
-    val scale = maxOf(freeMoney, safetyThreshold, 1.0)
+fun SafetyThresholdGauge(amount: Double, safetyThreshold: Double, state: FreedomState, modifier: Modifier = Modifier) {
+    val scale = maxOf(amount, safetyThreshold, 1.0)
     val filledFraction by animateFloatAsState(
-        targetValue = (freeMoney / scale).toFloat().coerceIn(0f, 1f),
+        targetValue = (amount / scale).toFloat().coerceIn(0f, 1f),
         animationSpec = tween(600),
         label = "gaugeFill"
     )
@@ -80,16 +81,16 @@ fun SafetyThresholdGauge(freeMoney: Double, safetyThreshold: Double, state: Free
     val trackColor = MaterialTheme.colorScheme.surfaceVariant
     val fillColor = state.color()
     val markerColor = MaterialTheme.colorScheme.onSurface
-    val margin = freeMoney - safetyThreshold
+    val margin = amount - safetyThreshold
     val gaugeDescription = if (safetyThreshold > 0.0) {
         stringResource(
             if (margin >= 0) R.string.liberty_safety_gauge_description_positive else R.string.liberty_safety_gauge_description_negative,
-            formatMoney(freeMoney),
+            formatMoney(amount),
             formatMoney(safetyThreshold),
             formatMoney(kotlin.math.abs(margin))
         )
     } else {
-        stringResource(R.string.liberty_safety_gauge_description_no_threshold, formatMoney(freeMoney))
+        stringResource(R.string.liberty_safety_gauge_description_no_threshold, formatMoney(amount))
     }
 
     Column(modifier = modifier) {

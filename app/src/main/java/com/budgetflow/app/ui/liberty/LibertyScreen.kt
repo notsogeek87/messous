@@ -85,7 +85,6 @@ private val transactionDateFormatter = DateTimeFormatter.ofPattern("dd/MM")
 @Composable
 fun LibertyScreen(
     onOpenBudget: () -> Unit,
-    onOpenAccounts: () -> Unit,
     onOpenFuture: () -> Unit,
     onOpenWhatIf: () -> Unit,
     onAddTransaction: () -> Unit,
@@ -166,8 +165,7 @@ fun LibertyScreen(
                 summary = summary,
                 padding = padding,
                 onOpenFuture = onOpenFuture,
-                onOpenWhatIf = onOpenWhatIf,
-                onOpenAccounts = onOpenAccounts
+                onOpenWhatIf = onOpenWhatIf
             )
         }
     }
@@ -179,11 +177,11 @@ private fun LibertyContent(
     summary: MonthSummary,
     padding: PaddingValues,
     onOpenFuture: () -> Unit,
-    onOpenWhatIf: () -> Unit,
-    onOpenAccounts: () -> Unit
+    onOpenWhatIf: () -> Unit
 ) {
-    val freeMoney = summary.freeMoney
-    val freedomState = summary.freedomState
+    val planState = remember(summary.remainingToSpend, summary.safetyThreshold) {
+        BudgetEngine.freedomStateFor(summary.remainingToSpend, summary.safetyThreshold)
+    }
 
     LazyColumn(
         modifier = Modifier.fillMaxSize().padding(padding),
@@ -191,20 +189,18 @@ private fun LibertyContent(
         verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
         item {
-            LibertyHero(summary = summary, onOpenAccounts = onOpenAccounts)
+            LibertyHero(summary = summary, planState = planState)
         }
 
-        if (freeMoney != null) {
-            item {
-                Card(modifier = Modifier.fillMaxWidth()) {
-                    Column(modifier = Modifier.padding(20.dp)) {
-                        SafetyThresholdGauge(
-                            freeMoney = freeMoney,
-                            safetyThreshold = summary.safetyThreshold,
-                            state = freedomState,
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                    }
+        item {
+            Card(modifier = Modifier.fillMaxWidth()) {
+                Column(modifier = Modifier.padding(20.dp)) {
+                    SafetyThresholdGauge(
+                        amount = summary.remainingToSpend,
+                        safetyThreshold = summary.safetyThreshold,
+                        state = planState,
+                        modifier = Modifier.fillMaxWidth()
+                    )
                 }
             }
         }
@@ -269,23 +265,17 @@ private fun LibertyContent(
 /**
  * The headline block: one figure - [MonthSummary.remainingToSpend], the *plan*-based one (revenus
  * moins charges fixes, enveloppes et épargne, pour tout le mois) - with its per-day reading
- * directly under it, both rounded to the euro for a one-glance read. This is the number a budget
- * a user fills in without necessarily keeping a bank balance in sync (no starting balance, no
- * logged transactions) can actually rely on; [MonthSummary.freeMoney] - the real-balance figure -
- * shows underneath as a secondary line when an account exists, never silently swapped in as the
- * headline (spec §3 P1/P2, revisited after real usage: a freshly-migrated "Perso" profile with a
- * genuine, filled-in recurring income showed "0 €, Confort" because its account had no starting
- * balance and no logged transactions - correct by the balance-based formula, but exactly the
- * "interchangeable" trap the engine's own doc comment warns against). The color always comes from
- * the same quantity as the number it colors: [planState], derived from [MonthSummary.remainingToSpend]
- * itself, never borrowed from the balance-based [MonthSummary.freedomState].
+ * directly under it, both rounded to the euro for a one-glance read. This is now the *only*
+ * headline figure: the real-balance one ("argent libre", [MonthSummary.freeMoney]) used to show
+ * underneath it, but that reintroduced exactly the confusion spec §3 P1/P2 warns against - a
+ * freshly-migrated "Perso" profile with a genuine, filled-in recurring income still read "0 €"
+ * right next to a healthy plan, because its account had no starting balance and no logged
+ * transactions. Removed rather than reworded, since this app is used as a planner by people who
+ * don't keep a bank balance in sync (audit revision, 22/09). The color always comes from the same
+ * quantity as the number it colors: [planState], derived from [MonthSummary.remainingToSpend].
  */
 @Composable
-private fun LibertyHero(summary: MonthSummary, onOpenAccounts: () -> Unit) {
-    val freeMoney = summary.freeMoney
-    val planState = remember(summary.remainingToSpend, summary.safetyThreshold) {
-        BudgetEngine.freedomStateFor(summary.remainingToSpend, summary.safetyThreshold)
-    }
+private fun LibertyHero(summary: MonthSummary, planState: FreedomState) {
     var detailsExpanded by remember { mutableStateOf(false) }
 
     Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
@@ -313,19 +303,6 @@ private fun LibertyHero(summary: MonthSummary, onOpenAccounts: () -> Unit) {
             modifier = Modifier.padding(top = 4.dp)
         )
 
-        if (freeMoney != null) {
-            Text(
-                text = stringResource(R.string.liberty_free_money_caption, formatMoney(freeMoney)),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(top = 4.dp)
-            )
-        } else {
-            TextButton(onClick = onOpenAccounts, modifier = Modifier.padding(top = 4.dp)) {
-                Text(stringResource(R.string.liberty_add_account_cta))
-            }
-        }
-
         TextButton(onClick = { detailsExpanded = !detailsExpanded }, modifier = Modifier.padding(top = 8.dp)) {
             Text(stringResource(R.string.liberty_details_toggle), style = MaterialTheme.typography.labelLarge)
             Icon(
@@ -341,8 +318,8 @@ private fun LibertyHero(summary: MonthSummary, onOpenAccounts: () -> Unit) {
     }
 }
 
-/** "D'où vient ce chiffre ?" (spec §2): the full plan-vs-solde math, for trust rather than the
- * first glance - every field is already computed on [MonthSummary], never re-derived here. */
+/** "D'où vient ce chiffre ?" (spec §2): the full plan math, for trust rather than the first
+ * glance - every field is already computed on [MonthSummary], never re-derived here. */
 @Composable
 private fun LibertyDetailBreakdown(summary: MonthSummary) {
     Card(modifier = Modifier.fillMaxWidth().padding(top = 12.dp)) {
@@ -356,15 +333,6 @@ private fun LibertyDetailBreakdown(summary: MonthSummary) {
             Divider(modifier = Modifier.padding(vertical = 2.dp))
             LabeledRow(stringResource(R.string.dashboard_remaining_to_spend)) {
                 MoneyText(summary.remainingToSpend, colorBySign = true, style = MaterialTheme.typography.bodyLarge)
-            }
-            summary.currentBankBalance?.let { balance ->
-                Divider(modifier = Modifier.padding(vertical = 2.dp))
-                LabeledRow(stringResource(R.string.dashboard_bank_balance)) { MoneyText(balance, colorBySign = true) }
-                summary.freeMoney?.let { free ->
-                    LabeledRow(stringResource(R.string.liberty_free_money_row_label)) {
-                        MoneyText(free, colorBySign = true, style = MaterialTheme.typography.bodyLarge)
-                    }
-                }
             }
         }
     }

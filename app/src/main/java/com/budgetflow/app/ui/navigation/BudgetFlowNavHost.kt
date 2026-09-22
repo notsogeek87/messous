@@ -52,7 +52,6 @@ fun BudgetFlowNavHost() {
                             launchSingleTop = true
                         }
                     },
-                    onOpenAccounts = { navController.navigate(Routes.ACCOUNTS) },
                     onOpenFuture = {
                         navController.navigate(Routes.FUTURE) {
                             popUpTo(navController.graph.findStartDestination().id) { saveState = true }

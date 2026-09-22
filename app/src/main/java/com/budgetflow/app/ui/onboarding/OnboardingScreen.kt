@@ -304,9 +304,6 @@ private fun DoneStep(state: OnboardingUiState) {
             SectionCard(title = stringResource(R.string.dashboard_this_month)) {
                 LabeledRow(stringResource(R.string.dashboard_available_budget)) { MoneyText(summary.availableBudget, colorBySign = true) }
                 LabeledRow(stringResource(R.string.dashboard_remaining_to_spend)) { MoneyText(summary.remainingToSpend, colorBySign = true) }
-                summary.freeMoney?.let { free ->
-                    LabeledRow(stringResource(R.string.liberty_free_money_row_label)) { MoneyText(free, colorBySign = true) }
-                }
             }
         }
 

@@ -525,6 +525,22 @@ rare, pour une quinzaine de lignes de Compose.
 > compte existe. La couleur suit désormais `planState` (calculé sur `remainingToSpend`), jamais
 > `freedomState` (calculé sur `freeMoney`) : le principe P2 — couleur et chiffre doivent toujours
 > venir de la même grandeur — reste respecté, seule la grandeur choisie comme référence a changé.
+>
+> **Révision du 22/09 (suppression de « argent libre ») :** même en ligne secondaire, la mention
+> « argent libre » restait un point de confusion pour un usage planificateur (revenu récurrent
+> configuré, compte jamais mis à jour manuellement) : le chiffre affichait 0 € en permanence sans
+> qu'aucune donnée ne soit perdue, juste parce que sa formule ne compte que le solde réel du
+> compte + les revenus encore à venir ce mois-ci. Retirée de l'accueil (légende secondaire, CTA
+> « Ajouter un compte », ligne dans le détail « D'où vient ce chiffre ? ») et de l'écran de fin
+> d'onboarding. La jauge de sécurité, qui dépendait aussi d'`argent libre`, est repassée sur la
+> même base que le chiffre héros (`remainingToSpend` / `planState`) au lieu de rester sur l'ancien
+> calcul basé solde — elle était sinon la dernière source silencieuse du même bug. Le libellé
+> identique sur l'écran « Mon futur » (projection du solde réel à une date choisie) a été renommé
+> en « Disponible ce jour-là » sans toucher au calcul : cet écran répond à une question différente
+> (« à quoi ressemblera mon compte à telle date ? »), pas à « puis-je dépenser aujourd'hui ? », et
+> reste utile à qui tient son solde à jour. Le module « Et si… ? » n'a pas été modifié pour la même
+> raison : il simule l'effet d'une dépense réelle sur le solde du compte, un usage distinct du
+> chiffre héros de l'accueil.
 
 **Lot 1 — Confiance et fondamentaux** (correctifs courts, gros gain)
 1. Aligner le chiffre héros et sa couleur sur une seule base de calcul (P2).

@@ -17,18 +17,15 @@
     <string name="liberty_recurring_title">Revenus &amp; dépenses fixes</string>
     <string name="liberty_transactions_title">Transactions du mois</string>
     <string name="liberty_safety_threshold_label">Seuil : %1$s</string>
-    <string name="liberty_safety_gauge_description_positive">Argent libre : %1$s. Seuil de sécurité : %2$s. Marge : %3$s.</string>
-    <string name="liberty_safety_gauge_description_negative">Argent libre : %1$s. Seuil de sécurité : %2$s. %3$s sous le seuil.</string>
-    <string name="liberty_safety_gauge_description_no_threshold">Argent libre : %1$s. Aucun seuil de sécurité défini.</string>
+    <string name="liberty_safety_gauge_description_positive">Reste à vivre : %1$s. Seuil de sécurité : %2$s. Marge : %3$s.</string>
+    <string name="liberty_safety_gauge_description_negative">Reste à vivre : %1$s. Seuil de sécurité : %2$s. %3$s sous le seuil.</string>
+    <string name="liberty_safety_gauge_description_no_threshold">Reste à vivre : %1$s. Aucun seuil de sécurité défini.</string>
     <string name="liberty_safety_margin_positive">%1$s de marge</string>
     <string name="liberty_safety_margin_negative">%1$s sous le seuil</string>
     <string name="liberty_no_data_title">Aucune donnée pour l\'instant</string>
     <string name="liberty_no_data_body">Ajoute un revenu et tes dépenses fixes pour voir ta liberté.</string>
-    <string name="liberty_add_account_cta">Ajouter un compte</string>
     <string name="liberty_hero_subtitle">Soit %1$s / jour, encore %2$d j. ce mois-ci</string>
     <string name="liberty_details_toggle">D\'où vient ce chiffre ?</string>
-    <string name="liberty_free_money_caption">Argent libre (solde réel) : %1$s</string>
-    <string name="liberty_free_money_row_label">Argent libre</string>
     <string name="liberty_simulate_cta">Et si je dépensais quelque chose ?</string>
     <string name="liberty_add_transaction_cta">Ajouter</string>
     <string name="liberty_upcoming_title">À venir</string>
@@ -46,7 +43,7 @@
     <string name="future_time_travel_label">Voyage dans le temps</string>
     <string name="future_next_months">Mois suivants</string>
     <string name="future_empty">Aucune échéance prévue ce mois-ci</string>
-    <string name="future_free_money_at_date">Argent libre ce jour-là</string>
+    <string name="future_free_money_at_date">Disponible ce jour-là</string>
     <string name="future_daily_freedom_at_date">Liberté quotidienne restante</string>
 
     <!-- Et si...? -->
@@ -115,7 +112,6 @@
     <string name="dashboard_planned_savings">Épargne prévue</string>
     <string name="dashboard_available_budget">Budget disponible</string>
     <string name="dashboard_remaining_to_spend">Reste à dépenser</string>
-    <string name="dashboard_bank_balance">Solde bancaire</string>
     <string name="dashboard_upcoming_this_month">À venir ce mois-ci</string>
 
     <!-- Transactions -->
