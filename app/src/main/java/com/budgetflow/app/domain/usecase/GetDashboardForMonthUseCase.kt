@@ -15,6 +15,7 @@ import com.budgetflow.app.domain.repository.SavingsGoalRepository
 import com.budgetflow.app.domain.repository.TransactionRepository
 import com.budgetflow.app.domain.repository.VariableBudgetRepository
 import com.budgetflow.engine.BudgetEngine
+import com.budgetflow.engine.FrequencyProjector
 import com.budgetflow.engine.model.MonthPlan
 import com.budgetflow.engine.model.MonthSummary
 import com.budgetflow.engine.model.VariableBudgetInput
@@ -63,7 +64,15 @@ class GetDashboardForMonthUseCase(
     fun observe(month: YearMonth, today: LocalDate): Flow<MonthSummary> =
         observePlan(month, today).map(BudgetEngine::summarizeMonth)
 
-    fun observePlan(month: YearMonth, today: LocalDate): Flow<MonthPlan> {
+    /**
+     * @param today the date being evaluated - usually the real "now", but a future date for a
+     *   "Et si...?" scenario ([realToday] then stays the real one).
+     * @param realToday the actual current date, used to fetch the real account balance and to
+     *   know how much of the gap between now and [today] still needs to be projected. Defaults
+     *   to [today] so every caller that only ever evaluates the real current month (the
+     *   dashboard, "Mon futur", "Mon budget"...) keeps behaving exactly as before.
+     */
+    fun observePlan(month: YearMonth, today: LocalDate, realToday: LocalDate = today): Flow<MonthPlan> {
         val repositoryInputsFlow = combine(
             incomeRepository.observeIncomes(),
             recurringExpenseRepository.observeExpenses(),
@@ -86,7 +95,7 @@ class GetDashboardForMonthUseCase(
         }
 
         return inputsFlow.combine(transactionRepository.observeAll()) { inputs, transactions ->
-            buildPlan(inputs, transactions, month, today)
+            buildPlan(inputs, transactions, month, today, realToday)
         }
     }
 
@@ -94,7 +103,8 @@ class GetDashboardForMonthUseCase(
         inputs: Inputs,
         transactions: List<Transaction>,
         month: YearMonth,
-        today: LocalDate
+        today: LocalDate,
+        realToday: LocalDate
     ): MonthPlan {
         val monthStart = month.atDay(1)
         val monthEnd = month.atEndOfMonth()
@@ -119,15 +129,32 @@ class GetDashboardForMonthUseCase(
         }
 
         val plannedSavings = inputs.goals.filter { it.isActive }.sumOf { it.monthlyContribution }
+        val activeIncomes = inputs.incomes.filter { it.isActive }.map { it.toScheduledFlow() }
+        val activeExpenses = inputs.expenses.filter { it.isActive }.map { it.toScheduledFlow() }
+
+        // A "Et si...?" scenario asks about a date beyond realToday: the recorded account
+        // balance only reflects transactions entered so far, so project every recurring
+        // income/expense due between realToday and today (which can span into a later month -
+        // FrequencyProjector.totalDueInRange handles that on its own) onto that balance before
+        // handing it to BudgetEngine. Without this, e.g. "le mois prochain" would silently skip
+        // this month's remaining salary/rent and start from today's raw balance instead.
+        val projectionStart = realToday.plusDays(1)
+        val projectedDelta = if (!projectionStart.isAfter(today)) {
+            activeIncomes.sumOf { FrequencyProjector.totalDueInRange(it, projectionStart, today) } -
+                activeExpenses.sumOf { FrequencyProjector.totalDueInRange(it, projectionStart, today) }
+        } else 0.0
+        val projectedAccountBalances = if (projectedDelta != 0.0 && accountBalances.isNotEmpty()) {
+            listOf(accountBalances.sum() + projectedDelta)
+        } else accountBalances
 
         return MonthPlan(
             month = month,
             today = today,
-            incomes = inputs.incomes.filter { it.isActive }.map { it.toScheduledFlow() },
-            recurringExpenses = inputs.expenses.filter { it.isActive }.map { it.toScheduledFlow() },
+            incomes = activeIncomes,
+            recurringExpenses = activeExpenses,
             variableBudgets = variableBudgetInputs,
             plannedMonthlySavings = plannedSavings,
-            currentAccountBalances = accountBalances,
+            currentAccountBalances = projectedAccountBalances,
             safetyThreshold = inputs.safetyThreshold
         )
     }

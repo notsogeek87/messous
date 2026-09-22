@@ -19,9 +19,15 @@ class SimulateExpenseUseCase(private val monthPlanSource: GetDashboardForMonthUs
             BudgetEngine.simulateExpense(plan, amount)
         }
 
-    /** Simulates spending [amount] on an arbitrary future [date] - used for the "dans 15 jours" / "le mois prochain" scenarios. */
-    fun observeOn(amount: Double, date: LocalDate): Flow<ExpenseSimulation> =
-        monthPlanSource.observePlan(YearMonth.from(date), date).map { plan ->
+    /**
+     * Simulates spending [amount] on an arbitrary future [date] - used for the "dans 15 jours" /
+     * "le mois prochain" scenarios. [today] is the real current date, so the plan's starting
+     * balance gets every recurring income/expense between now and [date] projected onto it
+     * (spec sections 10, 11: these scenarios must reflect recurring flows, not just today's
+     * balance) instead of silently skipping whatever this month still has left to pay/receive.
+     */
+    fun observeOn(amount: Double, date: LocalDate, today: LocalDate = LocalDate.now()): Flow<ExpenseSimulation> =
+        monthPlanSource.observePlan(YearMonth.from(date), date, realToday = today).map { plan ->
             BudgetEngine.simulateExpense(plan, amount)
         }
 }
