@@ -29,6 +29,7 @@ private class FakeCategoryRepository(seed: List<Category>) : CategoryRepository 
     }
     override suspend fun delete(category: Category) { items.removeAll { it.id == category.id } }
     override suspend fun seedDefaultsIfEmpty() {}
+    override suspend fun seedDefaultsForProfile(profileId: Long) {}
 }
 
 /**
