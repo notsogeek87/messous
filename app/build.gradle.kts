@@ -6,6 +6,11 @@ plugins {
     id("com.google.devtools.ksp")
 }
 
+// Numéro de build : run_number de la CI (BUILD_NUMBER) ; versionCode ET tag de release en dérivent, donc
+// ils augmentent strictement à chaque build (Android refuse une mise à jour sinon).
+val buildNumber = (System.getenv("BUILD_NUMBER") ?: providers.gradleProperty("buildNumber").orNull)?.toIntOrNull() ?: 1
+val appVersionBase = providers.gradleProperty("appVersionBase").get()
+
 android {
     namespace = "com.budgetflow.app"
     compileSdk = 35
@@ -14,18 +19,9 @@ android {
         applicationId = "com.budgetflow.app"
         minSdk = 26
         targetSdk = 35
-        // Surchargeable en CI via -PbudgetflowVersionCode=N -PbudgetflowVersionName=X.Y.N
-        // pour que chaque release GitHub porte une version unique et croissante.
-        versionCode = if (project.hasProperty("budgetflowVersionCode")) {
-            (project.property("budgetflowVersionCode") as String).toInt()
-        } else {
-            1
-        }
-        versionName = if (project.hasProperty("budgetflowVersionName")) {
-            project.property("budgetflowVersionName") as String
-        } else {
-            "1.0.0"
-        }
+        // Fixés par la CI via BUILD_NUMBER (= github.run_number) : un APK = une version unique et croissante.
+        versionCode = buildNumber
+        versionName = "$appVersionBase.$buildNumber"
 
         vectorDrawables.useSupportLibrary = true
     }
@@ -122,6 +118,9 @@ dependencies {
 
     implementation("androidx.datastore:datastore-preferences:1.1.1")
     implementation("androidx.biometric:biometric:1.1.0")
+
+    // Mises à jour automatiques depuis les releases GitHub (dépôt Maven vendoré : libs/lielugit-maven).
+    implementation("com.lielu:lielugit-updater:1.0.0")
 
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.1")

@@ -29,6 +29,8 @@ import com.budgetflow.app.domain.usecase.GetDailyProjectionUseCase
 import com.budgetflow.app.domain.usecase.GetDashboardForMonthUseCase
 import com.budgetflow.app.domain.usecase.GetMonthlyForecastsUseCase
 import com.budgetflow.app.domain.usecase.SimulateExpenseUseCase
+import com.lielu.githubupdater.UpdateConfig
+import com.lielu.githubupdater.UpdateManager
 
 /**
  * Hand-rolled dependency container. BudgetFlow deliberately avoids an
@@ -45,6 +47,17 @@ object ServiceLocator {
 
     val database: BudgetFlowDatabase by lazy { BudgetFlowDatabase.getInstance(appContext) }
     val preferences: UserPreferences by lazy { UserPreferences(appContext) }
+
+    /**
+     * Mises à jour depuis les releases GitHub de CE dépôt. Une seule instance : son `state` est partagé
+     * entre la fenêtre de lancement et l'écran Réglages.
+     */
+    val updateManager: UpdateManager by lazy {
+        UpdateManager(appContext, UpdateConfig(githubOwner = "notsogeek87", githubRepository = "messous"))
+    }
+
+    /** Un applicationId à suffixe (ex. `.staging`) ne peut pas être mis à jour par la release de production. */
+    val updatesEnabled: Boolean get() = !appContext.packageName.endsWith(".staging")
 
     /** The single source every profile-scoped repository reads the active profile from - see its own doc. */
     val currentProfileProvider: CurrentProfileProvider by lazy {

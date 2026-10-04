@@ -15,6 +15,7 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Category
 import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.People
+import androidx.compose.material.icons.filled.SystemUpdate
 import androidx.compose.material.icons.filled.Upload
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Divider
@@ -49,6 +50,8 @@ import com.budgetflow.app.data.prefs.ThemeMode
 import com.budgetflow.app.di.ServiceLocator
 import com.budgetflow.app.di.simpleViewModelFactory
 import com.budgetflow.app.ui.lock.canUseBiometricLock
+import com.budgetflow.app.ui.update.rememberAppUpdateViewModel
+import com.lielu.githubupdater.UpdateState
 import kotlinx.coroutines.launch
 import java.io.BufferedReader
 import java.io.InputStreamReader
@@ -64,6 +67,8 @@ fun SettingsScreen(onBack: () -> Unit, onOpenCategories: () -> Unit, onOpenProfi
         factory = simpleViewModelFactory { SettingsViewModel(ServiceLocator.preferences, ServiceLocator.backupRepository) }
     )
     val state by viewModel.uiState.collectAsState()
+    val updateViewModel = rememberAppUpdateViewModel()
+    val updateState by updateViewModel.state.collectAsState()
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -188,6 +193,21 @@ fun SettingsScreen(onBack: () -> Unit, onOpenCategories: () -> Unit, onOpenProfi
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp)
+                )
+            }
+            item {
+                SettingsRow(
+                    icon = Icons.Filled.SystemUpdate,
+                    title = stringResource(R.string.settings_check_update),
+                    subtitle = when {
+                        !updateViewModel.enabled -> stringResource(R.string.settings_check_update_disabled)
+                        updateState is UpdateState.Checking -> stringResource(R.string.settings_check_update_checking)
+                        updateState is UpdateState.UpToDate -> stringResource(R.string.settings_check_update_up_to_date)
+                        updateState is UpdateState.UpdateAvailable ->
+                            stringResource(R.string.settings_check_update_available, (updateState as UpdateState.UpdateAvailable).update.versionName)
+                        else -> stringResource(R.string.settings_check_update_idle)
+                    },
+                    onClick = updateViewModel::checkNow
                 )
             }
             item {

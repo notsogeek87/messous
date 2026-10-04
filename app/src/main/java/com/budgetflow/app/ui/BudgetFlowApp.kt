@@ -16,6 +16,7 @@ import com.budgetflow.app.ui.lock.LockScreen
 import com.budgetflow.app.ui.navigation.BudgetFlowNavHost
 import com.budgetflow.app.ui.onboarding.OnboardingScreen
 import com.budgetflow.app.ui.theme.BudgetFlowTheme
+import com.budgetflow.app.ui.update.UpdatePrompt
 
 /**
  * The whole app in three possible states: onboarding (first launch), the
@@ -40,7 +41,11 @@ fun BudgetFlowApp() {
                 onboardingDone == null -> Box(modifier = Modifier.fillMaxSize())
                 onboardingDone == false -> OnboardingScreen(onFinished = { /* isOnboardingDone flow updates automatically */ })
                 biometricLockEnabled && !isUnlocked -> LockScreen(onUnlocked = { isUnlocked = true })
-                else -> BudgetFlowNavHost()
+                else -> {
+                    BudgetFlowNavHost()
+                    // Vérifie à chaque ouverture (ON_START) ; seulement une fois l'app déverrouillée.
+                    UpdatePrompt()
+                }
             }
         }
     }

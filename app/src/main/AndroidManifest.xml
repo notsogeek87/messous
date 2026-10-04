@@ -2,9 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!--
-      BudgetFlow requests no INTERNET permission and no Google Play Services
-      dependency: every screen and every byte of financial data stays on the
-      device or in the user's own Android backup, never on our servers.
+      BudgetFlow has no Google Play Services dependency: every screen and every
+      byte of financial data stays on the device or in the user's own Android
+      backup, never on our servers. The only network access is the self-update
+      check (lielugit-updater, merged INTERNET + REQUEST_INSTALL_PACKAGES): it
+      reads this app's public GitHub Releases and sends no user data.
       Biometric lock is optional and local-only (no cloud identity).
     -->
     <uses-permission android:name="android.permission.USE_BIOMETRIC" />
